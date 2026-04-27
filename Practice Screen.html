@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>வாகை — Practice</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Tamil:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #D8DCE8;
+    min-height: 100vh;
+    display: flex; align-items: flex-start; justify-content: center;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding: 40px 16px 60px;
+  }
+  .scroll-hide::-webkit-scrollbar { display: none; }
+  .scroll-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes slideUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
+  @keyframes fadeIn  { from { opacity:0; } to { opacity:1; } }
+  @keyframes shakeX {
+    0%,100% { transform:translateX(0); }
+    20%      { transform:translateX(-5px); }
+    40%      { transform:translateX(5px); }
+    60%      { transform:translateX(-4px); }
+    80%      { transform:translateX(4px); }
+  }
+  .ta { font-family: 'Noto Sans Tamil', sans-serif; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+const T = {
+  bg: '#F7F8FC', surface: '#FFFFFF',
+  indigo: '#3D52A0', indigoDark: '#2D3E7A', indigoLight: '#EEF1FA', indigoMid: '#C5CEF0',
+  text: '#1A1A2E', textSec: '#6B7280', textTer: '#9CA3AF',
+  border: '#E4E7F0',
+  green: '#057A55', greenBg: '#E8F8F0', greenBorder: '#A8DBBE',
+  red: '#C0392B', redBg: '#FDECEC', redBorder: '#F5BFBB',
+};
+
+const QUESTIONS = [
+  {
+    id: 1, subject: { en: 'HISTORY', ta: 'வரலாறு' },
+    ta: 'இந்தியாவில் பிரிட்டிஷ் ஆதிக்கத்தை உறுதிப்படுத்திய போர் எது?',
+    en: 'Which battle firmly established British supremacy in India?',
+    options: [
+      { id:'a', ta:'பிளாசி போர், 1757', en:'Battle of Plassey, 1757' },
+      { id:'b', ta:'பக்சர் போர், 1764', en:'Battle of Buxar, 1764' },
+      { id:'c', ta:'வந்திவாஷ் போர், 1760', en:'Battle of Wandiwash, 1760' },
+      { id:'d', ta:'மூன்றாம் பானிப்பட் போர், 1761', en:'Third Battle of Panipat, 1761' },
+    ],
+    correct: 'a',
+    explanation: {
+      ta: 'பிளாசி போர் (1757) கிழக்கிந்திய கம்பெனியின் இந்தியாவில் ஆட்சியின் தொடக்கமாகும்.',
+      en: 'The Battle of Plassey (1757) gave Britain control of Bengal — the foundation of its Indian empire.',
+    },
+  },
+  {
+    id: 2, subject: { en: 'HISTORY', ta: 'வரலாறு' },
+    ta: 'மௌரிய பேரரசை நிறுவியவர் யார்?',
+    en: 'Who founded the Maurya Empire?',
+    options: [
+      { id:'a', ta:'அசோகர்', en:'Ashoka the Great' },
+      { id:'b', ta:'சந்திரகுப்த மௌரியர்', en:'Chandragupta Maurya' },
+      { id:'c', ta:'பிந்துசாரர்', en:'Bindusara' },
+      { id:'d', ta:'பிம்பிசாரர்', en:'Bimbisara' },
+    ],
+    correct: 'b',
+    explanation: {
+      ta: 'சந்திரகுப்த மௌரியர் கி.மு. 322 இல் சாணக்கியரின் உதவியோடு மௌரிய பேரரசை நிறுவினார்.',
+      en: 'Chandragupta Maurya founded the Maurya Empire around 322 BCE with the help of Chanakya.',
+    },
+  },
+  {
+    id: 3, subject: { en: 'HISTORY', ta: 'வரலாறு' },
+    ta: 'சங்க இலக்கியம் எந்த காலகட்டத்தைச் சேர்ந்தது?',
+    en: 'The Sangam literature belongs to which period?',
+    options: [
+      { id:'a', ta:'கி.மு. 3ஆம் நூற்றாண்டு – கி.பி. 3ஆம் நூற்றாண்டு', en:'3rd century BCE – 3rd century CE' },
+      { id:'b', ta:'கி.பி. 5–8ஆம் நூற்றாண்டு', en:'5th – 8th century CE' },
+      { id:'c', ta:'கி.பி. 10–13ஆம் நூற்றாண்டு', en:'10th – 13th century CE' },
+      { id:'d', ta:'கி.மு. 1–4ஆம் நூற்றாண்டு மட்டும்', en:'1st – 4th century BCE only' },
+    ],
+    correct: 'a',
+    explanation: {
+      ta: 'சங்க இலக்கியம் தோராயமாக கி.மு. 300 முதல் கி.பி. 300 வரை தமிழ் கலாச்சாரத்தின் செம்மை காலத்தைப் பிரதிபலிக்கிறது.',
+      en: 'Sangam literature is dated roughly 300 BCE to 300 CE, representing the classical period of Tamil culture.',
+    },
+  },
+  {
+    id: 4, subject: { en: 'POLITY', ta: 'அரசியல்' },
+    ta: 'இந்திய அரசியலமைப்பு எப்போது நடைமுறைக்கு வந்தது?',
+    en: 'When did the Indian Constitution come into effect?',
+    options: [
+      { id:'a', ta:'ஜனவரி 26, 1950', en:'January 26, 1950' },
+      { id:'b', ta:'ஆகஸ்ட் 15, 1947', en:'August 15, 1947' },
+      { id:'c', ta:'நவம்பர் 26, 1949', en:'November 26, 1949' },
+      { id:'d', ta:'ஜனவரி 26, 1949', en:'January 26, 1949' },
+    ],
+    correct: 'a',
+    explanation: {
+      ta: 'இந்திய அரசியலமைப்பு நவம்பர் 26, 1949 அன்று ஏற்றுக்கொள்ளப்பட்டு ஜனவரி 26, 1950 அன்று நடைமுறைக்கு வந்தது.',
+      en: 'The Constitution was adopted on Nov 26, 1949 and came into effect on January 26, 1950.',
+    },
+  },
+  {
+    id: 5, subject: { en: 'GEOGRAPHY', ta: 'புவியியல்' },
+    ta: 'தமிழ்நாட்டின் மிக நீளமான ஆறு எது?',
+    en: 'Which is the longest river in Tamil Nadu?',
+    options: [
+      { id:'a', ta:'பாலாறு', en:'Palar' },
+      { id:'b', ta:'வைகை', en:'Vaigai' },
+      { id:'c', ta:'காவிரி', en:'Cauvery' },
+      { id:'d', ta:'தாமிரபரணி', en:'Thamirabarani' },
+    ],
+    correct: 'c',
+    explanation: {
+      ta: 'காவிரி ஆறு தமிழ்நாட்டின் மிக நீளமான ஆறாகும், இது தமிழர்களின் புனித நதியாகவும் கருதப்படுகிறது.',
+      en: 'The Cauvery is the longest river in Tamil Nadu and is also considered a sacred river.',
+    },
+  },
+  { id:6,  subject:{en:'ECONOMY',ta:'பொருளாதாரம்'}, ta:'கேள்வி 6', en:'Question 6', options:[{id:'a',ta:'விடை அ',en:'Option A'},{id:'b',ta:'விடை ஆ',en:'Option B'},{id:'c',ta:'விடை இ',en:'Option C'},{id:'d',ta:'விடை ஈ',en:'Option D'}], correct:'b', explanation:{ta:'விளக்கம் 6.',en:'Explanation 6.'} },
+  { id:7,  subject:{en:'POLITY',ta:'அரசியல்'}, ta:'கேள்வி 7', en:'Question 7', options:[{id:'a',ta:'விடை அ',en:'Option A'},{id:'b',ta:'விடை ஆ',en:'Option B'},{id:'c',ta:'விடை இ',en:'Option C'},{id:'d',ta:'விடை ஈ',en:'Option D'}], correct:'c', explanation:{ta:'விளக்கம் 7.',en:'Explanation 7.'} },
+  { id:8,  subject:{en:'HISTORY',ta:'வரலாறு'}, ta:'கேள்வி 8', en:'Question 8', options:[{id:'a',ta:'விடை அ',en:'Option A'},{id:'b',ta:'விடை ஆ',en:'Option B'},{id:'c',ta:'விடை இ',en:'Option C'},{id:'d',ta:'விடை ஈ',en:'Option D'}], correct:'a', explanation:{ta:'விளக்கம் 8.',en:'Explanation 8.'} },
+  { id:9,  subject:{en:'GEOGRAPHY',ta:'புவியியல்'}, ta:'கேள்வி 9', en:'Question 9', options:[{id:'a',ta:'விடை அ',en:'Option A'},{id:'b',ta:'விடை ஆ',en:'Option B'},{id:'c',ta:'விடை இ',en:'Option C'},{id:'d',ta:'விடை ஈ',en:'Option D'}], correct:'d', explanation:{ta:'விளக்கம் 9.',en:'Explanation 9.'} },
+  { id:10, subject:{en:'ECONOMY',ta:'பொருளாதாரம்'}, ta:'கேள்வி 10', en:'Question 10', options:[{id:'a',ta:'விடை அ',en:'Option A'},{id:'b',ta:'விடை ஆ',en:'Option B'},{id:'c',ta:'விடை இ',en:'Option C'},{id:'d',ta:'விடை ஈ',en:'Option D'}], correct:'b', explanation:{ta:'விளக்கம் 10.',en:'Explanation 10.'} },
+];
+
+const REPORT_OPTIONS = {
+  ta: ['சரியான விடை தவறானது','பல விடைகள் சரியாகத் தோன்றுகின்றன','கேள்வி தெளிவற்றது','பாடத்திட்டத்திற்கு வெளியே உள்ளது','மொழிபெயர்ப்பு தவறானது','நகல் கேள்வி','மற்றவை'],
+  en: ['Correct answer is wrong','Multiple answers seem correct','Question is unclear or confusing','Question is out of syllabus','Translation is wrong','Duplicate question','Other'],
+};
+
+// ── Icons ──────────────────────────────────────────────
+const BackIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+    <path d="M11.5 13.5L7 9l4.5-4.5" stroke={T.text} strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
+const FlagIcon = ({ color = T.textTer }) => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path d="M3 1v14M3 1h8l-2 4 2 4H3" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+const CheckIcon = () => (
+  <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+    <path d="M2 6.5L5 9.5L11 3.5" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
+const CrossIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+    <path d="M2 2L10 10M10 2L2 10" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
+const CloseIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+    <path d="M5 5l10 10M15 5L5 15" stroke={T.textSec} strokeWidth="1.8" strokeLinecap="round"/>
+  </svg>
+);
+
+// ── Report Bottom Sheet ────────────────────────────────
+function ReportSheet({ lang, onClose }) {
+  const [selected, setSelected] = React.useState(null);
+  const [submitted, setSubmitted] = React.useState(false);
+  const options = REPORT_OPTIONS[lang];
+
+  const handleSubmit = () => {
+    if (!selected && selected !== 0) return;
+    setSubmitted(true);
+    setTimeout(onClose, 1200);
+  };
+
+  return (
+    <>
+      {/* Overlay */}
+      <div onClick={onClose} style={{
+        position: 'fixed', inset: 0, background: 'rgba(26,26,46,0.55)',
+        zIndex: 40, animation: 'fadeIn 0.25s ease',
+      }}/>
+      {/* Sheet */}
+      <div style={{
+        position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
+        width: 390, background: T.surface,
+        borderRadius: '20px 20px 0 0',
+        zIndex: 50, animation: 'slideUp 0.35s cubic-bezier(0.32,0.72,0,1)',
+        paddingBottom: 32,
+        boxShadow: '0 -8px 40px rgba(0,0,0,0.15)',
+      }}>
+        {/* Drag handle */}
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0 4px' }}>
+          <div style={{ width: 36, height: 4, borderRadius: 2, background: T.border }}/>
+        </div>
+
+        {/* Header */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '12px 20px 16px',
+          borderBottom: `1px solid ${T.border}`,
+        }}>
+          <div>
+            <div style={{ color: T.text, fontSize: 15, fontWeight: 700 }}>
+              {lang === 'ta' ? 'கேள்வி புகாரளி' : 'Report Question'}
+            </div>
+            <div style={{ color: T.textTer, fontSize: 12, marginTop: 2 }}>
+              {lang === 'ta' ? 'காரணத்தைத் தேர்ந்தெடுக்கவும்' : 'Select a reason'}
+            </div>
+          </div>
+          <button onClick={onClose} style={{
+            width: 32, height: 32, borderRadius: 10, border: `1px solid ${T.border}`,
+            background: T.bg, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer',
+          }}>
+            <CloseIcon />
+          </button>
+        </div>
+
+        {submitted ? (
+          <div style={{ padding: '40px 20px', textAlign: 'center', animation: 'fadeUp 0.3s ease' }}>
+            <div style={{
+              width: 56, height: 56, borderRadius: '50%', background: '#E8F8F0',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              margin: '0 auto 14px',
+            }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M5 12l5 5L20 7" stroke={T.green} strokeWidth="2.5" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <div style={{ color: T.text, fontSize: 15, fontWeight: 700 }}>
+              {lang === 'ta' ? 'புகார் அனுப்பப்பட்டது!' : 'Report Submitted!'}
+            </div>
+            <div style={{ color: T.textSec, fontSize: 13, marginTop: 4 }}>
+              {lang === 'ta' ? 'நன்றி, விரைவில் சரிசெய்கிறோம்.' : 'Thanks, we\'ll review it soon.'}
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Options */}
+            <div style={{ padding: '8px 0' }}>
+              {options.map((opt, i) => (
+                <div key={i} onClick={() => setSelected(i)} style={{
+                  display: 'flex', alignItems: 'center', gap: 14,
+                  padding: '14px 20px', cursor: 'pointer',
+                  background: selected === i ? T.indigoLight : 'transparent',
+                  borderLeft: selected === i ? `3px solid ${T.indigo}` : '3px solid transparent',
+                  transition: 'all 0.15s ease',
+                }}>
+                  {/* Radio */}
+                  <div style={{
+                    width: 20, height: 20, borderRadius: '50%', flexShrink: 0,
+                    border: `2px solid ${selected === i ? T.indigo : T.border}`,
+                    background: selected === i ? T.indigo : 'transparent',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    transition: 'all 0.15s ease',
+                  }}>
+                    {selected === i && <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#fff' }}/>}
+                  </div>
+                  <span style={{
+                    fontSize: 14, fontWeight: selected === i ? 600 : 500,
+                    color: selected === i ? T.indigo : T.text,
+                    fontFamily: lang === 'ta' ? 'Noto Sans Tamil, Inter, sans-serif' : 'Inter, sans-serif',
+                    transition: 'color 0.15s',
+                  }}>{opt}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Buttons */}
+            <div style={{ padding: '12px 20px 0', display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <button onClick={handleSubmit} style={{
+                width: '100%', padding: '15px',
+                background: selected !== null ? `linear-gradient(135deg, ${T.indigo}, #5062B8)` : T.border,
+                border: 'none', borderRadius: 14,
+                color: selected !== null ? '#fff' : T.textTer,
+                fontSize: 14, fontWeight: 700, cursor: selected !== null ? 'pointer' : 'not-allowed',
+                fontFamily: 'Inter, sans-serif',
+                transition: 'all 0.2s ease',
+                boxShadow: selected !== null ? '0 4px 14px rgba(61,82,160,0.35)' : 'none',
+              }}>
+                {lang === 'ta' ? 'புகாரை சமர்ப்பி' : 'Submit Report'}
+              </button>
+              <button onClick={onClose} style={{
+                width: '100%', padding: '12px', background: 'transparent',
+                border: 'none', cursor: 'pointer',
+                color: T.textSec, fontSize: 14, fontWeight: 600,
+                fontFamily: 'Inter, sans-serif',
+              }}>
+                {lang === 'ta' ? 'ரத்துசெய்' : 'Cancel'}
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </>
+  );
+}
+
+// ── Main Practice Screen ───────────────────────────────
+function PracticeScreen() {
+  const [lang, setLang] = React.useState('ta');
+  const [curIdx, setCurIdx] = React.useState(0);
+  const [answers, setAnswers] = React.useState({}); // { qIdx: 'a'|'b'|'c'|'d' }
+  const [selected, setSelected] = React.useState(null);
+  const [revealed, setRevealed] = React.useState(false);
+  const [reportOpen, setReportOpen] = React.useState(false);
+  const [wrongShake, setWrongShake] = React.useState(null);
+  const pillRowRef = React.useRef(null);
+  const total = QUESTIONS.length;
+  const q = QUESTIONS[curIdx];
+
+  // Scroll current pill into view
+  React.useEffect(() => {
+    const row = pillRowRef.current;
+    if (!row) return;
+    const pill = row.children[curIdx];
+    if (pill) {
+      const rowLeft = row.scrollLeft;
+      const rowRight = rowLeft + row.clientWidth;
+      const pillLeft = pill.offsetLeft;
+      const pillRight = pillLeft + pill.offsetWidth;
+      if (pillLeft < rowLeft + 20 || pillRight > rowRight - 20) {
+        row.scrollTo({ left: pillLeft - row.clientWidth / 2 + pill.offsetWidth / 2, behavior: 'smooth' });
+      }
+    }
+  }, [curIdx]);
+
+  const handleSelect = (id) => {
+    if (revealed) return;
+    setSelected(id);
+    setRevealed(true);
+    setAnswers(a => ({ ...a, [curIdx]: id }));
+    if (id !== q.correct) {
+      setWrongShake(id);
+      setTimeout(() => setWrongShake(null), 500);
+    }
+  };
+
+  const handleNext = () => {
+    if (curIdx < total - 1) {
+      setCurIdx(i => i + 1);
+      const nextIdx = curIdx + 1;
+      const prevAnswer = answers[nextIdx];
+      setSelected(prevAnswer || null);
+      setRevealed(!!prevAnswer);
+    }
+  };
+
+  const handlePillJump = (idx) => {
+    setCurIdx(idx);
+    const prevAnswer = answers[idx];
+    setSelected(prevAnswer || null);
+    setRevealed(!!prevAnswer);
+  };
+
+  const optState = (id) => {
+    if (!revealed) return 'idle';
+    if (id === q.correct) return 'correct';
+    if (id === selected) return 'wrong';
+    return 'idle';
+  };
+
+  const pillState = (i) => {
+    if (i === curIdx) return 'current';
+    if (answers[i]) return answers[i] === QUESTIONS[i].correct ? 'correct' : 'wrong';
+    return 'unanswered';
+  };
+
+  return (
+    <div style={{
+      width: 390, background: T.bg,
+      borderRadius: 40,
+      boxShadow: '0 2px 4px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.08), 0 32px 64px rgba(0,0,0,0.1)',
+      overflow: 'hidden', position: 'relative',
+      minHeight: 780, display: 'flex', flexDirection: 'column',
+      fontFamily: 'Inter, sans-serif',
+    }}>
+
+      {/* ── Top bar ────────────────────────────── */}
+      <div style={{
+        background: T.surface, borderBottom: `1px solid ${T.border}`,
+        padding: '18px 16px 14px',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <button style={{
+            width: 38, height: 38, borderRadius: 11,
+            background: T.bg, border: `1px solid ${T.border}`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', flexShrink: 0,
+          }}><BackIcon /></button>
+
+          <div style={{ flex: 1, textAlign: 'center' }}>
+            <div style={{
+              color: T.text, fontSize: 13, fontWeight: 700,
+              fontFamily: lang === 'ta' ? 'Noto Sans Tamil, Inter' : 'Inter',
+            }}>
+              {lang === 'ta' ? 'பழைய தமிழ் வரலாறு' : 'Ancient Tamil History'}
+            </div>
+            <div style={{ color: T.textTer, fontSize: 11, marginTop: 1 }}>
+              {lang === 'ta' ? 'அத்தியாயம் 1' : 'Chapter 1'}
+            </div>
+          </div>
+
+          {/* Lang toggle */}
+          <div style={{
+            display: 'flex', alignItems: 'center',
+            background: T.bg, border: `1px solid ${T.border}`,
+            borderRadius: 20, padding: 3,
+          }}>
+            {[['ta','தமிழ்'],['en','EN']].map(([v,l]) => (
+              <button key={v} onClick={() => setLang(v)} style={{
+                border: 'none', cursor: 'pointer',
+                background: lang === v ? T.indigo : 'transparent',
+                color: lang === v ? '#fff' : T.textSec,
+                padding: '4px 9px', borderRadius: 16,
+                fontSize: v === 'ta' ? 11 : 11, fontWeight: 700,
+                fontFamily: v === 'ta' ? 'Noto Sans Tamil, Inter' : 'Inter',
+                transition: 'all 0.18s ease',
+              }}>{l}</button>
+            ))}
+          </div>
+        </div>
+
+        {/* Progress */}
+        <div style={{ marginTop: 14 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+            <span style={{ color: T.text, fontSize: 13, fontWeight: 700 }}>
+              {lang === 'ta' ? `கேள்வி ${curIdx + 1}` : `Question ${curIdx + 1}`}
+              <span style={{ color: T.textSec, fontWeight: 500 }}>
+                {lang === 'ta' ? ` / ${total}` : ` of ${total}`}
+              </span>
+            </span>
+            <span style={{ color: T.textTer, fontSize: 12, fontWeight: 600 }}>
+              {total - curIdx - 1} {lang === 'ta' ? 'மீதம்' : 'left'}
+            </span>
+          </div>
+          <div style={{ height: 4, background: T.border, borderRadius: 2, overflow: 'hidden' }}>
+            <div style={{
+              width: `${(curIdx / total) * 100}%`, height: '100%',
+              background: `linear-gradient(90deg, ${T.indigo}, #6274CC)`,
+              borderRadius: 2, transition: 'width 0.4s cubic-bezier(0.4,0,0.2,1)',
+            }}/>
+          </div>
+        </div>
+
+        {/* Pill nav */}
+        <div ref={pillRowRef} style={{
+          display: 'flex', gap: 6, marginTop: 12, overflowX: 'auto',
+          paddingBottom: 2, msOverflowStyle: 'none', scrollbarWidth: 'none',
+        }} className="scroll-hide">
+          {QUESTIONS.map((_, i) => {
+            const ps = pillState(i);
+            return (
+              <button key={i} onClick={() => handlePillJump(i)} style={{
+                width: 30, height: 30, borderRadius: 9, flexShrink: 0,
+                border: ps === 'current'  ? `2px solid ${T.indigo}`
+                      : ps === 'correct'  ? `1.5px solid ${T.greenBorder}`
+                      : ps === 'wrong'    ? `1.5px solid ${T.redBorder}`
+                      : `1.5px solid ${T.border}`,
+                background: ps === 'current' ? T.indigoLight
+                          : ps === 'correct' ? T.greenBg
+                          : ps === 'wrong'   ? T.redBg
+                          : T.surface,
+                color: ps === 'current' ? T.indigo
+                     : ps === 'correct' ? T.green
+                     : ps === 'wrong'   ? T.red
+                     : T.textTer,
+                fontSize: 11, fontWeight: 700, cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                boxShadow: ps === 'current' ? `0 2px 8px rgba(61,82,160,0.25)` : 'none',
+              }}>
+                {ps === 'correct' ? '✓' : ps === 'wrong' ? '✗' : i + 1}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── Scrollable content ──────────────────── */}
+      <div className="scroll-hide" style={{ flex: 1, overflowY: 'auto', padding: '14px 14px 0' }}>
+
+        {/* Question card */}
+        <div style={{
+          background: T.surface, border: `1px solid ${T.border}`,
+          borderRadius: 18, padding: '18px 16px', marginBottom: 12,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.05)',
+          position: 'relative',
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 5,
+              background: T.indigoLight, borderRadius: 8, padding: '3px 10px',
+            }}>
+              <div style={{ width: 5, height: 5, borderRadius: '50%', background: T.indigo }}/>
+              <span style={{
+                color: T.indigo, fontSize: 10, fontWeight: 800, letterSpacing: 0.7,
+                fontFamily: lang === 'ta' ? 'Noto Sans Tamil, Inter' : 'Inter',
+              }}>
+                {q.subject[lang]}
+              </span>
+            </div>
+            {/* Flag button */}
+            <button onClick={() => setReportOpen(true)} style={{
+              width: 32, height: 32, borderRadius: 9,
+              background: T.bg, border: `1px solid ${T.border}`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer', transition: 'all 0.15s',
+              flexShrink: 0,
+            }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = '#F5BFBB'; e.currentTarget.style.background = T.redBg; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.background = T.bg; }}
+            >
+              <FlagIcon color={T.textTer} />
+            </button>
+          </div>
+          <p style={{
+            color: T.text, fontSize: 15, fontWeight: 600,
+            lineHeight: 1.65, letterSpacing: -0.15,
+            fontFamily: lang === 'ta' ? 'Noto Sans Tamil, Inter' : 'Inter',
+          }}>
+            {q[lang]}
+          </p>
+        </div>
+
+        {/* Options */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 9, marginBottom: 12 }}>
+          {q.options.map((opt, i) => {
+            const st = optState(opt.id);
+            const labels = ['A','B','C','D'];
+            const isShaking = wrongShake === opt.id;
+
+            let bg = T.surface, border = T.border, textColor = T.text;
+            let badgeBg = T.bg, badgeColor = T.textSec, bdr = 'none';
+            if (st === 'correct') {
+              bg = T.greenBg; border = T.greenBorder; textColor = T.green;
+              badgeBg = T.green; bdr = 'none';
+            } else if (st === 'wrong') {
+              bg = T.redBg; border = T.redBorder; textColor = T.red;
+              badgeBg = T.red;
+            }
+
+            return (
+              <button key={opt.id} onClick={() => handleSelect(opt.id)} style={{
+                width: '100%', background: bg,
+                border: `1.5px solid ${border}`,
+                borderRadius: 13, padding: '13px 14px',
+                display: 'flex', alignItems: 'center', gap: 12,
+                cursor: revealed ? 'default' : 'pointer',
+                textAlign: 'left', minHeight: 54,
+                boxShadow: st === 'correct' ? '0 2px 12px rgba(5,122,85,0.12)'
+                         : st === 'wrong'   ? '0 2px 12px rgba(192,57,43,0.1)'
+                         : '0 1px 3px rgba(0,0,0,0.05)',
+                transition: 'all 0.22s ease',
+                animation: isShaking ? 'shakeX 0.45s ease' : 'none',
+              }}>
+                <div style={{
+                  width: 30, height: 30, borderRadius: 9, flexShrink: 0,
+                  background: st !== 'idle' ? badgeBg : T.bg,
+                  border: st === 'idle' ? `1.5px solid ${T.border}` : 'none',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  transition: 'all 0.22s ease',
+                }}>
+                  {st === 'correct' ? <CheckIcon /> :
+                   st === 'wrong'   ? <CrossIcon /> :
+                   <span style={{ fontSize: 11, fontWeight: 700, color: T.textSec }}>{labels[i]}</span>}
+                </div>
+                <span style={{
+                  fontSize: 13.5, fontWeight: st !== 'idle' ? 600 : 500,
+                  color: textColor, lineHeight: 1.5, flex: 1,
+                  fontFamily: lang === 'ta' ? 'Noto Sans Tamil, Inter' : 'Inter',
+                  transition: 'color 0.2s ease',
+                }}>
+                  {opt[lang]}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Explanation */}
+        {revealed && (
+          <div style={{
+            background: T.surface, border: `1px solid ${T.border}`,
+            borderRadius: 13, padding: '12px 14px', marginBottom: 14,
+            display: 'flex', gap: 10,
+            boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+            animation: 'fadeUp 0.3s ease',
+          }}>
+            <div style={{
+              width: 26, height: 26, borderRadius: 8, background: T.indigoLight,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0, marginTop: 1,
+            }}>
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <circle cx="6.5" cy="6.5" r="5.8" stroke={T.indigo} strokeWidth="1.2"/>
+                <path d="M6.5 5.5v4M6.5 4v.5" stroke={T.indigo} strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <div style={{ color: T.indigo, fontSize: 10, fontWeight: 800, letterSpacing: 0.5, marginBottom: 3 }}>
+                {lang === 'ta' ? 'விளக்கம்' : 'EXPLANATION'}
+              </div>
+              <p style={{
+                color: T.textSec, fontSize: 12.5, lineHeight: 1.6,
+                fontFamily: lang === 'ta' ? 'Noto Sans Tamil, Inter' : 'Inter',
+              }}>
+                {q.explanation[lang]}
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ── Next CTA ────────────────────────────── */}
+      <div style={{
+        padding: '12px 14px 28px', background: T.bg,
+        borderTop: revealed ? `1px solid ${T.border}` : 'none',
+        opacity: revealed ? 1 : 0,
+        transform: revealed ? 'translateY(0)' : 'translateY(10px)',
+        transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
+        pointerEvents: revealed ? 'all' : 'none',
+      }}>
+        <button onClick={handleNext} style={{
+          width: '100%', background: `linear-gradient(135deg, ${T.indigo}, #5062B8)`,
+          border: 'none', borderRadius: 14, padding: '15px',
+          color: '#fff', fontSize: 14, fontWeight: 700,
+          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
+          boxShadow: '0 4px 14px rgba(61,82,160,0.4)',
+          fontFamily: lang === 'ta' ? 'Noto Sans Tamil, Inter' : 'Inter',
+        }}>
+          {curIdx < total - 1
+            ? (lang === 'ta' ? 'அடுத்த கேள்வி' : 'Next Question')
+            : (lang === 'ta' ? 'முடிவுகளை காண்க' : 'Finish & See Results')
+          }
+          <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
+            <path d="M4 8.5H13M13 8.5L9 4.5M13 8.5L9 12.5" stroke="white" strokeWidth="1.8" strokeLinecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      {/* ── Report Sheet ─────────────────────────── */}
+      {reportOpen && <ReportSheet lang={lang} onClose={() => setReportOpen(false)} />}
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <>
+      <style>{`
+        button:focus { outline: none; }
+        button:focus-visible { outline: 2px solid #3D52A0; outline-offset: 2px; }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+        @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
+        @keyframes shakeX {
+          0%,100%{transform:translateX(0)} 20%{transform:translateX(-5px)}
+          40%{transform:translateX(5px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)}
+        }
+      `}</style>
+      <PracticeScreen />
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
