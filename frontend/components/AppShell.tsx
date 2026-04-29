@@ -117,10 +117,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
           {/* Bottom of sidebar */}
           <div style={{ marginTop: "auto", paddingLeft: 12 }}>
-            <div style={{ color: T.textTer, fontSize: 11, lineHeight: 1.6 }}>
-              <span style={{ color: T.indigo, fontWeight: 600 }}>₹499/year</span> for full access
             </div>
-          </div>
         </div>
 
         {/* Main content */}
