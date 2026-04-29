@@ -20,7 +20,7 @@ const ALL_SUBJECTS = [
 ];
 
 // Subjects that have questions — hardcoded for now, will be dynamic later
-const ACTIVE_SUBJECTS = ["Polity"];
+const ACTIVE_SUBJECTS = ["Polity", "History"];
 
 function generateLevels(total: number): { levelNum: number; questions: number; offset: number }[] {
   const levels = [];

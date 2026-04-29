@@ -26,6 +26,7 @@ export type ChapterCount = {
 
 // Fetch chapter counts for a subject — used by subjects page
 export async function fetchChapterCounts(subject: string, lang: "en" | "ta"): Promise<ChapterCount[]> {
+  // Fetch just chapter column — lightweight, no question content
   const { data, error } = await supabase
     .from("questions")
     .select("chapter")
@@ -35,7 +36,6 @@ export async function fetchChapterCounts(subject: string, lang: "en" | "ta"): Pr
 
   if (error) throw error;
 
-  // Count per chapter in JS (Supabase free tier doesn't support group by via REST)
   const counts: Record<string, number> = {};
   for (const row of (data ?? [])) {
     const ch = row.chapter as string;
