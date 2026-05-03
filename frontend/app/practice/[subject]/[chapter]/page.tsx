@@ -20,6 +20,10 @@ export default function PracticePage() {
   const limit = parseInt(searchParams.get("limit") ?? "10");
 
   const [lang, setLang] = useState<"en" | "ta">("en");
+
+  useEffect(() => {
+    if (subject === "Tamil") setLang("ta");
+  }, [subject]);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

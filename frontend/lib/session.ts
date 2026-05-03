@@ -61,12 +61,7 @@ export function getSession(sessionId: string): LocalSession | null {
   return getSessions().find(s => s.id === sessionId) ?? null;
 }
 
-// Get highest completed level for a chapter
-export function getUnlockedLevel(subject: string, chapter: string): number {
-  const completed = getSessions().filter(
-    s => s.subject === subject && s.chapter === chapter && s.completed_at
-  );
-  if (completed.length === 0) return 1; // L1 always unlocked
-  const maxCompleted = Math.max(...completed.map(s => s.level));
-  return maxCompleted + 1; // next level unlocked
+// All levels always unlocked
+export function getUnlockedLevel(_subject: string, _chapter: string): number {
+  return Infinity;
 }

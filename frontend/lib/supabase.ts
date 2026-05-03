@@ -24,14 +24,13 @@ export type ChapterCount = {
   count: number;
 };
 
-// Fetch chapter counts for a subject — used by subjects page
 export async function fetchChapterCounts(subject: string, lang: "en" | "ta"): Promise<ChapterCount[]> {
-  // Fetch just chapter column — lightweight, no question content
+  const effectiveLang = subject === "Tamil" ? "ta" : lang;
   const { data, error } = await supabase
     .from("questions")
     .select("chapter")
     .eq("subject", subject)
-    .eq("lang", lang)
+    .eq("lang", effectiveLang)
     .not("chapter", "is", null);
 
   if (error) throw error;
@@ -47,7 +46,6 @@ export async function fetchChapterCounts(subject: string, lang: "en" | "ta"): Pr
     .sort((a, b) => a.chapter.localeCompare(b.chapter));
 }
 
-// Fetch questions for a specific level (offset + limit)
 export async function fetchQuestionsForLevel(
   subject: string,
   chapter: string,
@@ -55,12 +53,14 @@ export async function fetchQuestionsForLevel(
   offset: number,
   limit: number
 ): Promise<Question[]> {
+  const effectiveLang = subject === "Tamil" ? "ta" : lang;
+
   const { data, error } = await supabase
     .from("questions")
     .select("id, question, lang, options, correct_option, class, subject, chapter, topic, difficulty, source_type")
     .eq("subject", subject)
     .eq("chapter", chapter)
-    .eq("lang", lang)
+    .eq("lang", effectiveLang)
     .range(offset, offset + limit - 1);
 
   if (error) throw error;
