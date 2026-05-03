@@ -30,11 +30,8 @@ export default function PracticePage() {
   const offset = parseInt(searchParams.get("offset") ?? "0");
   const limit = parseInt(searchParams.get("limit") ?? "10");
 
-  const [lang, setLang] = useState<"en" | "ta">("en");
+  const [lang, setLang] = useState<"en" | "ta">(subject === "Tamil" ? "ta" : "en");
 
-  useEffect(() => {
-    if (subject === "Tamil") setLang("ta");
-  }, [subject]);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -113,7 +110,7 @@ export default function PracticePage() {
       router.push(`/score?correct=${correct}&total=${total}&subject=${encodeURIComponent(subject)}&chapter=${encodeURIComponent(chapterLabel)}&level=${level}&sid=${sessionIdRef.current}`);
     } else {
       setCurrentIndex(i => i + 1);
-    if (scrollRef.current) scrollRef.current.scrollTop = 0;
+      setTimeout(() => { if (scrollRef.current) scrollRef.current.scrollTop = 0; }, 0);
     }
   };
 
@@ -173,7 +170,7 @@ export default function PracticePage() {
         </div>
       </div>
 
-      <div ref={scrollRef} style={{ flex: 1, overflowY: "auto", padding: "14px 14px 20px" }}>
+      <div ref={scrollRef} style={{ flex: 1, overflowY: "auto", padding: "14px 14px 20px", overscrollBehavior: "none", WebkitOverflowScrolling: "touch" }}>
         <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 18, padding: "20px 18px", marginBottom: 12, boxShadow: shadow.md }}>
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 12, gap: 8 }}>
             <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6 }}>
