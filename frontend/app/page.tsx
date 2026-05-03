@@ -96,8 +96,7 @@ export default function HomePage() {
             {[
               { icon: "📚", text: "10,000+ PYQ", sub: "Curated by experts" },
               { icon: "✨", text: "AI-powered Practice", sub: "Personalised for you", indigo: true },
-              { icon: "🎓", text: "Class 6–10 Samacheer", sub: "Full syllabus coverage" },
-              { icon: "✅", text: "TNPSC Ready", sub: "Updated 2024 syllabus" }
+              { icon: "✅", text: "TNPSC Ready", sub: "Updated syllabus" }
             ].map((feature) => (
               <div
                 key={feature.text}
