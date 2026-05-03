@@ -135,9 +135,7 @@ export default function HomePage() {
             ))}
           </div>
 
-          <p style={{ color: T.textTer, fontSize: 12, marginTop: 22, lineHeight: 1.5, textAlign: "center", width: "100%" }}>
-            <span style={{ color: T.indigo, fontWeight: 600 }}>₹499/year</span> for full access
-          </p>
+        
         </div>
     </main>
   );
