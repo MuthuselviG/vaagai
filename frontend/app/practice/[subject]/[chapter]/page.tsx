@@ -209,6 +209,7 @@ export default function PracticePage() {
       </div>
 
 
+      <div style={{ padding: "12px 14px 12px", background: T.bg, borderTop: `1px solid ${T.border}`, flexShrink: 0 }}>
         <button onClick={handleNext} disabled={!revealed} style={{ width: "100%", background: revealed ? `linear-gradient(135deg, ${T.indigo}, #5062B8)` : T.border, border: "none", borderRadius: 14, padding: "15px", color: revealed ? "#fff" : T.textTer, fontSize: 14, fontWeight: 700, cursor: revealed ? "pointer" : "not-allowed", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, boxShadow: revealed ? shadow.indigo : "none", transition: "all 0.2s ease" }}>
           {revealed ? (currentIndex + 1 >= total ? "See Results" : "Next Question") : "Select an answer"}
           {revealed && <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M4 8.5H13M13 8.5L9 4.5M13 8.5L9 12.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" /></svg>}
