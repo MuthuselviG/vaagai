@@ -27,9 +27,27 @@ export default function PracticePage() {
   const [selected, setSelected] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [flagOpen, setFlagOpen] = useState(false);
+  const [flagReason, setFlagReason] = useState<string | null>(null);
+  const [flagSubmitted, setFlagSubmitted] = useState(false);
   const sessionIdRef = useRef<string | null>(null);
   const questionStartRef = useRef<number>(Date.now());
   const pillRowRef = useRef<HTMLDivElement>(null);
+
+  const reportReasons = {
+    en: ["Correct answer is wrong", "Multiple answers seem correct", "Question is unclear or confusing", "Question is out of syllabus", "Translation is wrong", "Duplicate question", "Other"],
+    ta: ["சரியான விடை தவறானது", "பல விடைகள் சரியாகத் தோன்றுகின்றன", "கேள்வி தெளிவற்றது", "பாடத்திட்டத்திற்கு வெளியே உள்ளது", "மொழிபெயர்ப்பு தவறானது", "நகல் கேள்வி", "மற்றவை"],
+  };
+
+  const handleFlagSubmit = async () => {
+    if (!flagReason || !q) return;
+    try {
+      const { supabase } = await import("../../../../lib/supabase");
+      await supabase.from("question_reports").insert({ question_id: q.id, report_type: flagReason });
+    } catch (_) {}
+    setFlagSubmitted(true);
+    setTimeout(() => { setFlagOpen(false); setFlagReason(null); setFlagSubmitted(false); }, 1500);
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -101,7 +119,7 @@ export default function PracticePage() {
   const labels = ["A", "B", "C", "D"];
 
   return (
-    <div style={{ background: T.bg, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <div style={{ background: T.bg, height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
       <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "14px 16px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <button onClick={() => router.back()} style={{ width: 38, height: 38, borderRadius: 11, background: T.bg, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }}>
@@ -140,11 +158,29 @@ export default function PracticePage() {
 
       <div style={{ flex: 1, overflowY: "auto", padding: "14px 14px 20px" }}>
         <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 18, padding: "20px 18px", marginBottom: 12, boxShadow: shadow.md }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: T.indigoLight, borderRadius: 8, padding: "3px 10px", marginBottom: 12 }}>
-            <div style={{ width: 5, height: 5, borderRadius: "50%", background: T.indigo }} />
-            <span style={{ color: T.indigo, fontSize: 10, fontWeight: 800, letterSpacing: 0.7 }}>{subject.toUpperCase()}</span>
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 12, gap: 8 }}>
+            <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6 }}>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: T.indigoLight, borderRadius: 8, padding: "3px 10px" }}>
+                <div style={{ width: 5, height: 5, borderRadius: "50%", background: T.indigo }} />
+                <span style={{ color: T.indigo, fontSize: 10, fontWeight: 800, letterSpacing: 0.7 }}>{subject.toUpperCase()}</span>
+              </div>
+              {q.source_type === "pyq" && (
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 4, background: "#FFF3E0", border: "1px solid #FFD180", borderRadius: 8, padding: "3px 10px" }}>
+                  <span style={{ color: "#E65100", fontSize: 10, fontWeight: 800 }}>⭐ PYQ</span>
+                </div>
+              )}
+              {q.difficulty && (() => {
+                const map = { easy: { label: "Moderate", bg: "#E8F5E9", border: "#A5D6A7", color: "#2E7D32" }, medium: { label: "Difficult", bg: "#FFF8E1", border: "#FFE082", color: "#F57F17" }, hard: { label: "Very Hard", bg: "#FDECEC", border: "#F5BFBB", color: "#C0392B" } };
+                const d = map[q.difficulty];
+                return d ? <div style={{ display: "inline-flex", alignItems: "center", background: d.bg, border: `1px solid ${d.border}`, borderRadius: 8, padding: "3px 10px" }}><span style={{ color: d.color, fontSize: 10, fontWeight: 800 }}>{d.label}</span></div> : null;
+              })()}
+            </div>
+            <button onClick={() => { setFlagOpen(true); setFlagReason(null); setFlagSubmitted(false); }} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, background: "#FFF3E0", border: "1px solid #FFD180", borderRadius: 10, padding: "6px 10px", cursor: "pointer", flexShrink: 0 }}>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 2v12M3 2h8l-2 3.5L11 9H3" stroke="#E65100" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <span style={{ fontSize: 9, fontWeight: 800, color: "#E65100", letterSpacing: 0.3 }}>{lang === "ta" ? "புகார்" : "Report"}</span>
+            </button>
           </div>
-          <p style={{ color: T.text, fontSize: 15, fontWeight: 600, lineHeight: 1.65, letterSpacing: -0.15 }}>{q.question}</p>
+          <p style={{ color: T.text, fontSize: 20, fontWeight: 700, lineHeight: 1.55, letterSpacing: -0.3 }}>{q.question}</p>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -165,19 +201,58 @@ export default function PracticePage() {
                     : st === "wrong" ? <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2L10 10M10 2L2 10" stroke="white" strokeWidth="2" strokeLinecap="round" /></svg>
                     : <span style={{ fontSize: 11, fontWeight: 700, color: T.textSec }}>{labels[i]}</span>}
                 </div>
-                <span style={{ fontSize: 13.5, fontWeight: st !== "idle" ? 600 : 500, color: s.text, lineHeight: 1.5, flex: 1 }}>{optText}</span>
+                <span style={{ fontSize: 15, fontWeight: st !== "idle" ? 600 : 500, color: s.text, lineHeight: 1.5, flex: 1 }}>{optText}</span>
               </button>
             );
           })}
         </div>
       </div>
 
-      <div style={{ padding: "12px 14px 28px", background: T.bg, borderTop: `1px solid ${T.border}` }}>
+
         <button onClick={handleNext} disabled={!revealed} style={{ width: "100%", background: revealed ? `linear-gradient(135deg, ${T.indigo}, #5062B8)` : T.border, border: "none", borderRadius: 14, padding: "15px", color: revealed ? "#fff" : T.textTer, fontSize: 14, fontWeight: 700, cursor: revealed ? "pointer" : "not-allowed", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, boxShadow: revealed ? shadow.indigo : "none", transition: "all 0.2s ease" }}>
           {revealed ? (currentIndex + 1 >= total ? "See Results" : "Next Question") : "Select an answer"}
           {revealed && <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M4 8.5H13M13 8.5L9 4.5M13 8.5L9 12.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" /></svg>}
         </button>
       </div>
+
+      {/* Flag bottom sheet */}
+      {flagOpen && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 50, display: "flex", alignItems: "flex-end" }} onClick={() => setFlagOpen(false)}>
+          <div style={{ background: T.surface, borderRadius: "20px 20px 0 0", width: "100%", padding: "16px 20px 40px", maxHeight: "80dvh", overflowY: "auto" }} onClick={e => e.stopPropagation()}>
+            <div style={{ width: 36, height: 4, borderRadius: 2, background: T.border, margin: "0 auto 16px" }} />
+            {flagSubmitted ? (
+              <div style={{ textAlign: "center", padding: "24px 0" }}>
+                <div style={{ fontSize: 32, marginBottom: 8 }}>✅</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: T.text }}>{lang === "ta" ? "புகார் பதிவு செய்யப்பட்டது" : "Report submitted"}</div>
+                <div style={{ fontSize: 13, color: T.textSec, marginTop: 4 }}>{lang === "ta" ? "நன்றி!" : "Thank you!"}</div>
+              </div>
+            ) : (
+              <>
+                <div style={{ marginBottom: 16 }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: T.text }}>{lang === "ta" ? "கேள்வி புகாரளி" : "Report this question"}</div>
+                  <div style={{ fontSize: 12, color: T.textSec, marginTop: 2 }}>{lang === "ta" ? "காரணத்தைத் தேர்ந்தெடுக்கவும்" : "Select a reason"}</div>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 2, marginBottom: 20 }}>
+                  {reportReasons[lang].map((reason, i) => (
+                    <button key={i} onClick={() => setFlagReason(reason)} style={{ display: "flex", alignItems: "center", gap: 14, padding: "13px 4px", background: "transparent", border: "none", borderBottom: `1px solid ${T.border}`, cursor: "pointer", textAlign: "left" }}>
+                      <div style={{ width: 20, height: 20, borderRadius: "50%", border: `2px solid ${flagReason === reason ? T.indigo : T.border}`, background: flagReason === reason ? T.indigo : "transparent", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        {flagReason === reason && <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#fff" }} />}
+                      </div>
+                      <span style={{ fontSize: 14, color: T.text, fontWeight: 500 }}>{reason}</span>
+                    </button>
+                  ))}
+                </div>
+                <button onClick={handleFlagSubmit} disabled={!flagReason} style={{ width: "100%", background: flagReason ? `linear-gradient(135deg, ${T.indigo}, #5062B8)` : T.border, border: "none", borderRadius: 14, padding: "14px", color: flagReason ? "#fff" : T.textTer, fontSize: 14, fontWeight: 700, cursor: flagReason ? "pointer" : "not-allowed", marginBottom: 12 }}>
+                  {lang === "ta" ? "புகாரை சமர்ப்பி" : "Submit Report"}
+                </button>
+                <button onClick={() => setFlagOpen(false)} style={{ width: "100%", background: "transparent", border: "none", color: T.textSec, fontSize: 14, cursor: "pointer", padding: "8px" }}>
+                  {lang === "ta" ? "ரத்துசெய்" : "Cancel"}
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
