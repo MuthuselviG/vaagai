@@ -10,6 +10,14 @@ import { getUnlockedLevel } from "../../lib/session";
 const LEVEL_SIZE = 10;
 const MIN_LEVEL_SIZE = 6;
 
+const TAMIL_CHAPTER_NAMES: Record<string, string> = {
+  "Grammar": "இலக்கணம்",
+  "Literature": "இலக்கியம்",
+  "Vocabulary": "சொல்லகராதி",
+  "Usage": "பயன்பாடு",
+  "Comprehension": "புரிதல்",
+};
+
 const ALL_SUBJECTS = [
   { key: "Polity", ta: "அரசியல்", icon: "⚖️" },
   { key: "History", ta: "வரலாறு", icon: "📜" },
@@ -139,7 +147,7 @@ export default function SubjectsPage() {
                           onClick={() => setOpenChapter(isChOpen ? null : ch.chapter)}
                           style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", cursor: "pointer" }}>
                           <div style={{ flex: 1 }}>
-                            <div style={{ color: T.text, fontSize: 13, fontWeight: 600 }}>{ch.chapter}</div>
+                            <div style={{ color: T.text, fontSize: 13, fontWeight: 600 }}>{sub.key === "Tamil" ? (TAMIL_CHAPTER_NAMES[ch.chapter] ?? ch.chapter) : ch.chapter}</div>
                             <div style={{ display: "flex", gap: 8, marginTop: 5, alignItems: "center" }}>
                               <span style={{ color: T.textTer, fontSize: 11, fontWeight: 600 }}>{ch.count} questions</span>
                               <span style={{ background: T.indigoLight, borderRadius: 6, padding: "2px 7px", color: T.indigo, fontSize: 11, fontWeight: 700 }}>
