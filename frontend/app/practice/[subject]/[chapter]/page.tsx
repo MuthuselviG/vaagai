@@ -48,6 +48,7 @@ export default function PracticePage() {
   const sessionIdRef = useRef<string | null>(null);
   const questionStartRef = useRef<number>(Date.now());
   const pillRowRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const reportReasons = {
     en: ["Correct answer is wrong", "Multiple answers seem correct", "Question is unclear or confusing", "Question is out of syllabus", "Translation is wrong", "Duplicate question", "Other"],
@@ -112,6 +113,7 @@ export default function PracticePage() {
       router.push(`/score?correct=${correct}&total=${total}&subject=${encodeURIComponent(subject)}&chapter=${encodeURIComponent(chapterLabel)}&level=${level}&sid=${sessionIdRef.current}`);
     } else {
       setCurrentIndex(i => i + 1);
+    if (scrollRef.current) scrollRef.current.scrollTop = 0;
     }
   };
 
@@ -171,7 +173,7 @@ export default function PracticePage() {
         </div>
       </div>
 
-      <div style={{ flex: 1, overflowY: "auto", padding: "14px 14px 20px" }}>
+      <div ref={scrollRef} style={{ flex: 1, overflowY: "auto", padding: "14px 14px 20px" }}>
         <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 18, padding: "20px 18px", marginBottom: 12, boxShadow: shadow.md }}>
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 12, gap: 8 }}>
             <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6 }}>
