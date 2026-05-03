@@ -14,7 +14,18 @@ export default function PracticePage() {
 
   const subject = decodeURIComponent(params.subject as string);
   const chapter = decodeURIComponent(params.chapter as string);
-  const chapterLabel = searchParams.get("label") ?? chapter;
+
+  const TAMIL_CHAPTER_NAMES: Record<string, string> = {
+    "Grammar": "இலக்கணம்",
+    "Literature": "இலக்கியம்",
+    "Vocabulary": "சொல்லகராதி",
+    "Usage": "பயன்பாடு",
+    "Comprehension": "புரிதல்",
+  };
+
+  const chapterLabel = subject === "Tamil"
+    ? (TAMIL_CHAPTER_NAMES[searchParams.get("label") ?? chapter] ?? searchParams.get("label") ?? chapter)
+    : (searchParams.get("label") ?? chapter);
   const level = parseInt(searchParams.get("level") ?? "1");
   const offset = parseInt(searchParams.get("offset") ?? "0");
   const limit = parseInt(searchParams.get("limit") ?? "10");
@@ -131,9 +142,9 @@ export default function PracticePage() {
           </button>
           <div style={{ flex: 1, textAlign: "center" }}>
             <div style={{ color: T.text, fontSize: 13, fontWeight: 700 }}>{chapterLabel}</div>
-            <div style={{ color: T.textSec, fontSize: 11, marginTop: 1 }}>{subject} · Level {level}</div>
+            <div style={{ color: T.textSec, fontSize: 11, marginTop: 1 }}>{subject === "Tamil" ? "தமிழ்" : subject} · Level {level}</div>
           </div>
-          <LangToggle lang={lang} setLang={setLang} />
+          <div style={{ width: 38 }} />
         </div>
 
         <div style={{ marginTop: 14 }}>
