@@ -57,7 +57,7 @@ export default function SubjectsPage() {
       const results: Record<string, ChapterCount[]> = {};
       for (const subject of ACTIVE_SUBJECTS) {
         try {
-          results[subject] = await fetchChapterCounts(subject, lang);
+          results[subject] = await fetchChapterCounts(subject, subject === "Tamil" ? "ta" : lang);
         } catch {
           results[subject] = [];
         }
