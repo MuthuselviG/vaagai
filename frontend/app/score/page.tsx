@@ -13,6 +13,8 @@ function ScoreContent() {
   const subject = searchParams.get("subject") ?? "";
   const chapter = searchParams.get("chapter") ?? subject;
   const level = parseInt(searchParams.get("level") ?? "1");
+  const offset = parseInt(searchParams.get("offset") ?? "0");
+  const limit = parseInt(searchParams.get("limit") ?? "10");
   const sessionId = searchParams.get("sid") ?? "";
   const session = sessionId ? getSession(sessionId) : null;
   const wrong = total - correct;
@@ -35,9 +37,24 @@ function ScoreContent() {
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
 
+  const handleNextLevel = () => {
+    const nextLevel = level + 1;
+    const nextOffset = offset + limit;
+    router.push(
+      `/practice/${encodeURIComponent(subject)}/${encodeURIComponent(chapter)}?level=${nextLevel}&offset=${nextOffset}&limit=${limit}&label=${encodeURIComponent(chapter)}`
+    );
+  };
+
+  const handleRetry = () => {
+    router.push(
+      `/practice/${encodeURIComponent(subject)}/${encodeURIComponent(chapter)}?level=${level}&offset=${offset}&limit=${limit}&label=${encodeURIComponent(chapter)}`
+    );
+  };
+
   return (
-    <div style={{ background: T.bg, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "16px 18px" }}>
+    <div style={{ background: T.bg, height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+      {/* Header */}
+      <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "16px 18px", flexShrink: 0 }}>
         <div style={{ color: T.textSec, fontSize: 12, fontWeight: 600, textAlign: "center" }}>{chapter} · Level {level}</div>
         <div style={{ display: "flex", justifyContent: "center", marginTop: 6, gap: 4 }}>
           {Array.from({ length: 5 }, (_, i) => (
@@ -48,7 +65,10 @@ function ScoreContent() {
         </div>
       </div>
 
-      <div style={{ flex: 1, overflowY: "auto", padding: "24px 18px 20px" }}>
+      {/* Scrollable body */}
+      <div style={{ flex: 1, overflowY: "auto", overscrollBehavior: "none", WebkitOverflowScrolling: "touch", padding: "24px 18px 100px" }}>
+
+        {/* Score ring */}
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
           <div style={{ position: "relative", width: 152, height: 152 }}>
             <svg width="152" height="152" viewBox="0 0 152 152">
@@ -68,6 +88,7 @@ function ScoreContent() {
 
         <p style={{ textAlign: "center", color: T.textSec, fontSize: 14, lineHeight: 1.6, marginBottom: 24, fontStyle: "italic" }}>"{getMessage()}"</p>
 
+        {/* Stats */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
           {[
             { label: "Correct", val: correct, color: T.green, bg: T.greenBg, border: T.greenBorder },
@@ -81,6 +102,7 @@ function ScoreContent() {
           ))}
         </div>
 
+        {/* Login nudge */}
         <div style={{ background: T.indigoLight, border: `1.5px solid ${T.indigoMid}`, borderRadius: 14, padding: "14px 16px", marginBottom: 16, display: "flex", alignItems: "center", gap: 12 }}>
           <div style={{ fontSize: 22 }}>🔒</div>
           <div style={{ flex: 1 }}>
@@ -90,13 +112,14 @@ function ScoreContent() {
           <button onClick={() => router.push("/login")} style={{ background: T.indigo, border: "none", borderRadius: 9, padding: "7px 12px", color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", flexShrink: 0 }}>Login</button>
         </div>
 
+        {/* Buttons */}
         <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
-          <button onClick={() => router.back()} style={{ flex: 1, background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px", color: T.text, fontSize: 13.5, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, boxShadow: shadow.sm }}>
+          <button onClick={handleRetry} style={{ flex: 1, background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px", color: T.text, fontSize: 13.5, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, boxShadow: shadow.sm }}>
             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke={T.text} strokeWidth="1.8" strokeLinecap="round"><path d="M1 3v5h5M14 12a7 7 0 10-1.56-7.5L13 7H8" /></svg>
             Retry
           </button>
-          <button onClick={() => router.push("/subjects")} style={{ flex: 1.5, background: `linear-gradient(135deg, ${T.indigo}, #5062B8)`, border: "none", borderRadius: 14, padding: "14px", color: "#fff", fontSize: 13.5, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, boxShadow: shadow.indigo }}>
-            All Subjects
+          <button onClick={handleNextLevel} style={{ flex: 1.5, background: `linear-gradient(135deg, ${T.indigo}, #5062B8)`, border: "none", borderRadius: 14, padding: "14px", color: "#fff", fontSize: 13.5, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, boxShadow: shadow.indigo }}>
+            Next Level
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M10 5l3 3-3 3" stroke="white" strokeWidth="1.8" strokeLinecap="round" /></svg>
           </button>
         </div>

@@ -27,8 +27,7 @@ const ALL_SUBJECTS = [
   { key: "Tamil", ta: "தமிழ்", icon: "📖" },
 ];
 
-// Subjects that have questions — hardcoded for now, will be dynamic later
-const ACTIVE_SUBJECTS = ["Polity", "History","Tamil"];
+const ACTIVE_SUBJECTS = ["Polity", "History", "Tamil"];
 
 function generateLevels(total: number): { levelNum: number; questions: number; offset: number }[] {
   const levels = [];
@@ -38,7 +37,6 @@ function generateLevels(total: number): { levelNum: number; questions: number; o
   while (remaining > 0) {
     const next = remaining - LEVEL_SIZE;
     if (next > 0 && next < MIN_LEVEL_SIZE) {
-      // merge last small chunk into this level
       levels.push({ levelNum: n++, questions: remaining, offset });
       remaining = 0;
     } else {
@@ -83,9 +81,9 @@ export default function SubjectsPage() {
   const comingSoonSubjects = ALL_SUBJECTS.filter(s => !ACTIVE_SUBJECTS.includes(s.key));
 
   return (
-    <div style={{ background: T.bg, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <div style={{ background: T.bg, height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
       {/* Top bar */}
-      <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "16px 18px 14px" }}>
+      <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "16px 18px 14px", flexShrink: 0 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ background: T.indigoLight, border: `1px solid ${T.indigoMid}`, borderRadius: 10, padding: "5px 12px", color: T.indigo, fontSize: 11, fontWeight: 800, letterSpacing: 0.5 }}>
             TNPSC GROUP 4
@@ -100,7 +98,8 @@ export default function SubjectsPage() {
         </p>
       </div>
 
-      <div style={{ flex: 1, overflowY: "auto", padding: "14px 16px 100px" }}>
+      {/* Scrollable body */}
+      <div style={{ flex: 1, overflowY: "auto", overscrollBehavior: "none", WebkitOverflowScrolling: "touch", padding: "14px 16px 100px" }}>
         {/* Active subjects */}
         {activeSubjects.map(sub => {
           const chapters = chapterData[sub.key] ?? [];

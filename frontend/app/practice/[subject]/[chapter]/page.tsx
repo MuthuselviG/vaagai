@@ -107,8 +107,8 @@ export default function PracticePage() {
       const correct = Object.entries(answers).filter(
         ([i, ans]) => ans === questions[parseInt(i)]?.correct_option
       ).length;
-      router.push(`/score?correct=${correct}&total=${total}&subject=${encodeURIComponent(subject)}&chapter=${encodeURIComponent(chapterLabel)}&level=${level}&sid=${sessionIdRef.current}`);
-    } else {
+         router.push(`/score?correct=${correct}&total=${total}&subject=${encodeURIComponent(subject)}&chapter=${encodeURIComponent(chapterLabel)}&level=${level}&offset=${offset}&limit=${limit}&sid=${sessionIdRef.current}`);
+         } else {
       setCurrentIndex(i => i + 1);
       setTimeout(() => { if (scrollRef.current) scrollRef.current.scrollTop = 0; }, 0);
     }
