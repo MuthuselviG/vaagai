@@ -1,9 +1,9 @@
-"use client";
+“use client”;
 
-import { useEffect, useState, useMemo } from “react”;
+import React, { useEffect, useState, useMemo } from “react”;
 import { useRouter } from “next/navigation”;
 
-// ── Types (mirrors lib/session.ts) ──────────────────────────────────────────
+//  Types (mirrors lib/session.ts)
 type LocalResponse = {
 question_id: string;
 selected_option: string;
@@ -25,7 +25,7 @@ correct_count: number;
 responses: LocalResponse[];
 };
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+//  Helpers
 const STORAGE_KEY = “vaagai_sessions”;
 
 function getSessions(): LocalSession[] {
@@ -77,10 +77,10 @@ if (p >= 50) return “#F59E0B”;
 return “#EF4444”;
 }
 
-// circumference for r=19 circle ≈ 119.4
+// circumference for r=19 circle  119.4
 const CIRC = 2 * Math.PI * 19;
 
-// ── Component ────────────────────────────────────────────────────────────────
+//  Component
 export default function ScoresPage() {
 const router = useRouter();
 const [sessions, setSessions] = useState<LocalSession[]>([]);
@@ -147,7 +147,7 @@ return { subject, accuracy, weakest };
 
 // Insights
 const insights = useMemo(() => {
-const out: { icon: string; text: JSX.Element }[] = [];
+const out: { icon: string; text: React.ReactNode }[] = [];
 if (!subjectStats.length) return out;
 const sorted = […subjectStats].sort((a, b) => a.accuracy - b.accuracy);
 const worst = sorted[0];
@@ -157,7 +157,7 @@ out.push({
 icon: “⚠️”,
 text: (
 <>
-<span style={{ color: “#FFD97D”, fontWeight: 800 }}>{worst.subject} needs attention</span> — scoring below average
+<span style={{ color: “#FFD97D”, fontWeight: 800 }}>{worst.subject} needs attention</span>  scoring below average
 </>
 ),
 });
@@ -166,7 +166,7 @@ out.push({
 icon: “🔥”,
 text: (
 <>
-Strong in {best.subject} — <span style={{ color: “#FFD97D”, fontWeight: 800 }}>keep going</span>
+Strong in {best.subject}  <span style={{ color: “#FFD97D”, fontWeight: 800 }}>keep going</span>
 </>
 ),
 });
@@ -175,7 +175,7 @@ out.push({
 icon: “📈”,
 text: (
 <>
-<span style={{ color: “#FFD97D”, fontWeight: 800 }}>{totalSessions} sessions</span> completed — great consistency!
+<span style={{ color: “#FFD97D”, fontWeight: 800 }}>{totalSessions} sessions</span> completed  great consistency!
 </>
 ),
 });
@@ -305,7 +305,7 @@ return (
                           Weak: <span style={{ color: "#DC2626", fontWeight: 800 }}>{s.weakest.chapter}</span>
                         </div>
                       ) : (
-                        <div style={{ fontSize: 12, fontWeight: 700, color: "#059669" }}>All topics above average ✓</div>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: "#059669" }}>All topics above average </div>
                       )}
                     </div>
                   </div>
@@ -389,7 +389,7 @@ return (
     )}
   </div>
 
-  {/* STICKY CTA — continue where you left off */}
+  {/* STICKY CTA  continue where you left off */}
   {ctaSession && !isEmpty && (
     <div
       onClick={() => router.push(`/practice/${encodeURIComponent(ctaSession.subject)}/${encodeURIComponent(ctaSession.chapter)}?level=${ctaSession.level}&offset=${ctaSession.offset}&limit=${ctaSession.limit}`)}
@@ -414,7 +414,7 @@ return (
           {lastIncomplete ? "Continue where you left off" : "Practice again"}
         </div>
         <div style={{ fontSize: 16, fontWeight: 800, color: "#fff" }}>
-          {ctaSession.chapter} · L{ctaSession.level}
+          {ctaSession.chapter}  L{ctaSession.level}
         </div>
       </div>
       <div style={{ width: 40, height: 40, background: "rgba(255,255,255,0.18)", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, color: "#fff", flexShrink: 0 }}>
