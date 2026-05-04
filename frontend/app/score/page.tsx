@@ -1,142 +1,429 @@
-"use client";
+“use client”;
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
-import { T, shadow } from "../../lib/tokens";
-import { getSession } from "../../lib/session";
+import { useEffect, useState, useMemo } from “react”;
+import { useRouter } from “next/navigation”;
 
-function ScoreContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const correct = parseInt(searchParams.get("correct") ?? "0");
-  const total = parseInt(searchParams.get("total") ?? "0");
-  const subject = searchParams.get("subject") ?? "";
-  const chapter = searchParams.get("chapter") ?? subject;
-  const level = parseInt(searchParams.get("level") ?? "1");
-  const offset = parseInt(searchParams.get("offset") ?? "0");
-  const limit = parseInt(searchParams.get("limit") ?? "10");
-  const sessionId = searchParams.get("sid") ?? "";
-  const session = sessionId ? getSession(sessionId) : null;
-  const wrong = total - correct;
-  const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
-  const r = 56;
-  const circ = 2 * Math.PI * r;
-  const avgTime = session ? Math.round(session.responses.reduce((s, r) => s + r.time_spent_seconds, 0) / session.responses.length) : null;
+// ── Types (mirrors lib/session.ts) ──────────────────────────────────────────
+type LocalResponse = {
+question_id: string;
+selected_option: string;
+is_correct: boolean;
+time_spent_seconds: number;
+};
 
-  const getMessage = () => {
-    if (pct >= 80) return "Excellent! You're well prepared. 🔥";
-    if (pct >= 60) return "Great effort! Review the missed questions. 💪";
-    if (pct >= 40) return "Good start! Keep practicing. 📚";
-    return "Don't give up! Practice makes perfect. 🎯";
-  };
+type LocalSession = {
+id: string;
+subject: string;
+chapter: string;
+level: number;
+offset: number;
+limit: number;
+started_at: string;
+completed_at: string | null;
+total_questions: number;
+correct_count: number;
+responses: LocalResponse[];
+};
 
-  const getStars = () => pct >= 80 ? 5 : pct >= 60 ? 3 : pct >= 40 ? 2 : 1;
+// ── Helpers ──────────────────────────────────────────────────────────────────
+const STORAGE_KEY = “vaagai_sessions”;
 
-  const handleShare = () => {
-    const text = `I scored ${correct}/${total} (${pct}%) in ${chapter} on வாகை! Try it free 👉 https://vaagai.vercel.app`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
-  };
-
-  const handleNextLevel = () => {
-    const nextLevel = level + 1;
-    const nextOffset = offset + limit;
-    router.push(
-      `/practice/${encodeURIComponent(subject)}/${encodeURIComponent(chapter)}?level=${nextLevel}&offset=${nextOffset}&limit=${limit}&label=${encodeURIComponent(chapter)}`
-    );
-  };
-
-  const handleRetry = () => {
-    router.push(
-      `/practice/${encodeURIComponent(subject)}/${encodeURIComponent(chapter)}?level=${level}&offset=${offset}&limit=${limit}&label=${encodeURIComponent(chapter)}`
-    );
-  };
-
-  return (
-    <div style={{ background: T.bg, height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
-      {/* Header */}
-      <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "16px 18px", flexShrink: 0 }}>
-        <div style={{ color: T.textSec, fontSize: 12, fontWeight: 600, textAlign: "center" }}>{chapter} · Level {level}</div>
-        <div style={{ display: "flex", justifyContent: "center", marginTop: 6, gap: 4 }}>
-          {Array.from({ length: 5 }, (_, i) => (
-            <svg key={i} width="16" height="16" viewBox="0 0 16 16" fill={i < getStars() ? "#F59E0B" : T.border}>
-              <path d="M8 1l1.8 3.6L14 5.4l-3 2.9.7 4.1L8 10.4l-3.7 2 .7-4.1-3-2.9 4.2-.8z" />
-            </svg>
-          ))}
-        </div>
-      </div>
-
-      {/* Scrollable body */}
-      <div style={{ flex: 1, overflowY: "auto", overscrollBehavior: "none", WebkitOverflowScrolling: "touch", padding: "24px 18px 100px" }}>
-
-        {/* Score ring */}
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
-          <div style={{ position: "relative", width: 152, height: 152 }}>
-            <svg width="152" height="152" viewBox="0 0 152 152">
-              <circle cx="76" cy="76" r={r} fill="none" stroke={T.border} strokeWidth="10" />
-              <circle cx="76" cy="76" r={r} fill="none" stroke={T.indigo} strokeWidth="10" strokeLinecap="round"
-                strokeDasharray={`${circ * (pct / 100)} ${circ}`} strokeDashoffset={circ * 0.25}
-                style={{ transform: "rotate(-90deg)", transformOrigin: "76px 76px" }} />
-            </svg>
-            <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-              <div style={{ color: T.text, fontSize: 34, fontWeight: 900, letterSpacing: -1.5, lineHeight: 1 }}>
-                {correct}<span style={{ color: T.textSec, fontSize: 20, fontWeight: 600 }}>/{total}</span>
-              </div>
-              <div style={{ color: T.indigo, fontSize: 13, fontWeight: 700, marginTop: 4 }}>{pct}%</div>
-            </div>
-          </div>
-        </div>
-
-        <p style={{ textAlign: "center", color: T.textSec, fontSize: 14, lineHeight: 1.6, marginBottom: 24, fontStyle: "italic" }}>"{getMessage()}"</p>
-
-        {/* Stats */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
-          {[
-            { label: "Correct", val: correct, color: T.green, bg: T.greenBg, border: T.greenBorder },
-            { label: "Wrong", val: wrong, color: T.red, bg: T.redBg, border: T.redBorder },
-            { label: "Avg Speed", val: avgTime ? `${avgTime}s` : "—", color: T.textSec, bg: T.surface, border: T.border },
-          ].map((s) => (
-            <div key={s.label} style={{ background: s.bg, border: `1.5px solid ${s.border}`, borderRadius: 14, padding: "14px 8px", textAlign: "center", boxShadow: shadow.sm }}>
-              <div style={{ color: s.color, fontSize: 26, fontWeight: 900, letterSpacing: -1 }}>{s.val}</div>
-              <div style={{ color: T.textSec, fontSize: 11, fontWeight: 600, marginTop: 3 }}>{s.label}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Login nudge */}
-        <div style={{ background: T.indigoLight, border: `1.5px solid ${T.indigoMid}`, borderRadius: 14, padding: "14px 16px", marginBottom: 16, display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ fontSize: 22 }}>🔒</div>
-          <div style={{ flex: 1 }}>
-            <div style={{ color: T.indigo, fontSize: 13, fontWeight: 700 }}>Login to save your progress</div>
-            <div style={{ color: T.textSec, fontSize: 11, marginTop: 2 }}>Track scores, revisit wrong answers, unlock full access</div>
-          </div>
-          <button onClick={() => router.push("/login")} style={{ background: T.indigo, border: "none", borderRadius: 9, padding: "7px 12px", color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", flexShrink: 0 }}>Login</button>
-        </div>
-
-        {/* Buttons */}
-        <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
-          <button onClick={handleRetry} style={{ flex: 1, background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px", color: T.text, fontSize: 13.5, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, boxShadow: shadow.sm }}>
-            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke={T.text} strokeWidth="1.8" strokeLinecap="round"><path d="M1 3v5h5M14 12a7 7 0 10-1.56-7.5L13 7H8" /></svg>
-            Retry
-          </button>
-          <button onClick={handleNextLevel} style={{ flex: 1.5, background: `linear-gradient(135deg, ${T.indigo}, #5062B8)`, border: "none", borderRadius: 14, padding: "14px", color: "#fff", fontSize: 13.5, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, boxShadow: shadow.indigo }}>
-            Next Level
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M10 5l3 3-3 3" stroke="white" strokeWidth="1.8" strokeLinecap="round" /></svg>
-          </button>
-        </div>
-
-        <button onClick={handleShare} style={{ width: "100%", background: "#25D366", border: "none", borderRadius: 14, padding: "14px", color: "#fff", fontSize: 13.5, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 9, boxShadow: "0 4px 14px rgba(37,211,102,0.35)" }}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" /></svg>
-          Share your score on WhatsApp
-        </button>
-      </div>
-    </div>
-  );
+function getSessions(): LocalSession[] {
+try {
+return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? “[]”);
+} catch {
+return [];
+}
 }
 
-export default function ScorePage() {
-  return (
-    <Suspense fallback={<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>Loading...</div>}>
-      <ScoreContent />
-    </Suspense>
-  );
+function pct(correct: number, total: number) {
+if (!total) return 0;
+return Math.round((correct / total) * 100);
+}
+
+function relativeTime(iso: string): string {
+const diff = Date.now() - new Date(iso).getTime();
+const mins = Math.floor(diff / 60000);
+if (mins < 60) return mins <= 1 ? “Just now” : `${mins}m ago`;
+const hrs = Math.floor(mins / 60);
+if (hrs < 24) return `${hrs}h ago`;
+const days = Math.floor(hrs / 24);
+if (days === 1) return “Yesterday”;
+return `${days} days ago`;
+}
+
+const SUBJECT_ICONS: Record<string, { icon: string; bg: string; color: string }> = {
+History:   { icon: “📜”, bg: “#D1FAE5”, color: “#059669” },
+Polity:    { icon: “⚖️”, bg: “#FEF3C7”, color: “#D97706” },
+Tamil:     { icon: “அ”,  bg: “#EDE9FE”, color: “#7C3AED” },
+Geography: { icon: “🌏”, bg: “#DBEAFE”, color: “#2563EB” },
+Science:   { icon: “🔬”, bg: “#FCE7F3”, color: “#DB2777” },
+Economy:   { icon: “📈”, bg: “#D1FAE5”, color: “#10B981” },
+};
+
+function scoreColor(p: number) {
+if (p >= 70) return “#059669”;
+if (p >= 50) return “#D97706”;
+return “#DC2626”;
+}
+function ringColor(p: number) {
+if (p >= 70) return “#10B981”;
+if (p >= 50) return “#F59E0B”;
+return “#EF4444”;
+}
+function barClass(p: number) {
+if (p >= 70) return “#10B981”;
+if (p >= 50) return “#F59E0B”;
+return “#EF4444”;
+}
+
+// circumference for r=19 circle ≈ 119.4
+const CIRC = 2 * Math.PI * 19;
+
+// ── Component ────────────────────────────────────────────────────────────────
+export default function ScoresPage() {
+const router = useRouter();
+const [sessions, setSessions] = useState<LocalSession[]>([]);
+const [filter, setFilter] = useState(“All”);
+
+useEffect(() => {
+setSessions(getSessions());
+}, []);
+
+const completed = useMemo(
+() => sessions.filter((s) => s.completed_at !== null),
+[sessions]
+);
+
+// Subjects available in completed sessions
+const subjects = useMemo(() => {
+const s = new Set(completed.map((s) => s.subject));
+return [“All”, …Array.from(s)];
+}, [completed]);
+
+// Filtered sessions for recent list
+const filtered = useMemo(
+() =>
+filter === “All”
+? completed
+: completed.filter((s) => s.subject === filter),
+[completed, filter]
+);
+
+// Global stats
+const totalSessions = completed.length;
+const totalQuestions = completed.reduce((a, s) => a + s.total_questions, 0);
+const avgScore = totalSessions
+? Math.round(
+completed.reduce((a, s) => a + pct(s.correct_count, s.total_questions), 0) /
+totalSessions
+)
+: 0;
+
+// Per-subject breakdown
+const subjectStats = useMemo(() => {
+const map: Record<string, { correct: number; total: number; chapters: Record<string, { correct: number; total: number }> }> = {};
+completed.forEach((s) => {
+if (!map[s.subject]) map[s.subject] = { correct: 0, total: 0, chapters: {} };
+map[s.subject].correct += s.correct_count;
+map[s.subject].total += s.total_questions;
+if (!map[s.subject].chapters[s.chapter])
+map[s.subject].chapters[s.chapter] = { correct: 0, total: 0 };
+map[s.subject].chapters[s.chapter].correct += s.correct_count;
+map[s.subject].chapters[s.chapter].total += s.total_questions;
+});
+return Object.entries(map).map(([subject, data]) => {
+const accuracy = pct(data.correct, data.total);
+// Weakest chapter
+const chapters = Object.entries(data.chapters).map(([ch, d]) => ({
+chapter: ch,
+accuracy: pct(d.correct, d.total),
+}));
+chapters.sort((a, b) => a.accuracy - b.accuracy);
+const weakest = chapters[0];
+return { subject, accuracy, weakest };
+});
+}, [completed]);
+
+// Insights
+const insights = useMemo(() => {
+const out: { icon: string; text: JSX.Element }[] = [];
+if (!subjectStats.length) return out;
+const sorted = […subjectStats].sort((a, b) => a.accuracy - b.accuracy);
+const worst = sorted[0];
+const best = sorted[sorted.length - 1];
+if (worst && worst.accuracy < 70)
+out.push({
+icon: “⚠️”,
+text: (
+<>
+<span style={{ color: “#FFD97D”, fontWeight: 800 }}>{worst.subject} needs attention</span> — scoring below average
+</>
+),
+});
+if (best && best.accuracy >= 70)
+out.push({
+icon: “🔥”,
+text: (
+<>
+Strong in {best.subject} — <span style={{ color: “#FFD97D”, fontWeight: 800 }}>keep going</span>
+</>
+),
+});
+if (totalSessions >= 3)
+out.push({
+icon: “📈”,
+text: (
+<>
+<span style={{ color: “#FFD97D”, fontWeight: 800 }}>{totalSessions} sessions</span> completed — great consistency!
+</>
+),
+});
+return out.slice(0, 3);
+}, [subjectStats, totalSessions]);
+
+// Last incomplete session (sticky CTA)
+const lastIncomplete = useMemo(
+() => sessions.filter((s) => !s.completed_at).pop() ?? null,
+[sessions]
+);
+// Or last completed session
+const lastSession = completed[completed.length - 1] ?? null;
+const ctaSession = lastIncomplete ?? lastSession;
+
+const recent = useMemo(() => […filtered].reverse().slice(0, 10), [filtered]);
+
+const isEmpty = completed.length === 0;
+
+return (
+<div style={{ display: “flex”, flexDirection: “column”, height: “100dvh”, background: “#EDEEF4”, overflowY: “auto”, overscrollBehavior: “none”, WebkitOverflowScrolling: “touch” as never }}>
+
+```
+  {/* HEADER */}
+  <div style={{ background: "#fff", padding: "20px 18px 0", flexShrink: 0, borderBottom: "2px solid #E0E2ED" }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+      <div style={{ fontSize: 24, fontWeight: 800, color: "#0A0A14", letterSpacing: -0.5 }}>My Progress</div>
+      <div style={{ fontSize: 13, fontWeight: 700, color: "#444", background: "#EDEEF4", padding: "6px 12px", borderRadius: 10 }}>
+        {totalSessions} sessions
+      </div>
+    </div>
+    {/* Filter pills */}
+    <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 14, scrollbarWidth: "none" }}>
+      {subjects.map((s) => (
+        <button
+          key={s}
+          onClick={() => setFilter(s)}
+          style={{
+            flexShrink: 0,
+            padding: "8px 16px",
+            borderRadius: 20,
+            fontSize: 13,
+            fontWeight: 700,
+            border: "2px solid",
+            borderColor: filter === s ? "#3D3B8E" : "#D0D3E0",
+            background: filter === s ? "#3D3B8E" : "#fff",
+            color: filter === s ? "#fff" : "#444",
+            cursor: "pointer",
+          }}
+        >
+          {s}
+        </button>
+      ))}
+    </div>
+  </div>
+
+  {/* BODY */}
+  <div style={{ flex: 1, overflowY: "auto", overscrollBehavior: "none", padding: "14px 14px 140px", display: "flex", flexDirection: "column", gap: 12 }}>
+
+    {isEmpty ? (
+      <div style={{ textAlign: "center", padding: "60px 20px", color: "#888" }}>
+        <div style={{ fontSize: 48, marginBottom: 16 }}>📊</div>
+        <div style={{ fontSize: 18, fontWeight: 800, color: "#0A0A14", marginBottom: 8 }}>No sessions yet</div>
+        <div style={{ fontSize: 14, color: "#666", marginBottom: 24 }}>Complete a practice session to see your progress here.</div>
+        <button
+          onClick={() => router.push("/subjects")}
+          style={{ background: "#3D3B8E", color: "#fff", border: "none", borderRadius: 14, padding: "14px 28px", fontSize: 15, fontWeight: 700, cursor: "pointer" }}
+        >
+          Start Practicing →
+        </button>
+      </div>
+    ) : (
+      <>
+        {/* STATS ROW */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+          {[
+            { value: totalSessions, label: "Sessions", color: "#3D3B8E" },
+            { value: `${avgScore}%`, label: "Avg Score", color: scoreColor(avgScore) },
+            { value: totalQuestions, label: "Questions", color: "#D97706" },
+          ].map((c) => (
+            <div key={c.label} style={{ background: "#fff", borderRadius: 14, padding: "14px 8px", textAlign: "center", border: "2px solid #E0E2ED" }}>
+              <div style={{ fontSize: 26, fontWeight: 800, letterSpacing: -1, lineHeight: 1, marginBottom: 5, fontVariantNumeric: "tabular-nums", color: c.color }}>
+                {c.value}
+              </div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#555", textTransform: "uppercase", letterSpacing: 0.3 }}>{c.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* INSIGHTS */}
+        {insights.length > 0 && (
+          <div style={{ background: "#3D3B8E", borderRadius: 18, padding: 16, display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.7)", textTransform: "uppercase", letterSpacing: 0.8 }}>💡 Your insights</div>
+            {insights.map((ins, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ fontSize: 20, width: 40, height: 40, background: "rgba(255,255,255,0.15)", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  {ins.icon}
+                </div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#fff", lineHeight: 1.4 }}>{ins.text}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* SUBJECT BREAKDOWN */}
+        {subjectStats.length > 0 && (
+          <div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "#444", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>Subject breakdown</div>
+            <div style={{ background: "#fff", borderRadius: 18, overflow: "hidden", border: "2px solid #E0E2ED" }}>
+              {subjectStats.map((s, i) => {
+                const meta = SUBJECT_ICONS[s.subject] ?? { icon: "📚", bg: "#F3F4F6", color: "#374151" };
+                return (
+                  <div key={s.subject} style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderBottom: i < subjectStats.length - 1 ? "1px solid #EDEEF4" : "none" }}>
+                    <div style={{ width: 42, height: 42, borderRadius: 12, background: meta.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: s.subject === "Tamil" ? 16 : 20, fontWeight: 800, color: meta.color, flexShrink: 0 }}>
+                      {meta.icon}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 7 }}>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: "#0A0A14" }}>{s.subject}</div>
+                        <div style={{ fontSize: 16, fontWeight: 800, color: scoreColor(s.accuracy) }}>{s.accuracy}%</div>
+                      </div>
+                      <div style={{ height: 7, background: "#EDEEF4", borderRadius: 10, overflow: "hidden", marginBottom: 5 }}>
+                        <div style={{ height: "100%", width: `${s.accuracy}%`, background: barClass(s.accuracy), borderRadius: 10, transition: "width 0.6s ease" }} />
+                      </div>
+                      {s.weakest && s.accuracy < 100 ? (
+                        <div style={{ fontSize: 12, fontWeight: 600, color: "#555" }}>
+                          Weak: <span style={{ color: "#DC2626", fontWeight: 800 }}>{s.weakest.chapter}</span>
+                        </div>
+                      ) : (
+                        <div style={{ fontSize: 12, fontWeight: 700, color: "#059669" }}>All topics above average ✓</div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* RECENT SESSIONS */}
+        {recent.length > 0 && (
+          <div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "#444", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>Recent sessions</div>
+            <div style={{ background: "#fff", borderRadius: 18, overflow: "hidden", border: "2px solid #E0E2ED" }}>
+              {recent.map((s, i) => {
+                const score = pct(s.correct_count, s.total_questions);
+                const dashOffset = CIRC - (CIRC * score) / 100;
+                const subjectMeta = SUBJECT_ICONS[s.subject] ?? { icon: "📚", bg: "#F3F4F6", color: "#374151" };
+                const wrongCount = s.total_questions - s.correct_count;
+                const mistakeLabel = wrongCount === 0 ? "Perfect score! 🎉" : wrongCount <= 2 ? `${wrongCount} easy mistake${wrongCount > 1 ? "s" : ""}` : `${wrongCount} concept gaps`;
+                const mistakeStyle = wrongCount === 0
+                  ? { background: "#D1FAE5", color: "#064E3B" }
+                  : wrongCount <= 2
+                  ? { background: "#FEF3C7", color: "#78350F" }
+                  : { background: "#FEE2E2", color: "#7F1D1D" };
+
+                return (
+                  <div key={s.id} style={{ padding: "14px 16px", borderBottom: i < recent.length - 1 ? "1px solid #EDEEF4" : "none" }}>
+                    {/* Top row */}
+                    <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+                      {/* Ring */}
+                      <div style={{ width: 48, height: 48, flexShrink: 0, position: "relative" }}>
+                        <svg viewBox="0 0 48 48" width={48} height={48} style={{ transform: "rotate(-90deg)" }}>
+                          <circle cx="24" cy="24" r="19" fill="none" stroke="#EDEEF4" strokeWidth={5} />
+                          <circle cx="24" cy="24" r="19" fill="none" stroke={ringColor(score)} strokeWidth={5} strokeLinecap="round"
+                            strokeDasharray={CIRC} strokeDashoffset={dashOffset} />
+                        </svg>
+                        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: "#0A0A14" }}>
+                          {score}%
+                        </div>
+                      </div>
+                      {/* Info */}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: "#0A0A14", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginBottom: 5 }}>
+                          {s.chapter}
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+                          <div style={{ fontSize: 11, fontWeight: 700, padding: "3px 8px", borderRadius: 6, background: subjectMeta.bg, color: subjectMeta.color }}>
+                            {s.subject}
+                          </div>
+                          <div style={{ fontSize: 11, color: "#666", fontWeight: 600 }}>
+                            {s.completed_at ? relativeTime(s.completed_at) : relativeTime(s.started_at)}
+                          </div>
+                        </div>
+                      </div>
+                      {/* Score right */}
+                      <div style={{ textAlign: "right", flexShrink: 0 }}>
+                        <div style={{ fontSize: 15, fontWeight: 800, color: "#0A0A14" }}>{s.correct_count}/{s.total_questions}</div>
+                        <div style={{ fontSize: 11, color: "#666", fontWeight: 600 }}>Level {s.level}</div>
+                      </div>
+                    </div>
+                    {/* Bottom row */}
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <div style={{ fontSize: 12, fontWeight: 700, padding: "5px 10px", borderRadius: 8, ...mistakeStyle }}>
+                        {mistakeLabel}
+                      </div>
+                      <button
+                        onClick={() => router.push(`/practice/${encodeURIComponent(s.subject)}/${encodeURIComponent(s.chapter)}?level=${s.level}&offset=${s.offset}&limit=${s.limit}`)}
+                        style={{ fontSize: 13, fontWeight: 700, color: "#3D3B8E", background: "#EDEEFF", padding: "7px 14px", borderRadius: 10, border: "none", cursor: "pointer", minHeight: 36, display: "flex", alignItems: "center" }}
+                      >
+                        Review →
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </>
+    )}
+  </div>
+
+  {/* STICKY CTA — continue where you left off */}
+  {ctaSession && !isEmpty && (
+    <div
+      onClick={() => router.push(`/practice/${encodeURIComponent(ctaSession.subject)}/${encodeURIComponent(ctaSession.chapter)}?level=${ctaSession.level}&offset=${ctaSession.offset}&limit=${ctaSession.limit}`)}
+      style={{
+        position: "fixed",
+        bottom: 68,
+        left: 14,
+        right: 14,
+        background: "#3D3B8E",
+        borderRadius: 16,
+        padding: "16px 18px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        boxShadow: "0 8px 28px rgba(61,59,142,0.4)",
+        cursor: "pointer",
+        zIndex: 10,
+      }}
+    >
+      <div>
+        <div style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.65)", marginBottom: 3 }}>
+          {lastIncomplete ? "Continue where you left off" : "Practice again"}
+        </div>
+        <div style={{ fontSize: 16, fontWeight: 800, color: "#fff" }}>
+          {ctaSession.chapter} · L{ctaSession.level}
+        </div>
+      </div>
+      <div style={{ width: 40, height: 40, background: "rgba(255,255,255,0.18)", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, color: "#fff", flexShrink: 0 }}>
+        →
+      </div>
+    </div>
+  )}
+</div>
+```
+
+);
 }
