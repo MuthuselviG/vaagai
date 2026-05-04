@@ -49,6 +49,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const active = getActive(pathname);
+  const hideNav = pathname.startsWith("/practice");
 
   return (
     <>
@@ -128,7 +129,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Bottom nav — mobile only */}
-      <div className="bottom-nav" style={{
+      {!hideNav && <div className="bottom-nav" style={{
         display: "none",
         position: "fixed", bottom: 0, left: 0, right: 0,
         borderTop: `1px solid ${T.border}`,
@@ -151,7 +152,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           );
         })}
-      </div>
+      </div>}
     </>
   );
 }

@@ -170,7 +170,7 @@ export default function PracticePage() {
         </div>
       </div>
 
-      <div ref={scrollRef} style={{ flex: 1, overflowY: "auto", padding: "14px 14px 20px", overscrollBehavior: "none", WebkitOverflowScrolling: "touch" }}>
+      <div ref={scrollRef} style={{ flex: 1, overflowY: "auto", padding: "14px 14px 100px", overscrollBehavior: "none", WebkitOverflowScrolling: "touch" }}>
         <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 18, padding: "20px 18px", marginBottom: 12, boxShadow: shadow.md }}>
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 12, gap: 8 }}>
             <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6 }}>
