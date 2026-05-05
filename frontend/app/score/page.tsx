@@ -25,6 +25,7 @@ type LocalSession = {
 };
 
 const STORAGE_KEY = "vaagai_sessions";
+const LANG_KEY = "vaagai_lang";
 
 function getSessions(): LocalSession[] {
   try {
@@ -39,24 +40,79 @@ function pct(correct: number, total: number) {
   return Math.round((correct / total) * 100);
 }
 
-function relativeTime(iso: string): string {
+function relativeTime(iso: string, lang: string): string {
   const diff = Date.now() - new Date(iso).getTime();
   const mins = Math.floor(diff / 60000);
-  if (mins < 60) return mins <= 1 ? "Just now" : mins + "m ago";
+  if (mins < 60) return mins <= 1
+    ? (lang === "ta" ? "இப்பொழுதுதான்" : "Just now")
+    : mins + (lang === "ta" ? " நிமிடம் முன்பு" : "m ago");
   const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return hrs + "h ago";
+  if (hrs < 24) return hrs + (lang === "ta" ? " மணி முன்பு" : "h ago");
   const days = Math.floor(hrs / 24);
-  if (days === 1) return "Yesterday";
-  return days + " days ago";
+  if (days === 1) return lang === "ta" ? "நேற்று" : "Yesterday";
+  return days + (lang === "ta" ? " நாட்களுக்கு முன்பு" : " days ago");
 }
 
-const SUBJECT_ICONS: Record<string, { icon: string; bg: string; color: string }> = {
-  History:   { icon: "scroll", bg: "#D1FAE5", color: "#059669" },
-  Polity:    { icon: "law",    bg: "#FEF3C7", color: "#D97706" },
-  Tamil:     { icon: "ta",     bg: "#EDE9FE", color: "#7C3AED" },
-  Geography: { icon: "geo",    bg: "#DBEAFE", color: "#2563EB" },
-  Science:   { icon: "sci",    bg: "#FCE7F3", color: "#DB2777" },
-  Economy:   { icon: "eco",    bg: "#D1FAE5", color: "#10B981" },
+const T = {
+  en: {
+    title: "My Progress",
+    sessions: "Sessions",
+    avgScore: "Avg Score",
+    questions: "Questions",
+    insights: "Your insights",
+    subjectBreakdown: "Subject breakdown",
+    recentSessions: "Recent sessions",
+    continueOff: "Continue where you left off",
+    practiceAgain: "Practice again",
+    noSessions: "No sessions yet",
+    noSessionsSub: "Complete a practice session to see your progress here.",
+    startPracticing: "Start Practicing",
+    weak: "Weak",
+    allAbove: "All topics above average",
+    perfect: "Perfect score!",
+    easyMistakes: "easy mistakes",
+    conceptGaps: "concept gaps",
+    review: "Review",
+    level: "Level",
+    needsAttention: " needs attention -- scoring below average",
+    strongIn: "Strong in ",
+    keepGoing: " -- keep going",
+    sessionsCompleted: " sessions completed -- great consistency!",
+  },
+  ta: {
+    title: "என் முன்னேற்றம்",
+    sessions: "பதிவுகள்",
+    avgScore: "சராசரி மதிப்பெண்",
+    questions: "கேள்விகள்",
+    insights: "உங்கள் பகுப்பாய்வு",
+    subjectBreakdown: "பாட வாரியான பகுப்பு",
+    recentSessions: "சமீபத்திய பதிவுகள்",
+    continueOff: "நிறுத்திய இடத்திலிருந்து தொடரவும்",
+    practiceAgain: "மீண்டும் பயிற்சி செய்யவும்",
+    noSessions: "இன்னும் பதிவுகள் இல்லை",
+    noSessionsSub: "உங்கள் முன்னேற்றத்தை காண ஒரு பயிற்சியை முடிக்கவும்.",
+    startPracticing: "பயிற்சியை தொடங்கவும்",
+    weak: "பலவீனம்",
+    allAbove: "அனைத்து தலைப்புகளும் சராசரிக்கு மேல்",
+    perfect: "முழு மதிப்பெண்!",
+    easyMistakes: "எளிய தவறுகள்",
+    conceptGaps: "கருத்து குறைபாடுகள்",
+    review: "மீளாய்வு",
+    level: "நிலை",
+    needsAttention: " கவனம் தேவை -- சராசரிக்கு கீழே உள்ளது",
+    strongIn: "வலிமையானது: ",
+    keepGoing: " -- தொடர்ந்து செல்லுங்கள்",
+    sessionsCompleted: " பதிவுகள் முடிந்தன -- சிறந்த தொடர்ச்சி!",
+  },
+};
+
+const SUBJECT_ICONS: Record<string, { bg: string; color: string }> = {
+  History:   { bg: "#D1FAE5", color: "#059669" },
+  Polity:    { bg: "#FEF3C7", color: "#D97706" },
+  Tamil:     { bg: "#EDE9FE", color: "#7C3AED" },
+  Geography: { bg: "#DBEAFE", color: "#2563EB" },
+  Science:   { bg: "#FCE7F3", color: "#DB2777" },
+  Economy:   { bg: "#D1FAE5", color: "#10B981" },
 };
 
 function scoreColor(p: number) {
@@ -64,13 +120,11 @@ function scoreColor(p: number) {
   if (p >= 50) return "#D97706";
   return "#DC2626";
 }
-
 function ringColor(p: number) {
   if (p >= 70) return "#10B981";
   if (p >= 50) return "#F59E0B";
   return "#EF4444";
 }
-
 function barColor(p: number) {
   if (p >= 70) return "#10B981";
   if (p >= 50) return "#F59E0B";
@@ -83,10 +137,15 @@ export default function ScorePage() {
   const router = useRouter();
   const [sessions, setSessions] = useState<LocalSession[]>([]);
   const [filter, setFilter] = useState("All");
+  const [lang, setLang] = useState("en");
 
   useEffect(() => {
     setSessions(getSessions());
+    const saved = localStorage.getItem(LANG_KEY);
+    if (saved === "ta" || saved === "en") setLang(saved);
   }, []);
+
+  const t = T[lang as "en" | "ta"];
 
   const completed = useMemo(
     () => sessions.filter((s) => s.completed_at !== null),
@@ -132,19 +191,19 @@ export default function ScorePage() {
   }, [completed]);
 
   const insights = useMemo(() => {
-    const out: { icon: string; text: string; highlight: string }[] = [];
+    const out: { highlight: string; text: string }[] = [];
     if (!subjectStats.length) return out;
     const sorted = [...subjectStats].sort((a, b) => a.accuracy - b.accuracy);
     const worst = sorted[0];
     const best = sorted[sorted.length - 1];
     if (worst && worst.accuracy < 70)
-      out.push({ icon: "!", text: " needs attention -- scoring below average", highlight: worst.subject });
+      out.push({ highlight: worst.subject, text: t.needsAttention });
     if (best && best.accuracy >= 70)
-      out.push({ icon: "^", text: "Strong in " + best.subject + " -- keep going", highlight: "" });
+      out.push({ highlight: "", text: t.strongIn + best.subject + t.keepGoing });
     if (totalSessions >= 3)
-      out.push({ icon: "+", text: totalSessions + " sessions completed -- great consistency!", highlight: "" });
+      out.push({ highlight: "", text: totalSessions + t.sessionsCompleted });
     return out.slice(0, 3);
-  }, [subjectStats, totalSessions]);
+  }, [subjectStats, totalSessions, t]);
 
   const lastIncomplete = useMemo(
     () => sessions.filter((s) => !s.completed_at).pop() ?? null,
@@ -155,14 +214,32 @@ export default function ScorePage() {
   const recent = useMemo(() => [...filtered].reverse().slice(0, 10), [filtered]);
   const isEmpty = completed.length === 0;
 
+  function toggleLang(l: string) {
+    setLang(l);
+    localStorage.setItem(LANG_KEY, l);
+  }
+
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100dvh", background: "#EDEEF4", overflow: "hidden" }}>
 
       <div style={{ background: "#fff", padding: "20px 18px 0", flexShrink: 0, borderBottom: "2px solid #E0E2ED" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-          <div style={{ fontSize: 24, fontWeight: 800, color: "#0A0A14", letterSpacing: -0.5 }}>My Progress</div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#444", background: "#EDEEF4", padding: "6px 12px", borderRadius: 10 }}>
-            {totalSessions} sessions
+          <div style={{ fontSize: 24, fontWeight: 800, color: "#0A0A14", letterSpacing: -0.5 }}>{t.title}</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#444", background: "#EDEEF4", padding: "6px 12px", borderRadius: 10 }}>
+              {totalSessions} {t.sessions}
+            </div>
+            <div style={{ display: "flex", background: "#EDEEF4", borderRadius: 20, padding: 3, gap: 2 }}>
+              {["en", "ta"].map((l) => (
+                <button key={l} onClick={() => toggleLang(l)} style={{
+                  padding: "5px 12px", borderRadius: 16, fontSize: 12, fontWeight: 700, border: "none", cursor: "pointer",
+                  background: lang === l ? "#3D3B8E" : "transparent",
+                  color: lang === l ? "#fff" : "#444",
+                }}>
+                  {l === "en" ? "EN" : "தமிழ்"}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
         <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 14, scrollbarWidth: "none" }}>
@@ -183,37 +260,37 @@ export default function ScorePage() {
         {isEmpty ? (
           <div style={{ textAlign: "center", padding: "60px 20px" }}>
             <div style={{ fontSize: 48, marginBottom: 16 }}>📊</div>
-            <div style={{ fontSize: 18, fontWeight: 800, color: "#0A0A14", marginBottom: 8 }}>No sessions yet</div>
-            <div style={{ fontSize: 14, color: "#666", marginBottom: 24 }}>Complete a practice session to see your progress here.</div>
+            <div style={{ fontSize: 18, fontWeight: 800, color: "#0A0A14", marginBottom: 8 }}>{t.noSessions}</div>
+            <div style={{ fontSize: 14, color: "#666", marginBottom: 24 }}>{t.noSessionsSub}</div>
             <button onClick={() => router.push("/subjects")} style={{
               background: "#3D3B8E", color: "#fff", border: "none", borderRadius: 14,
               padding: "14px 28px", fontSize: 15, fontWeight: 700, cursor: "pointer"
             }}>
-              Start Practicing
+              {t.startPracticing}
             </button>
           </div>
         ) : (
           <>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
               {[
-                { value: String(totalSessions), label: "Sessions", color: "#3D3B8E" },
-                { value: avgScore + "%", label: "Avg Score", color: scoreColor(avgScore) },
-                { value: String(totalQuestions), label: "Questions", color: "#D97706" },
+                { value: String(totalSessions), label: t.sessions, color: "#3D3B8E" },
+                { value: avgScore + "%", label: t.avgScore, color: scoreColor(avgScore) },
+                { value: String(totalQuestions), label: t.questions, color: "#D97706" },
               ].map((c) => (
                 <div key={c.label} style={{ background: "#fff", borderRadius: 14, padding: "14px 8px", textAlign: "center", border: "2px solid #E0E2ED" }}>
                   <div style={{ fontSize: 26, fontWeight: 800, letterSpacing: -1, lineHeight: 1, marginBottom: 5, color: c.color }}>{c.value}</div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#555", textTransform: "uppercase", letterSpacing: 0.3 }}>{c.label}</div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "#555", textTransform: "uppercase", letterSpacing: 0.3 }}>{c.label}</div>
                 </div>
               ))}
             </div>
 
             {insights.length > 0 && (
               <div style={{ background: "#3D3B8E", borderRadius: 18, padding: 16, display: "flex", flexDirection: "column", gap: 12 }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.7)", textTransform: "uppercase", letterSpacing: 0.8 }}>Your insights</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.7)", textTransform: "uppercase", letterSpacing: 0.8 }}>{t.insights}</div>
                 {insights.map((ins, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <div style={{ fontSize: 16, width: 40, height: 40, background: "rgba(255,255,255,0.15)", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "#FFD97D", fontWeight: 800 }}>
-                      {ins.icon}
+                    <div style={{ width: 40, height: 40, background: "rgba(255,255,255,0.15)", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "#FFD97D", fontWeight: 800, fontSize: 18 }}>
+                      !
                     </div>
                     <div style={{ fontSize: 14, fontWeight: 600, color: "#fff", lineHeight: 1.4 }}>
                       {ins.highlight && <span style={{ color: "#FFD97D", fontWeight: 800 }}>{ins.highlight}</span>}
@@ -226,14 +303,14 @@ export default function ScorePage() {
 
             {subjectStats.length > 0 && (
               <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "#444", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>Subject breakdown</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#444", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>{t.subjectBreakdown}</div>
                 <div style={{ background: "#fff", borderRadius: 18, overflow: "hidden", border: "2px solid #E0E2ED" }}>
                   {subjectStats.map((s, i) => {
-                    const meta = SUBJECT_ICONS[s.subject] ?? { icon: s.subject.slice(0, 2), bg: "#F3F4F6", color: "#374151" };
+                    const meta = SUBJECT_ICONS[s.subject] ?? { bg: "#F3F4F6", color: "#374151" };
                     return (
                       <div key={s.subject} style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderBottom: i < subjectStats.length - 1 ? "1px solid #EDEEF4" : "none" }}>
                         <div style={{ width: 42, height: 42, borderRadius: 12, background: meta.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: meta.color, flexShrink: 0 }}>
-                          {meta.icon === "ta" ? "அ" : meta.icon.slice(0, 2).toUpperCase()}
+                          {s.subject === "Tamil" ? "அ" : s.subject.slice(0, 2).toUpperCase()}
                         </div>
                         <div style={{ flex: 1 }}>
                           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 7 }}>
@@ -245,10 +322,10 @@ export default function ScorePage() {
                           </div>
                           {s.weakest && s.accuracy < 100 ? (
                             <div style={{ fontSize: 12, fontWeight: 600, color: "#555" }}>
-                              Weak: <span style={{ color: "#DC2626", fontWeight: 800 }}>{s.weakest.chapter}</span>
+                              {t.weak}: <span style={{ color: "#DC2626", fontWeight: 800 }}>{s.weakest.chapter}</span>
                             </div>
                           ) : (
-                            <div style={{ fontSize: 12, fontWeight: 700, color: "#059669" }}>All topics above average</div>
+                            <div style={{ fontSize: 12, fontWeight: 700, color: "#059669" }}>{t.allAbove}</div>
                           )}
                         </div>
                       </div>
@@ -260,14 +337,14 @@ export default function ScorePage() {
 
             {recent.length > 0 && (
               <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "#444", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>Recent sessions</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#444", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>{t.recentSessions}</div>
                 <div style={{ background: "#fff", borderRadius: 18, overflow: "hidden", border: "2px solid #E0E2ED" }}>
                   {recent.map((s, i) => {
                     const score = pct(s.correct_count, s.total_questions);
                     const dashOffset = CIRC - (CIRC * score) / 100;
-                    const subjectMeta = SUBJECT_ICONS[s.subject] ?? { icon: s.subject.slice(0, 2), bg: "#F3F4F6", color: "#374151" };
+                    const subjectMeta = SUBJECT_ICONS[s.subject] ?? { bg: "#F3F4F6", color: "#374151" };
                     const wrongCount = s.total_questions - s.correct_count;
-                    const mistakeLabel = wrongCount === 0 ? "Perfect score!" : wrongCount <= 2 ? wrongCount + " easy mistakes" : wrongCount + " concept gaps";
+                    const mistakeLabel = wrongCount === 0 ? t.perfect : wrongCount <= 2 ? wrongCount + " " + t.easyMistakes : wrongCount + " " + t.conceptGaps;
                     const mistakeStyle = wrongCount === 0
                       ? { background: "#D1FAE5", color: "#064E3B" }
                       : wrongCount <= 2
@@ -294,13 +371,13 @@ export default function ScorePage() {
                                 {s.subject}
                               </div>
                               <div style={{ fontSize: 11, color: "#666", fontWeight: 600 }}>
-                                {s.completed_at ? relativeTime(s.completed_at) : relativeTime(s.started_at)}
+                                {s.completed_at ? relativeTime(s.completed_at, lang) : relativeTime(s.started_at, lang)}
                               </div>
                             </div>
                           </div>
                           <div style={{ textAlign: "right", flexShrink: 0 }}>
                             <div style={{ fontSize: 15, fontWeight: 800, color: "#0A0A14" }}>{s.correct_count}/{s.total_questions}</div>
-                            <div style={{ fontSize: 11, color: "#666", fontWeight: 600 }}>Level {s.level}</div>
+                            <div style={{ fontSize: 11, color: "#666", fontWeight: 600 }}>{t.level} {s.level}</div>
                           </div>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -311,7 +388,7 @@ export default function ScorePage() {
                             onClick={() => router.push("/practice/" + encodeURIComponent(s.subject) + "/" + encodeURIComponent(s.chapter) + "?level=" + s.level + "&offset=" + s.offset + "&limit=" + s.limit)}
                             style={{ fontSize: 13, fontWeight: 700, color: "#3D3B8E", background: "#EDEEFF", padding: "7px 14px", borderRadius: 10, border: "none", cursor: "pointer", minHeight: 36, display: "flex", alignItems: "center" }}
                           >
-                            Review
+                            {t.review}
                           </button>
                         </div>
                       </div>
@@ -335,10 +412,10 @@ export default function ScorePage() {
         >
           <div>
             <div style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.65)", marginBottom: 3 }}>
-              {lastIncomplete ? "Continue where you left off" : "Practice again"}
+              {lastIncomplete ? t.continueOff : t.practiceAgain}
             </div>
             <div style={{ fontSize: 16, fontWeight: 800, color: "#fff" }}>
-              {ctaSession.chapter} L{ctaSession.level}
+              {ctaSession.chapter} {t.level} {ctaSession.level}
             </div>
           </div>
           <div style={{ width: 40, height: 40, background: "rgba(255,255,255,0.18)", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, color: "#fff", flexShrink: 0, fontWeight: 800 }}>

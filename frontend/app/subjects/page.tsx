@@ -11,6 +11,7 @@ const LEVEL_SIZE = 10;
 const MIN_LEVEL_SIZE = 6;
 
 const TAMIL_CHAPTER_NAMES: Record<string, string> = {
+  "General": "பொது",
   "Grammar": "இலக்கணம்",
   "Literature": "இலக்கியம்",
   "Vocabulary": "சொல்லகராதி",
@@ -120,7 +121,7 @@ export default function SubjectsPage() {
                 }}>
                 <span style={{ fontSize: 22 }}>{sub.icon}</span>
                 <div style={{ flex: 1, textAlign: "left" }}>
-                  <div style={{ color: T.text, fontWeight: 700, fontSize: 14 }}>{lang === "ta" ? sub.ta : sub.key}</div>
+                  <div style={{ color: T.text, fontWeight: 700, fontSize: 14 }}>{sub.key === "Tamil" ? sub.ta : (lang === "ta" ? sub.ta : sub.key)}</div>
                   <div style={{ color: T.textSec, fontSize: 11, marginTop: 2 }}>
                     {loading ? "Loading…" : `${chapters.length} chapters · ${totalQSub} questions`}
                   </div>
