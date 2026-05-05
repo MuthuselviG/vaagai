@@ -52,11 +52,16 @@ function generateLevels(total: number): { levelNum: number; questions: number; o
 
 export default function SubjectsPage() {
   const router = useRouter();
-  const [lang, setLang] = useState<"en" | "ta">("en");
+  const [lang, setLang] = useState<"en" | "ta">("ta");
   const [chapterData, setChapterData] = useState<Record<string, ChapterCount[]>>({});
   const [loading, setLoading] = useState(true);
   const [openSubject, setOpenSubject] = useState<string | null>(null);
   const [openChapter, setOpenChapter] = useState<string | null>(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("vaagai_lang");
+    if (saved === "en" || saved === "ta") setLang(saved);
+  }, []);
 
   useEffect(() => {
     async function load() {
@@ -87,7 +92,7 @@ export default function SubjectsPage() {
       <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "16px 18px 14px", flexShrink: 0 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ background: T.indigoLight, border: `1px solid ${T.indigoMid}`, borderRadius: 10, padding: "5px 12px", color: T.indigo, fontSize: 11, fontWeight: 800, letterSpacing: 0.5 }}>
-            TNPSC Exam Prep
+            TNPSC GROUP 4
           </div>
           <LangToggle lang={lang} setLang={(l) => { setLang(l); setOpenChapter(null); }} />
         </div>
@@ -121,8 +126,8 @@ export default function SubjectsPage() {
                 }}>
                 <span style={{ fontSize: 22 }}>{sub.icon}</span>
                 <div style={{ flex: 1, textAlign: "left" }}>
-                  <div style={{ color: T.text, fontWeight: 700, fontSize: 14 }}>{sub.key === "Tamil" ? sub.ta : (lang === "ta" ? sub.ta : sub.key)}</div>
-                  <div style={{ color: T.textSec, fontSize: 11, marginTop: 2 }}>
+                  <div style={{ color: T.text, fontWeight: 700, fontSize: 16 }}>{sub.key === "Tamil" ? sub.ta : (lang === "ta" ? sub.ta : sub.key)}</div>
+                  <div style={{ color: T.textSec, fontSize: 13, marginTop: 2 }}>
                     {loading ? "Loading…" : `${chapters.length} chapters · ${totalQSub} questions`}
                   </div>
                 </div>
@@ -147,10 +152,10 @@ export default function SubjectsPage() {
                           onClick={() => setOpenChapter(isChOpen ? null : ch.chapter)}
                           style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", cursor: "pointer" }}>
                           <div style={{ flex: 1 }}>
-                            <div style={{ color: T.text, fontSize: 13, fontWeight: 600 }}>{sub.key === "Tamil" ? (TAMIL_CHAPTER_NAMES[ch.chapter] ?? ch.chapter) : ch.chapter}</div>
+                            <div style={{ color: T.text, fontSize: 15, fontWeight: 600 }}>{sub.key === "Tamil" ? (TAMIL_CHAPTER_NAMES[ch.chapter] ?? ch.chapter) : ch.chapter}</div>
                             <div style={{ display: "flex", gap: 8, marginTop: 5, alignItems: "center" }}>
-                              <span style={{ color: T.textTer, fontSize: 11, fontWeight: 600 }}>{ch.count} questions</span>
-                              <span style={{ background: T.indigoLight, borderRadius: 6, padding: "2px 7px", color: T.indigo, fontSize: 11, fontWeight: 700 }}>
+                              <span style={{ color: T.textTer, fontSize: 12, fontWeight: 600 }}>{ch.count} questions</span>
+                              <span style={{ background: T.indigoLight, borderRadius: 6, padding: "2px 7px", color: T.indigo, fontSize: 12, fontWeight: 700 }}>
                                 {levels.length} levels
                               </span>
                             </div>
@@ -202,22 +207,7 @@ export default function SubjectsPage() {
           );
         })}
 
-        {/* Divider */}
-        <div style={{ height: 1, background: T.border, margin: "8px 0 12px" }} />
 
-        {/* Coming soon subjects */}
-        {comingSoonSubjects.map(sub => (
-          <div key={sub.key} style={{ marginBottom: 10, opacity: 0.5 }}>
-            <div style={{ background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "13px 14px", display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ fontSize: 22 }}>{sub.icon}</span>
-              <div style={{ flex: 1 }}>
-                <div style={{ color: T.text, fontWeight: 700, fontSize: 14 }}>{lang === "ta" ? sub.ta : sub.key}</div>
-                <div style={{ color: T.textSec, fontSize: 11, marginTop: 2 }}>Coming soon</div>
-              </div>
-              <span style={{ background: "#F3F4F6", color: "#9CA3AF", borderRadius: 8, padding: "2px 8px", fontSize: 10, fontWeight: 700 }}>Soon</span>
-            </div>
-          </div>
-        ))}
       </div>
     </div>
   );

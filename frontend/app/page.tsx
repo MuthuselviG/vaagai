@@ -1,10 +1,17 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { T, shadow } from "../lib/tokens";
 
 export default function HomePage() {
   const router = useRouter();
+
+  useEffect(() => {
+    if (!localStorage.getItem("vaagai_lang")) {
+      localStorage.setItem("vaagai_lang", "ta");
+    }
+  }, []);
   return (
     <main
       style={{
@@ -22,7 +29,7 @@ export default function HomePage() {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "flex-start",
-            padding: "48px 24px 48px",
+            padding: "24px 24px 32px",
             textAlign: "center",
             overflowY: "auto"
           }}
@@ -36,7 +43,7 @@ export default function HomePage() {
               border: `1px solid ${T.indigoMid}`,
               borderRadius: 20,
               padding: "6px 14px",
-              marginBottom: 28
+              marginBottom: 16
             }}
           >
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: T.indigo }} />
@@ -50,12 +57,12 @@ export default function HomePage() {
               color: T.text,
               letterSpacing: -1.2,
               lineHeight: 1.1,
-              marginBottom: 14
+              marginBottom: 8
             }}
           >
             <span style={{ color: T.indigo, fontFamily: "var(--font-noto-sans-tamil), var(--font-inter), sans-serif" }}>வாகை</span>
           </h1>
-          <p style={{ color: T.textSec, fontSize: 14, fontWeight: 500, marginBottom: 32, lineHeight: 1.6 }}>Built for Tamil Nadu&apos;s future.</p>
+          <p style={{ color: T.textSec, fontSize: 16, fontWeight: 500, marginBottom: 20, lineHeight: 1.6 }}>Built for Tamil Nadu&apos;s future.</p>
 
           <button
             onClick={() => router.push("/subjects")}
@@ -92,7 +99,7 @@ export default function HomePage() {
             Log In
           </button>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, width: "100%", marginTop: 36 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, width: "100%", marginTop: 18 }}>
             {[
               { icon: "📚", text: "10,000+ PYQ", sub: "Curated by experts" },
               { icon: "✨", text: "AI-powered Practice", sub: "Personalised for you", indigo: true },
@@ -127,8 +134,8 @@ export default function HomePage() {
                   {feature.icon}
                 </div>
                 <div>
-                  <div style={{ color: feature.indigo ? T.indigo : T.text, fontSize: 13, fontWeight: 700 }}>{feature.text}</div>
-                  <div style={{ color: feature.indigo ? T.indigoDark : T.textTer, fontSize: 11, fontWeight: 500, marginTop: 1 }}>{feature.sub}</div>
+                  <div style={{ color: feature.indigo ? T.indigo : T.text, fontSize: 15, fontWeight: 700 }}>{feature.text}</div>
+                  <div style={{ color: feature.indigo ? T.indigoDark : T.textTer, fontSize: 13, fontWeight: 500, marginTop: 1 }}>{feature.sub}</div>
                 </div>
               </div>
             ))}
