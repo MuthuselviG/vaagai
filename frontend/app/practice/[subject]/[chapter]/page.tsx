@@ -32,6 +32,11 @@ export default function PracticePage() {
 
   const [lang, setLang] = useState<"en" | "ta">(subject === "Tamil" ? "ta" : "en");
 
+  useEffect(() => {
+    const saved = localStorage.getItem("vaagai_lang");
+    if (subject !== "Tamil" && (saved === "en" || saved === "ta")) setLang(saved);
+  }, [subject]);
+
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -215,7 +220,7 @@ export default function PracticePage() {
                     : st === "wrong" ? <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2L10 10M10 2L2 10" stroke="white" strokeWidth="2" strokeLinecap="round" /></svg>
                     : <span style={{ fontSize: 11, fontWeight: 700, color: T.textSec }}>{labels[i]}</span>}
                 </div>
-                <span style={{ fontSize: 15, fontWeight: st !== "idle" ? 600 : 500, color: s.text, lineHeight: 1.5, flex: 1 }}>{optText}</span>
+                <span style={{ fontSize: 16, fontWeight: st !== "idle" ? 600 : 500, color: s.text, lineHeight: 1.5, flex: 1 }}>{optText}</span>
               </button>
             );
           })}

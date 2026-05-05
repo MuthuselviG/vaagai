@@ -28,6 +28,15 @@ const ALL_SUBJECTS = [
   { key: "Tamil", ta: "தமிழ்", icon: "📖" },
 ];
 
+const SUBJECT_COLORS: Record<string, { bg: string; border: string; iconBg: string }> = {
+  Polity:    { bg: "#FFF8E1", border: "#FFE082", iconBg: "#FFF3CD" },
+  History:   { bg: "#E8F5E9", border: "#A5D6A7", iconBg: "#D1FAE5" },
+  Tamil:     { bg: "#EDE9FE", border: "#C4B5FD", iconBg: "#DDD6FE" },
+  Geography: { bg: "#E3F2FD", border: "#90CAF9", iconBg: "#DBEAFE" },
+  Science:   { bg: "#FCE4EC", border: "#F48FB1", iconBg: "#FCE7F3" },
+  Economy:   { bg: "#E0F2F1", border: "#80CBC4", iconBg: "#CCFBF1" },
+};
+
 const ACTIVE_SUBJECTS = ["Polity", "History", "Tamil"];
 
 function generateLevels(total: number): { levelNum: number; questions: number; offset: number }[] {
@@ -112,13 +121,14 @@ export default function SubjectsPage() {
           const isOpen = openSubject === sub.key;
           const totalQSub = chapters.reduce((s, c) => s + c.count, 0);
 
-          return (
+              const colors = SUBJECT_COLORS[sub.key] ?? { bg: T.indigoLight, border: T.indigoMid, iconBg: T.indigoLight };
+              return (
             <div key={sub.key} style={{ marginBottom: 10 }}>
               <button
                 onClick={() => { setOpenSubject(isOpen ? null : sub.key); setOpenChapter(null); }}
                 style={{
-                  width: "100%", background: isOpen ? T.indigoLight : T.surface,
-                  border: `1.5px solid ${isOpen ? T.indigoMid : T.border}`,
+                  width: "100%", background: isOpen ? colors.bg : T.surface,
+                  border: `1.5px solid ${isOpen ? colors.border : T.border}`,
                   borderRadius: isOpen ? "14px 14px 0 0" : 14,
                   padding: "13px 14px", cursor: "pointer",
                   display: "flex", alignItems: "center", gap: 10,

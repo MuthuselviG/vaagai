@@ -62,7 +62,7 @@ export default function HomePage() {
           >
             <span style={{ color: T.indigo, fontFamily: "var(--font-noto-sans-tamil), var(--font-inter), sans-serif" }}>வாகை</span>
           </h1>
-          <p style={{ color: T.textSec, fontSize: 16, fontWeight: 500, marginBottom: 20, lineHeight: 1.6 }}>Built for Tamil Nadu&apos;s future.</p>
+          <p style={{ color: T.textSec, fontSize: 16, fontWeight: 500, marginBottom: 20, lineHeight: 1.6 }}>Crack TNPSC with AI-powered practice in Tamil</p>
 
           <button
             onClick={() => router.push("/subjects")}

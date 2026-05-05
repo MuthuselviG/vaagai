@@ -222,19 +222,20 @@ export default function ScorePage() {
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100dvh", background: "#EDEEF4", overflow: "hidden" }}>
 
-      <div style={{ background: "#fff", padding: "20px 18px 0", flexShrink: 0, borderBottom: "2px solid #E0E2ED" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-          <div style={{ fontSize: 24, fontWeight: 800, color: "#0A0A14", letterSpacing: -0.5 }}>{t.title}</div>
+      <div style={{ background: "#fff", padding: "16px 18px 0", flexShrink: 0, borderBottom: "2px solid #E0E2ED" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+          <div style={{ fontSize: 22, fontWeight: 800, color: "#0A0A14", letterSpacing: -0.5 }}>{t.title}</div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#444", background: "#EDEEF4", padding: "6px 12px", borderRadius: 10 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "#444", background: "#EDEEF4", padding: "5px 10px", borderRadius: 10, whiteSpace: "nowrap" }}>
               {totalSessions} {t.sessions}
             </div>
-            <div style={{ display: "flex", background: "#EDEEF4", borderRadius: 20, padding: 3, gap: 2 }}>
+            <div style={{ display: "flex", background: "#EDEEF4", borderRadius: 20, padding: 3, gap: 2, flexShrink: 0 }}>
               {["en", "ta"].map((l) => (
                 <button key={l} onClick={() => toggleLang(l)} style={{
-                  padding: "5px 12px", borderRadius: 16, fontSize: 12, fontWeight: 700, border: "none", cursor: "pointer",
+                  padding: "5px 10px", borderRadius: 16, fontSize: 11, fontWeight: 700, border: "none", cursor: "pointer",
                   background: lang === l ? "#3D3B8E" : "transparent",
                   color: lang === l ? "#fff" : "#444",
+                  whiteSpace: "nowrap",
                 }}>
                   {l === "en" ? "EN" : "தமிழ்"}
                 </button>
@@ -406,20 +407,24 @@ export default function ScorePage() {
           onClick={() => router.push("/practice/" + encodeURIComponent(ctaSession.subject) + "/" + encodeURIComponent(ctaSession.chapter) + "?level=" + ctaSession.level + "&offset=" + ctaSession.offset + "&limit=" + ctaSession.limit)}
           style={{
             position: "fixed", bottom: 68, left: 14, right: 14, background: "#3D3B8E",
-            borderRadius: 16, padding: "16px 18px", display: "flex", alignItems: "center",
+            borderRadius: 16, padding: "14px 18px", display: "flex", alignItems: "center",
             justifyContent: "space-between", boxShadow: "0 8px 28px rgba(61,59,142,0.4)", cursor: "pointer", zIndex: 10,
+            border: "1.5px solid rgba(255,255,255,0.15)",
           }}
         >
           <div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.65)", marginBottom: 3 }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.55)", marginBottom: 3, textTransform: "uppercase", letterSpacing: 0.5 }}>
               {lastIncomplete ? t.continueOff : t.practiceAgain}
             </div>
             <div style={{ fontSize: 16, fontWeight: 800, color: "#fff" }}>
               {ctaSession.chapter} {t.level} {ctaSession.level}
             </div>
           </div>
-          <div style={{ width: 40, height: 40, background: "rgba(255,255,255,0.18)", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, color: "#fff", flexShrink: 0, fontWeight: 800 }}>
-            &gt;
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+            <div style={{ width: 40, height: 40, background: "rgba(255,255,255,0.18)", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, color: "#fff", flexShrink: 0, fontWeight: 800 }}>
+              &gt;
+            </div>
+            <div style={{ fontSize: 9, color: "rgba(255,255,255,0.5)", fontWeight: 600, letterSpacing: 0.3 }}>TAP</div>
           </div>
         </div>
       )}
