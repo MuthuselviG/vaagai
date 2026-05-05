@@ -26,25 +26,18 @@ export type ChapterCount = {
 
 export async function fetchChapterCounts(subject: string, lang: "en" | "ta"): Promise<ChapterCount[]> {
   const effectiveLang = subject === "Tamil" ? "ta" : lang;
-  const { data, error } = await supabase
-    .from("questions")
-    .select("chapter")
-    .eq("subject", subject)
-    .eq("lang", effectiveLang)
-    .not("chapter", "is", null);
+
+  const { data, error } = await supabase.rpc("get_chapter_counts", {
+    p_subject: subject,
+    p_lang: effectiveLang,
+  });
 
   if (error) throw error;
 
-  const counts: Record<string, number> = {};
-  for (const row of (data ?? [])) {
-    const ch = row.chapter as string;
-    counts[ch] = (counts[ch] ?? 0) + 1;
-  }
-
-  return Object.entries(counts)
-    .map(([chapter, count]) => ({ chapter, count }))
+  return (data as ChapterCount[])
     .sort((a, b) => a.chapter.localeCompare(b.chapter));
 }
+
 
 export async function fetchQuestionsForLevel(
   subject: string,
