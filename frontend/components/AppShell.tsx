@@ -42,7 +42,7 @@ function BarIcon({ active }: { active: boolean }) {
 const tabs = [
   { id: "home" as TabId, label: "Home", path: "/", Icon: HomeIcon },
   { id: "practice" as TabId, label: "Practice", path: "/subjects", Icon: ClockIcon },
-  { id: "scores" as TabId, label: "Scores", path: "/scores", Icon: BarIcon },
+  { id: "scores" as TabId, label: "Scores", path: "/score", Icon: BarIcon },
 ];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
