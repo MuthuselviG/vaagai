@@ -101,7 +101,7 @@ export default function SubjectsPage() {
       <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "16px 18px 14px", flexShrink: 0 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ background: T.indigoLight, border: `1px solid ${T.indigoMid}`, borderRadius: 10, padding: "5px 12px", color: T.indigo, fontSize: 11, fontWeight: 800, letterSpacing: 0.5 }}>
-            TNPSC GROUP 4
+            TNPSC Exam Prep
           </div>
           <LangToggle lang={lang} setLang={(l) => { setLang(l); setOpenChapter(null); }} />
         </div>
