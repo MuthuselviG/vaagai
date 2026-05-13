@@ -3,7 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-const EXAM_CHIPS = [
+export type ExamChip = (typeof EXAM_CHIPS)[number];
+export type ExamChipId = ExamChip["id"];
+
+export const EXAM_CHIPS = [
   {
     id: "group4",
     en: "Group 4",
@@ -24,9 +27,13 @@ const EXAM_CHIPS = [
     en: "TNSURB",
     ta: "காவல் துறை",
   },
-];
+]as const;
 
-const ROLE_CHIPS = [
+export type RoleChip = (typeof ROLE_CHIPS)[number];
+export type RoleChipId = RoleChip["id"];
+
+
+export const ROLE_CHIPS = [
   {
     id: "aspirant",
     title: "Aspirant",
@@ -42,16 +49,18 @@ const ROLE_CHIPS = [
     title: "Expert",
     subtitle: "Teacher / Academy",
   },
-];
+] as const;
 
-const TAMIL_NADU_TALUKS = [
+export type TamilNaduTaluk = (typeof TAMIL_NADU_TALUKS)[number];
+
+export const TAMIL_NADU_TALUKS = [
   "Abiramam", "Alandur", "Alanganallur", "Alangudi", "Alangulam",
  "Aravakurichi", "Ariyalur", "Arkonam", "Arni", "Aruppukkottai",
  "Attur", "Avanashi", "Bhavani", "Chengalpattu", "Chengam",
  "Chennai North", "Chennai South", "Cheyyar", "Chidambaram", "Coimbatore North",
  "Coimbatore South", "Coonoor", "Cuddalore", "Denkanikottai", "Dharmapuri",
  "Dindigul", "Erode", "Gingee", "Gobichettipalayam", "Gudiyatham",
- "Harur", "Hosur", "Illuppur", "Jayamkondam", "Kadayanallur",
+ "Harur Taluk", "Hosur", "Illuppur", "Jayamkondam", "Kadayanallur",
  "Kancheepuram", "Kangeyam", "Kanyakumari", "Karaikudi", "Karur",
  "Katpadi", "Kilvelur", "Kodaikanal", "Kodumudi", "Kolathur",
  "Kovilpatti", "Krishnagiri", "Kumbakonam", "Kunnam", "Kurinjipadi",
@@ -69,8 +78,8 @@ const TAMIL_NADU_TALUKS = [
  "Thoothukudi", "Tindivanam", "Tiruchirapalli East", "Tiruchirapalli West", "Tirunelveli",
  "Tirupathur", "Tiruppur", "Tiruttani", "Tiruvallur", "Tiruvarur",
  "Udumalaipettai", "Ulundurpet", "Usilampatti", "Uthangarai", "Vellore",
- "Villupuram", "Virudhachalam", "Virudhunagar", "Wandiwash", "Yercaud"
-];
+ "Villupuram", "Virudhachalam", "Virudhunagar", "Vandavasi", "Yercaud"
+] as const;
 
 function ProgressDots({
   step,
