@@ -15,8 +15,8 @@ export default function HomePage() {
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
-    if (!localStorage.getItem("vaagai_lang")) {
-      localStorage.setItem("vaagai_lang", "ta");
+    if (!localStorage.getItem("mcqpalagu_lang")) {
+      localStorage.setItem("mcqpalagu_lang", "ta");
     }
     supabase.auth.getSession().then(({ data: { session } }) => {
       setLoggedIn(!!session);
@@ -65,18 +65,11 @@ export default function HomePage() {
           <span style={{ color: T.indigo, fontSize: 11, fontWeight: 700, letterSpacing: 0.8 }}>TNPSC EXAM PREP</span>
         </div>
 
-        <h1
-          style={{
-            fontSize: 36,
-            fontWeight: 900,
-            color: T.text,
-            letterSpacing: -1.2,
-            lineHeight: 1.1,
-            marginBottom: 8
-          }}
-        >
-          <span style={{ color: T.indigo, fontFamily: "var(--font-noto-sans-tamil), var(--font-inter), sans-serif" }}>வாகை</span>
-        </h1>
+        <img
+          src="/logo.png"
+          alt="MCQ பழகு"
+          style={{ height: 80, width: "auto", marginBottom: 8 }}
+        />
         <p style={{ color: T.textSec, fontSize: 16, fontWeight: 500, marginBottom: 20, lineHeight: 1.6 }}>Crack TNPSC with AI-powered practice in Tamil</p>
 
         <button

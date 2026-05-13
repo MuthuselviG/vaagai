@@ -14,8 +14,13 @@ const notoSansTamil = Noto_Sans_Tamil({
 });
 
 export const metadata: Metadata = {
-  title: "Vaagai - TNPSC Practice",
-  description: "Samacheer MCQ practice for TN exam aspirants"
+  title: "MCQ பழகு - TNPSC Practice",
+  description: "MCQ பழகு - Samacheer MCQ practice for TN exam aspirants",
+  openGraph: {
+    title: "MCQ பழகு - TNPSC Practice",
+    description: "MCQ பழகு - Samacheer MCQ practice for TN exam aspirants",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

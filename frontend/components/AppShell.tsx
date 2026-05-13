@@ -148,10 +148,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         }}>
           {/* Logo */}
           <div style={{ marginBottom: 36, paddingLeft: 12 }}>
-            <div style={{ color: T.indigo, fontSize: 26, fontWeight: 900, letterSpacing: -1, fontFamily: "var(--font-noto-sans-tamil), var(--font-inter), sans-serif" }}>
-              வாகை
-            </div>
-            <div style={{ color: T.textTer, fontSize: 11, fontWeight: 600, letterSpacing: 0.5, marginTop: 2 }}>TNPSC EXAM PREP</div>
+            <img src="/logo.png" alt="MCQ பழகு" style={{ height: 48, width: "auto", display: "block" }} />
           </div>
 
           {/* Nav items */}
