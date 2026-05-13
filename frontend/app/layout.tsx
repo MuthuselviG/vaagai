@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Inter, Noto_Sans_Tamil } from "next/font/google";
 import AppShell from "../components/AppShell";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -37,6 +38,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         }}
       >
         <AppShell>{children}</AppShell>
+      <Analytics /> 
       </body>
     </html>
   );
