@@ -2,85 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
-export type ExamChip = (typeof EXAM_CHIPS)[number];
-export type ExamChipId = ExamChip["id"];
-
-export const EXAM_CHIPS = [
-  {
-    id: "group4",
-    en: "Group 4",
-    ta: "குரூப் 4",
-  },
-  {
-    id: "group2",
-    en: "Group 2",
-    ta: "குரூப் 2",
-  },
-  {
-    id: "tet",
-    en: "TET",
-    ta: "ஆசிரியர் தகுதி தேர்வு",
-  },
-  {
-    id: "tnsurb",
-    en: "TNSURB",
-    ta: "காவல் துறை",
-  },
-]as const;
-
-export type RoleChip = (typeof ROLE_CHIPS)[number];
-export type RoleChipId = RoleChip["id"];
-
-
-export const ROLE_CHIPS = [
-  {
-    id: "aspirant",
-    title: "Aspirant",
-    subtitle: "Preparing for exams",
-  },
-  {
-    id: "buddy",
-    title: "Study Buddy",
-    subtitle: "சேர்ந்து படிப்போம்",
-  },
-  {
-    id: "expert",
-    title: "Expert",
-    subtitle: "Teacher / Academy",
-  },
-] as const;
-
-export type TamilNaduTaluk = (typeof TAMIL_NADU_TALUKS)[number];
-
-export const TAMIL_NADU_TALUKS = [
-  "Abiramam", "Alandur", "Alanganallur", "Alangudi", "Alangulam",
- "Aravakurichi", "Ariyalur", "Arkonam", "Arni", "Aruppukkottai",
- "Attur", "Avanashi", "Bhavani", "Chengalpattu", "Chengam",
- "Chennai North", "Chennai South", "Cheyyar", "Chidambaram", "Coimbatore North",
- "Coimbatore South", "Coonoor", "Cuddalore", "Denkanikottai", "Dharmapuri",
- "Dindigul", "Erode", "Gingee", "Gobichettipalayam", "Gudiyatham",
- "Harur Taluk", "Hosur", "Illuppur", "Jayamkondam", "Kadayanallur",
- "Kancheepuram", "Kangeyam", "Kanyakumari", "Karaikudi", "Karur",
- "Katpadi", "Kilvelur", "Kodaikanal", "Kodumudi", "Kolathur",
- "Kovilpatti", "Krishnagiri", "Kumbakonam", "Kunnam", "Kurinjipadi",
- "Lalgudi", "Madurai Central", "Madurai East", "Madurai North", "Madurai South",
- "Madurai West", "Manamadurai", "Mannargudi", "Marakkanam", "Mayiladuthurai",
- "Melur", "Mettur", "Modakkurichi", "Musiri", "Nagercoil",
- "Namakkal", "Nanguneri", "Natham", "Needamangalam", "Nilakottai",
- "Omalur", "Ooty", "Palani", "Palladam", "Pallipatti",
- "Panruti", "Papanasam", "Paramathi-Velur", "Pattukottai", "Pennadam",
- "Perambalur", "Periyakulam", "Perundurai", "Pollachi", "Polur",
- "Pondicherry", "Ponneri", "Pudukkottai", "Rajapalayam", "Ramanathapuram",
- "Rasipuram", "Salem", "Sankagiri", "Sathyamangalam", "Sattur",
- "Sivaganga", "Sivakasi", "Srivilliputhur", "Tenkasi", "Thanjavur",
- "Theni", "Thiruvaiyaru", "Thiruvallur", "Thiruvannamalai", "Thiruvennainallur",
- "Thoothukudi", "Tindivanam", "Tiruchirapalli East", "Tiruchirapalli West", "Tirunelveli",
- "Tirupathur", "Tiruppur", "Tiruttani", "Tiruvallur", "Tiruvarur",
- "Udumalaipettai", "Ulundurpet", "Usilampatti", "Uthangarai", "Vellore",
- "Villupuram", "Virudhachalam", "Virudhunagar", "Vandavasi", "Yercaud"
-] as const;
-
+import { EXAM_CHIPS } from "./chips/examchips";
+import { ROLE_CHIPS } from "./chips/rolechip";
+import { TAMIL_NADU_TALUKS } from "./chips/taluk";
 function ProgressDots({
   step,
 }: {
