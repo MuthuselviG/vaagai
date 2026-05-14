@@ -24,8 +24,8 @@ type LocalSession = {
   responses: LocalResponse[];
 };
 
-const STORAGE_KEY = "vaagai_sessions";
-const LANG_KEY = "vaagai_lang";
+const STORAGE_KEY = "mcqpalagu_sessions";
+const LANG_KEY = "mcqpalagu_lang";
 
 function getSessions(): LocalSession[] {
   try {

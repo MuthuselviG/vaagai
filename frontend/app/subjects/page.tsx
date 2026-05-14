@@ -68,7 +68,7 @@ export default function SubjectsPage() {
   const [openChapter, setOpenChapter] = useState<string | null>(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem("vaagai_lang");
+    const saved = localStorage.getItem("mcqpalagu_lang");
     if (saved === "en" || saved === "ta") setLang(saved);
   }, []);
 

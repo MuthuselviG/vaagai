@@ -33,7 +33,7 @@ export default function PracticePage() {
   const [lang, setLang] = useState<"en" | "ta">(subject === "Tamil" ? "ta" : "en");
 
   useEffect(() => {
-    const saved = localStorage.getItem("vaagai_lang");
+    const saved = localStorage.getItem("mcqpalagu_lang");
     if (subject !== "Tamil" && (saved === "en" || saved === "ta")) setLang(saved);
   }, [subject]);
 
