@@ -6,7 +6,7 @@ export const ROLE_CHIPS = [
     subtitle: "Preparing for exams",
   },
   {
-    id: "buddy",
+    id: "study_buddy",
     title: "Study Buddy",
     subtitle: "சேர்ந்து படிப்போம்",
   },
