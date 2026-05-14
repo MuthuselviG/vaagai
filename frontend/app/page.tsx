@@ -49,22 +49,6 @@ export default function HomePage() {
           overflowY: "auto"
         }}
       >
-        <div
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            background: T.indigoLight,
-            border: `1px solid ${T.indigoMid}`,
-            borderRadius: 20,
-            padding: "6px 14px",
-            marginBottom: 16
-          }}
-        >
-          <div style={{ width: 8, height: 8, borderRadius: "50%", background: T.indigo }} />
-          <span style={{ color: T.indigo, fontSize: 11, fontWeight: 700, letterSpacing: 0.8 }}>TNPSC EXAM PREP</span>
-        </div>
-
         <img
           src="/logo.png"
           alt="MCQ பழகு"
@@ -97,11 +81,11 @@ export default function HomePage() {
             onClick={() => router.push("/login")}
             style={{
               width: "100%",
-              background: "transparent",
-              border: `1.5px solid ${T.border}`,
+              background: "#fff",
+              border: `1.5px solid ${T.indigo}`,
               borderRadius: 16,
               padding: "16px",
-              color: T.textSec,
+              color: T.indigo,
               fontSize: 15,
               fontWeight: 600,
               cursor: "pointer"
@@ -111,43 +95,44 @@ export default function HomePage() {
           </button>
         )}
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 10, width: "100%", marginTop: 18 }}>
+        <div style={{ width: "100%", marginTop: 18, background: T.surface, borderRadius: 16, overflow: "hidden", border: `1px solid ${T.border}`, boxShadow: shadow.sm }}>
           {[
-            { icon: "📚", text: "10,000+ PYQ", sub: "Curated by experts" },
-            { icon: "✨", text: "AI-powered Practice", sub: "Personalised for you", indigo: true },
-            { icon: "✅", text: "TNPSC Ready", sub: "Updated syllabus" }
-          ].map((feature) => (
+            { icon: "✨", bg: T.indigoLight, text: "AI-powered", sub: "Gemini powered explanations", indigo: true },
+            { icon: "📚", bg: "#fff4ed", text: "10,000+ PYQ", sub: "Previous year questions across all subjects" },
+            { icon: "✅", bg: "#edfaf4", text: "TNPSC Group 4 Ready", sub: "Updated syllabus" }
+          ].map((feature, i) => (
             <div
               key={feature.text}
               style={{
-                background: feature.indigo ? T.indigoLight : T.surface,
-                border: `1px solid ${feature.indigo ? T.indigoMid : T.border}`,
-                borderRadius: 14,
-                padding: "13px 16px",
                 display: "flex",
                 alignItems: "center",
-                gap: 12,
-                boxShadow: shadow.sm
+                gap: 14,
+                padding: "16px 18px",
+                borderTop: i > 0 ? `1px solid ${T.border}` : "none"
               }}
             >
               <div
                 style={{
-                  width: 38,
-                  height: 38,
-                  borderRadius: 10,
-                  background: feature.indigo ? T.indigo : T.indigoLight,
+                  width: 44,
+                  height: 44,
+                  borderRadius: 12,
+                  background: feature.bg,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: 18,
+                  fontSize: 22,
                   flexShrink: 0
                 }}
               >
                 {feature.icon}
               </div>
               <div>
-                <div style={{ color: feature.indigo ? T.indigo : T.text, fontSize: 15, fontWeight: 700 }}>{feature.text}</div>
-                <div style={{ color: feature.indigo ? T.indigoDark : T.textTer, fontSize: 13, fontWeight: 500, marginTop: 1 }}>{feature.sub}</div>
+                <div style={{ color: feature.indigo ? T.indigo : T.text, fontSize: 15, fontWeight: 700 }}>
+                  {feature.text}
+                </div>
+                <div style={{ color: T.textTer, fontSize: 12, fontWeight: 500, marginTop: 2 }}>
+                  {feature.sub}
+                </div>
               </div>
             </div>
           ))}
