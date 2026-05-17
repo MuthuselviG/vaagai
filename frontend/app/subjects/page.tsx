@@ -103,13 +103,14 @@ export default function SubjectsPage() {
       }
       setChapterData(results);
 
-      // PYQ total count
+      // PYQ total count for top header - tamil only, group4
       try {
         const { count } = await supabase
           .from("questions")
           .select("*", { count: "exact", head: true })
           .eq("source_type", "pyq")
-          .contains("pyq_groups", ["group4"]);
+          .contains("pyq_groups", ["group4"])
+          .eq("lang", "ta");
         setPyqCount(count ?? 0);
       } catch {
         setPyqCount(0);
@@ -121,7 +122,8 @@ export default function SubjectsPage() {
           .from("questions")
           .select("subject, chapter, pyq_years")
           .eq("source_type", "pyq")
-          .contains("pyq_groups", ["group4"]);
+          .contains("pyq_groups", ["group4"])
+          .eq("lang", "ta");
 
         if (data) {
           const grouped: Record<string, Record<string, { count: number; years: Set<number> }>> = {};
@@ -152,12 +154,13 @@ export default function SubjectsPage() {
   }, [lang]);
 
   const totalChapters = Object.values(chapterData).reduce((s, v) => s + v.length, 0);
-  const totalQ = Object.values(chapterData).reduce((s, v) => s + v.reduce((a, c) => a + c.count, 0), 0) + pyqCount;
+  const samacheerQ = Object.values(chapterData).reduce((s, v) => s + v.reduce((a, c) => a + c.count, 0), 0);
+  const totalQ = samacheerQ + pyqCount;
   const activeSubjects = ALL_SUBJECTS.filter(s => ACTIVE_SUBJECTS.includes(s.key));
   const comingSoonSubjects = ALL_SUBJECTS.filter(s => !ACTIVE_SUBJECTS.includes(s.key));
 
   return (
-    <div style={{ background: T.bg, height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+    <div style={{ background: T.bg, height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden", maxWidth: 600, margin: "0 auto", width: "100%" }}>
 
       <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "16px 18px 14px", flexShrink: 0 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -186,7 +189,7 @@ export default function SubjectsPage() {
             <div>
               <div style={{ fontSize: 14, fontWeight: 800, color: T.text }}>{lang === "ta" ? "குரூப் 4" : "Group 4"}</div>
               <div style={{ fontSize: 11, color: T.textSec, marginTop: 1 }}>
-                {lang === "ta" ? `9 ஆண்டுகள் · ${pyqCount > 0 ? pyqCount.toLocaleString() : "…"} வினாக்கள்` : `9 years · ${pyqCount > 0 ? pyqCount.toLocaleString() : "…"} questions`}
+                {lang === "ta" ? `9 ஆண்டுகள் · 900 வினாக்கள்` : `9 years · 900 questions`}
               </div>
               <div style={{ fontSize: 11, color: T.indigo, fontWeight: 700, marginTop: 3 }}>
                 {lang === "ta" ? "பயிற்சி செய்ய ஆண்டை தேர்வு செய்யுங்கள்" : "Select a year to start practising"}
@@ -231,7 +234,8 @@ export default function SubjectsPage() {
             const allChapters = Object.entries(mergedMap).map(([chapter, v]) => ({ chapter, ...v }));
 
             const isOpen = openSubject === sub.key;
-            const totalQSub = allChapters.reduce((s, c) => s + c.count, 0);
+            // If pyqChapters didn't merge (empty), add pyqCount directly to Tamil total
+            const totalQSub = allChapters.reduce((s, c) => s + c.count, 0) + (sub.key === "Tamil" && pyqChapters.length === 0 ? pyqCount : 0);
             const colors = SUBJECT_COLORS[sub.key] ?? { bg: T.indigoLight, border: T.indigoMid, iconBg: T.indigoLight };
 
             return (

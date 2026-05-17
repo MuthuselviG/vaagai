@@ -71,7 +71,6 @@ export async function fetchQuestionsForPYQ(
     .from("questions")
     .select("id, question, lang, options, correct_option, explanation, class, subject, chapter, topic, difficulty, source_type")
     .contains("pyq_years", [year])
-    .contains("pyq_groups", [group])
     .eq("lang", lang)
     .eq("source_type", "pyq")
     .limit(100);

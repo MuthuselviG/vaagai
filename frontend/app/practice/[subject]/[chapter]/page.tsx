@@ -171,7 +171,7 @@ export default function PracticePage() {
   const labels = ["A", "B", "C", "D"];
 
   return (
-    <div style={{ background: T.bg, height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+    <div style={{ background: T.bg, height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden", maxWidth: 600, margin: "0 auto", width: "100%" }}>
 
       {/* Header */}
       <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "14px 16px" }}>
