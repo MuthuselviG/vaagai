@@ -207,7 +207,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Main content */}
-        <div className="main-content" style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+        <div className="main-content" style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: "100vh", maxWidth: 480, width: "100%" }}>
           {children}
         </div>
 
