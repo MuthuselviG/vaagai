@@ -11,6 +11,7 @@ export type Question = {
   lang: "en" | "ta";
   options: string[];
   correct_option: string;
+  explanation: string | null;
   class: number | null;
   subject: string;
   chapter: string | null;
@@ -38,7 +39,6 @@ export async function fetchChapterCounts(subject: string, lang: "en" | "ta"): Pr
     .sort((a, b) => a.chapter.localeCompare(b.chapter));
 }
 
-
 export async function fetchQuestionsForLevel(
   subject: string,
   chapter: string,
@@ -50,11 +50,30 @@ export async function fetchQuestionsForLevel(
 
   const { data, error } = await supabase
     .from("questions")
-    .select("id, question, lang, options, correct_option, class, subject, chapter, topic, difficulty, source_type")
+    .select("id, question, lang, options, correct_option, explanation, class, subject, chapter, topic, difficulty, source_type")
     .eq("subject", subject)
     .eq("chapter", chapter)
     .eq("lang", effectiveLang)
     .range(offset, offset + limit - 1);
+
+  if (error) throw error;
+  return (data as Question[]) ?? [];
+}
+
+export async function fetchQuestionsForPYQ(
+  year: number,
+  group: string,
+  paper: "tamil" | "general"
+): Promise<Question[]> {
+  const lang = paper === "tamil" ? "ta" : "en";
+
+  const { data, error } = await supabase
+    .from("questions")
+    .select("id, question, lang, options, correct_option, explanation, class, subject, chapter, topic, difficulty, source_type")
+    .contains("pyq_years", [year])
+    .eq("lang", lang)
+    .eq("source_type", "pyq")
+    .limit(100);
 
   if (error) throw error;
   return (data as Question[]) ?? [];

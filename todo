@@ -1,5 +1,0 @@
-Important one-time step
-Run this in Supabase SQL editor (after supabase/schema.sql):
-
-supabase/session_consistency.sql
-After that, your session resume/next-order consistency is production-safe.

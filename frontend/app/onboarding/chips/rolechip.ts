@@ -1,4 +1,3 @@
-
 export const ROLE_CHIPS = [
   {
     id: "aspirant",
