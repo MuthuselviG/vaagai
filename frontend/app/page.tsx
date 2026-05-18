@@ -71,7 +71,7 @@ export default function HomePage() {
       .eq("is_published", true)
       .eq("is_featured", true)
       .limit(3)
-      .then(({ data }) => { if (data) setFeaturedPacks(data as FeaturedPack[]); });
+      .then(({ data }) => { if (data) setFeaturedPacks(data as unknown as FeaturedPack[]); });
 
     return () => subscription.unsubscribe();
   }, []);

@@ -193,7 +193,7 @@ export default function SubjectsPage() {
           .eq("is_published", true)
           .eq("is_featured", true)
           .limit(3);
-        if (data) setFeaturedPacks(data as FeaturedPack[]);
+        if (data) setFeaturedPacks(data as unknown as FeaturedPack[]);
       } catch {
         setFeaturedPacks([]);
       }
