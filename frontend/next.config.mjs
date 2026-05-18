@@ -6,12 +6,6 @@ const __dirname = path.dirname(__filename)
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-<<<<<<< HEAD
-  output: 'standalone',
-  outputFileTracingRoot: path.join(__dirname, '../../'),
-}
-export default nextConfig
-=======
   reactStrictMode: true,
   redirects: async () => [
     {
@@ -24,4 +18,3 @@ export default nextConfig
 };
 
 export default nextConfig;
->>>>>>> origin/main
