@@ -78,3 +78,15 @@ export async function fetchQuestionsForPYQ(
   if (error) throw error;
   return (data as Question[]) ?? [];
 }
+
+// NEW — fetch questions for a creator pack
+export async function fetchQuestionsForPack(packId: string): Promise<Question[]> {
+  const { data, error } = await supabase
+    .from("questions")
+    .select("id, question, lang, options, correct_option, explanation, class, subject, chapter, topic, difficulty, source_type")
+    .eq("pack_id", packId)
+    .order("pack_order", { ascending: true });
+
+  if (error) throw error;
+  return (data as Question[]) ?? [];
+}

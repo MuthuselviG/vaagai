@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { T, shadow } from "../../../../lib/tokens";
-import { fetchQuestionsForLevel, fetchQuestionsForPYQ, type Question } from "../../../../lib/supabase";
+import { fetchQuestionsForLevel, fetchQuestionsForPYQ, fetchQuestionsForPack, type Question } from "../../../../lib/supabase";
 import { startSession, recordResponse, completeSession } from "../../../../lib/session";
 
 export default function PracticePage() {
@@ -15,6 +15,9 @@ export default function PracticePage() {
   const chapter = decodeURIComponent(params.chapter as string);
 
   const isPYQ = subject === "pyq";
+  const isPack = subject === "pack"; // NEW — pack mode
+  const packId = searchParams.get("pack_id") ?? null;
+
   const pyqYear = parseInt(searchParams.get("year") ?? "0");
   const pyqPaper = (searchParams.get("paper") ?? "tamil") as "tamil" | "general";
   const pyqGroup = chapter;
@@ -27,11 +30,13 @@ export default function PracticePage() {
     "Comprehension": "புரிதல்",
   };
 
-  const chapterLabel = isPYQ
-    ? `${pyqYear} — ${pyqPaper === "tamil" ? "தமிழ்" : "பொது அறிவு"}`
-    : subject === "Tamil"
-      ? (TAMIL_CHAPTER_NAMES[searchParams.get("label") ?? chapter] ?? searchParams.get("label") ?? chapter)
-      : (searchParams.get("label") ?? chapter);
+  const chapterLabel = isPack
+    ? (searchParams.get("label") ?? "Expert Pack")
+    : isPYQ
+      ? `${pyqYear} — ${pyqPaper === "tamil" ? "தமிழ்" : "பொது அறிவு"}`
+      : subject === "Tamil"
+        ? (TAMIL_CHAPTER_NAMES[searchParams.get("label") ?? chapter] ?? searchParams.get("label") ?? chapter)
+        : (searchParams.get("label") ?? chapter);
 
   const level = parseInt(searchParams.get("level") ?? "1");
   const offset = parseInt(searchParams.get("offset") ?? "0");
@@ -42,11 +47,11 @@ export default function PracticePage() {
   );
 
   useEffect(() => {
-    if (!isPYQ && subject !== "Tamil") {
+    if (!isPYQ && !isPack && subject !== "Tamil") {
       const saved = localStorage.getItem("mcqpalagu_lang");
       if (saved === "en" || saved === "ta") setLang(saved as "en" | "ta");
     }
-  }, [subject, isPYQ]);
+  }, [subject, isPYQ, isPack]);
 
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
@@ -87,12 +92,16 @@ export default function PracticePage() {
     setRevealed(false);
     setShowExplanation(false);
     sessionIdRef.current = startSession(
-      isPYQ ? `pyq_${pyqGroup}_${pyqYear}` : subject,
-      isPYQ ? pyqPaper : chapter,
-      level, offset, isPYQ ? 100 : limit
+      isPack ? `pack_${packId}` : isPYQ ? `pyq_${pyqGroup}_${pyqYear}` : subject,
+      isPack ? (packId ?? "pack") : isPYQ ? pyqPaper : chapter,
+      level, offset, isPYQ || isPack ? 100 : limit
     );
 
-    if (isPYQ) {
+    if (isPack && packId) {
+      fetchQuestionsForPack(packId)
+        .then(qs => { setQuestions(qs); setLoading(false); })
+        .catch(() => { setError("Could not load pack questions."); setLoading(false); });
+    } else if (isPYQ) {
       fetchQuestionsForPYQ(pyqYear, pyqGroup, pyqPaper)
         .then(qs => { setQuestions(qs); setLoading(false); })
         .catch(() => { setError("வினாக்களை ஏற்ற முடியவில்லை."); setLoading(false); });
@@ -101,7 +110,7 @@ export default function PracticePage() {
         .then(qs => { setQuestions(qs); setLoading(false); })
         .catch(() => { setError("Could not load questions."); setLoading(false); });
     }
-  }, [subject, chapter, lang, offset, limit, level, isPYQ, pyqYear, pyqGroup, pyqPaper]);
+  }, [subject, chapter, lang, offset, limit, level, isPYQ, isPack, packId, pyqYear, pyqGroup, pyqPaper]);
 
   useEffect(() => {
     questionStartRef.current = Date.now();
@@ -137,7 +146,7 @@ export default function PracticePage() {
       const correct = Object.entries(answers).filter(
         ([i, ans]) => ans === questions[parseInt(i)]?.correct_option
       ).length;
-      router.push(`/score?correct=${correct}&total=${total}&subject=${encodeURIComponent(isPYQ ? `குரூப் 4 ${pyqYear}` : subject)}&chapter=${encodeURIComponent(chapterLabel)}&level=${level}&offset=${offset}&limit=${limit}&sid=${sessionIdRef.current}`);
+      router.push(`/score?correct=${correct}&total=${total}&subject=${encodeURIComponent(isPack ? "Expert Pack" : isPYQ ? `குரூப் 4 ${pyqYear}` : subject)}&chapter=${encodeURIComponent(chapterLabel)}&level=${level}&offset=${offset}&limit=${limit}&sid=${sessionIdRef.current}`);
     } else {
       setCurrentIndex(i => i + 1);
       setTimeout(() => { if (scrollRef.current) scrollRef.current.scrollTop = 0; }, 0);
@@ -182,7 +191,7 @@ export default function PracticePage() {
           <div style={{ flex: 1, textAlign: "center", minWidth: 0 }}>
             <div style={{ color: T.text, fontSize: 13, fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{chapterLabel}</div>
             <div style={{ color: T.textSec, fontSize: 11, marginTop: 1 }}>
-              {isPYQ ? "TNPSC PYQ" : `${subject === "Tamil" ? "தமிழ்" : subject} · Level ${level}`}
+              {isPack ? "Expert Pack" : isPYQ ? "TNPSC PYQ" : `${subject === "Tamil" ? "தமிழ்" : subject} · Level ${level}`}
             </div>
           </div>
           <div style={{ width: 38 }} />
@@ -224,6 +233,10 @@ export default function PracticePage() {
                 <div style={{ display: "inline-flex", alignItems: "center", gap: 4, background: "#FFF3E0", border: "1px solid #FFD180", borderRadius: 8, padding: "3px 10px" }}>
                   <span style={{ color: "#E65100", fontSize: 10, fontWeight: 800 }}>⭐ PYQ</span>
                 </div>
+              ) : isPack ? (
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 4, background: T.indigoLight, border: `1px solid ${T.indigoMid}`, borderRadius: 8, padding: "3px 10px" }}>
+                  <span style={{ color: T.indigo, fontSize: 10, fontWeight: 800 }}>🎯 EXPERT</span>
+                </div>
               ) : (
                 <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: T.indigoLight, borderRadius: 8, padding: "3px 10px" }}>
                   <div style={{ width: 5, height: 5, borderRadius: "50%", background: T.indigo }} />
@@ -264,7 +277,6 @@ export default function PracticePage() {
           })}
         </div>
 
-        {/* Explanation — always open after answer revealed */}
         {revealed && q.explanation && (
           <div style={{ marginTop: 12, background: T.indigoLight, border: `1.5px solid ${T.indigoMid}`, borderRadius: 13, padding: "16px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
@@ -301,7 +313,7 @@ export default function PracticePage() {
               <>
                 <div style={{ marginBottom: 16 }}>
                   <div style={{ fontSize: 16, fontWeight: 700, color: T.text }}>{lang === "ta" ? "கேள்வி புகாரளி" : "Report this question"}</div>
-                  <div style={{ fontSize: 12, color: T.textSec, marginTop: 2 }}>{lang === "ta" ? "காரணத்தைத் தேர்ந்தெடுக்கவும்" : "Select a reason"}</div>
+                  <div style={{ fontSize: 12, color: T.textSec, marginTop: 2 }}>{lang === "ta" ? "காரணத்தைத் தேர்வு செய்யுங்கள்" : "Select a reason"}</div>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 2, marginBottom: 20 }}>
                   {reportReasons[lang].map((reason, i) => (
