@@ -10,6 +10,15 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
+type Creator = {
+  id: string;
+  name: string;
+  slug: string;
+  type: "individual" | "academy";
+  verified: boolean;
+  accent_color: string;
+};
+
 type Pack = {
   id: string;
   name: string;
@@ -18,14 +27,7 @@ type Pack = {
   exams: string[] | null;
   question_count: number;
   is_free: boolean;
-  creators: {
-    id: string;
-    name: string;
-    slug: string;
-    type: "individual" | "academy";
-    verified: boolean;
-    accent_color: string;
-  };
+  creators: Creator | Creator[];
 };
 
 const ACCENT_GRADIENTS: Record<string, string> = {
@@ -104,8 +106,9 @@ export default function PackDetailPage() {
     </div>
   );
 
-  const gradient = ACCENT_GRADIENTS[pack.creators.accent_color] ?? ACCENT_GRADIENTS.navy;
-  const initials = pack.creators.name.charAt(0).toUpperCase();
+  const creator = Array.isArray(pack.creators) ? pack.creators[0] : pack.creators;
+  const gradient = ACCENT_GRADIENTS[creator.accent_color] ?? ACCENT_GRADIENTS.navy;
+  const initials = creator.name.charAt(0).toUpperCase();
   const estimatedMins = Math.round((pack.question_count * 30) / 60);
 
   return (
@@ -159,21 +162,21 @@ export default function PackDetailPage() {
 
         {/* Creator mini card */}
         <div
-          onClick={() => router.push(`/experts/${pack.creators.slug}`)}
+          onClick={() => router.push(`/experts/${creator.slug}`)}
           style={{ background: T.surface, borderRadius: 16, padding: "13px 14px", display: "flex", alignItems: "center", gap: 12, marginBottom: 14, border: `1.5px solid ${T.border}`, cursor: "pointer", boxShadow: shadow.sm }}
         >
           <div style={{ position: "relative", flexShrink: 0 }}>
             <div style={{ width: 42, height: 42, borderRadius: 13, background: gradient, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, fontWeight: 900, color: "#fff" }}>
               {initials}
             </div>
-            {pack.creators.verified && (
+            {creator.verified && (
               <div style={{ position: "absolute", bottom: -3, right: -3, width: 15, height: 15, background: "#6BCB77", borderRadius: "50%", border: "2px solid #fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 7, color: "#fff", fontWeight: 900 }}>✓</div>
             )}
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 10, fontWeight: 800, color: T.textTer, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 2 }}>Created by</div>
-            <div style={{ fontSize: 14, fontWeight: 900, color: T.text }}>{pack.creators.name}</div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: T.textSec }}>{pack.creators.type === "academy" ? "Academy" : "வழிகாட்டி"}</div>
+            <div style={{ fontSize: 14, fontWeight: 900, color: T.text }}>{creator.name}</div>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T.textSec }}>{creator.type === "academy" ? "Academy" : "வழிகாட்டி"}</div>
           </div>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.textTer} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9 18l6-6-6-6" />
