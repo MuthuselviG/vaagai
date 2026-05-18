@@ -132,16 +132,17 @@ export default function HomePage() {
             </div>
 
             {featuredPacks.map((pack) => {
-              const accent = pack.creators.accent_color ?? "navy";
+              const c = Array.isArray(pack.creators) ? pack.creators[0] : pack.creators;
+              const accent = c.accent_color ?? "navy";
               const gradient = ACCENT_GRADIENTS[accent] ?? ACCENT_GRADIENTS.navy;
               const pill = ACCENT_PILL[accent] ?? ACCENT_PILL.navy;
-              const initials = pack.creators.name.charAt(0).toUpperCase();
+              const initials = c.name.charAt(0).toUpperCase();
               const estimatedMins = Math.round((pack.question_count * 30) / 60);
 
               return (
                 <div
                   key={pack.id}
-                  onClick={() => router.push(`/experts/${pack.creators.slug}/${pack.id}`)}
+                  onClick={() => router.push(`/experts/${c.slug}/${pack.id}`)}
                   style={{ width: "100%", background: T.surface, borderRadius: 16, padding: 14, marginBottom: 10, border: `1.5px solid ${T.border}`, cursor: "pointer", boxShadow: shadow.sm, textAlign: "left", position: "relative", overflow: "hidden" }}
                 >
                   {/* Accent top bar */}
@@ -153,14 +154,14 @@ export default function HomePage() {
                       <div style={{ width: 36, height: 36, borderRadius: 10, background: gradient, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 900, color: "#fff" }}>
                         {initials}
                       </div>
-                      {pack.creators.verified && (
+                      {c.verified && (
                         <div style={{ position: "absolute", bottom: -2, right: -2, width: 13, height: 13, background: "#6BCB77", borderRadius: "50%", border: "2px solid #fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 6, color: "#fff", fontWeight: 900 }}>✓</div>
                       )}
                     </div>
 
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 13, fontWeight: 900, color: T.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{pack.name}</div>
-                      <div style={{ fontSize: 11, fontWeight: 600, color: T.textSec }}>{pack.creators.name} · {pack.creators.section === 'buddies' ? 'Study Buddy' : (lang === 'ta' ? 'வழிகாட்டி' : 'Expert')}</div>
+                      <div style={{ fontSize: 11, fontWeight: 600, color: T.textSec }}>{c.name} · {c.section === 'buddies' ? 'Study Buddy' : (lang === 'ta' ? 'வழிகாட்டி' : 'Expert')}</div>
                     </div>
                   </div>
 
@@ -184,7 +185,7 @@ export default function HomePage() {
                       <b style={{ color: T.indigo, fontWeight: 900 }}>{pack.question_count}</b> questions · ~{estimatedMins} mins
                     </div>
                     <button
-                      onClick={(e) => { e.stopPropagation(); router.push(`/experts/${pack.creators.slug}/${pack.id}`); }}
+                      onClick={(e) => { e.stopPropagation(); router.push(`/experts/${c.slug}/${pack.id}`); }}
                       style={{ background: T.indigo, color: "#fff", border: "none", borderRadius: 9, padding: "6px 14px", fontSize: 11, fontWeight: 800, cursor: "pointer", fontFamily: "inherit" }}
                     >
                       Start →
