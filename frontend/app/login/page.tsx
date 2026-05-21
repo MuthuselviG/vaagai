@@ -173,7 +173,6 @@ export default function LoginPage() {
   return (
     <div style={s.page}>
       <div style={s.hero}>
-        <span style={s.wordmark}>வாகை</span>
         <p style={s.tagline}>Crack TNPSC with AI-powered practice in Tamil.</p>
       </div>
 

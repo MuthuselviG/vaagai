@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { T, shadow } from "../lib/tokens";
+import LangToggle from "../components/LangToggle";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -22,7 +23,7 @@ type FeaturedPack = {
     slug: string;
     verified: boolean;
     accent_color: string;
-  section: string;
+    section: string;
   };
 };
 
@@ -48,6 +49,24 @@ const EXAM_LABELS: Record<string, string> = {
   group4: "Group 4", group2: "Group 2", tet: "TET", tnusrb: "TNUSRB",
 };
 
+function TelegramIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
+function InstagramIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" strokeWidth="2"/>
+      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="2"/>
+      <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+    </svg>
+  );
+}
+
 export default function HomePage() {
   const router = useRouter();
   const [loggedIn, setLoggedIn] = useState(false);
@@ -55,30 +74,53 @@ export default function HomePage() {
   const [featuredPacks, setFeaturedPacks] = useState<FeaturedPack[]>([]);
 
   useEffect(() => {
-    const saved = localStorage.getItem("mcqpalagu_lang");
-    if (!saved) {
-      localStorage.setItem("mcqpalagu_lang", "ta");
-    } else if (saved === 'en' || saved === 'ta') {
-      setLang(saved as 'en' | 'ta');
+    async function load() {
+      const { data: { session } } = await supabase.auth.getSession();
+      setLoggedIn(!!session);
+
+      // Read lang from DB only
+      if (session?.user) {
+        const { data } = await supabase
+          .from("users")
+          .select("lang")
+          .eq("id", session.user.id)
+          .single();
+        if (data?.lang === "en" || data?.lang === "ta") {
+          setLang(data.lang as "en" | "ta");
+        }
+      }
+
+      supabase
+        .from("packs")
+        .select("id, name, subject, exams, question_count, is_free, creators(name, slug, verified, accent_color, section)")
+        .eq("is_published", true)
+        .eq("is_featured", true)
+        .limit(3)
+        .then(({ data }) => { if (data) setFeaturedPacks(data as unknown as FeaturedPack[]); });
     }
-    supabase.auth.getSession().then(({ data: { session } }) => setLoggedIn(!!session));
+
+    load();
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => setLoggedIn(!!session));
-
-    // Fetch featured packs
-    supabase
-      .from("packs")
-      .select("id, name, subject, exams, question_count, is_free, creators(name, slug, verified, accent_color, section)")
-      .eq("is_published", true)
-      .eq("is_featured", true)
-      .limit(3)
-      .then(({ data }) => { if (data) setFeaturedPacks(data as unknown as FeaturedPack[]); });
-
     return () => subscription.unsubscribe();
   }, []);
+
+  async function handleLangChange(l: "en" | "ta") {
+    setLang(l);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      await supabase.from("users").update({ lang: l }).eq("id", user.id);
+    }
+  }
 
   return (
     <main style={{ minHeight: "100vh", width: "100%", background: T.bg, display: "flex", flexDirection: "column" }}>
       <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "24px 24px 32px", textAlign: "center", overflowY: "auto" }}>
+
+        {/* Header with lang toggle */}
+        <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
+          <LangToggle lang={lang} setLang={handleLangChange} />
+        </div>
 
         <img src="/logo.png" alt="MCQ பழகு" style={{ height: 80, width: "auto", marginBottom: 8 }} />
         <p style={{ color: T.textSec, fontSize: 16, fontWeight: 500, marginBottom: 20, lineHeight: 1.6 }}>Crack TNPSC with AI-powered practice in Tamil</p>
@@ -99,7 +141,7 @@ export default function HomePage() {
           </button>
         )}
 
-        {/* Features card — unchanged */}
+        {/* Features card — static, no translation needed */}
         <div style={{ width: "100%", marginTop: 18, background: T.surface, borderRadius: 16, overflow: "hidden", border: `1px solid ${T.border}`, boxShadow: shadow.sm }}>
           {[
             { icon: "✨", bg: T.indigoLight, text: "AI-powered", sub: "Gemini powered explanations", indigo: true },
@@ -118,16 +160,18 @@ export default function HomePage() {
           ))}
         </div>
 
-        {/* Featured packs section — only shown when packs exist */}
+        {/* Featured packs — translated */}
         {featuredPacks.length > 0 && (
           <div style={{ width: "100%", marginTop: 24 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-              <div style={{ fontSize: 15, fontWeight: 900, color: T.text }}>🎯 Expert Packs</div>
+              <div style={{ fontSize: 15, fontWeight: 900, color: T.text }}>
+                🎯 {lang === "ta" ? "நிபுணர் பேக்குகள்" : "Expert Packs"}
+              </div>
               <button
                 onClick={() => router.push("/experts")}
                 style={{ fontSize: 12, fontWeight: 700, color: T.indigo, background: T.indigoLight, border: "none", borderRadius: 8, padding: "5px 10px", cursor: "pointer", fontFamily: "inherit" }}
               >
-                See all →
+                {lang === "ta" ? "அனைத்தும் →" : "See all →"}
               </button>
             </div>
 
@@ -145,11 +189,8 @@ export default function HomePage() {
                   onClick={() => router.push(`/experts/${c.slug}/${pack.id}`)}
                   style={{ width: "100%", background: T.surface, borderRadius: 16, padding: 14, marginBottom: 10, border: `1.5px solid ${T.border}`, cursor: "pointer", boxShadow: shadow.sm, textAlign: "left", position: "relative", overflow: "hidden" }}
                 >
-                  {/* Accent top bar */}
                   <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: gradient, borderRadius: "16px 16px 0 0" }} />
-
                   <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-                    {/* Creator avatar */}
                     <div style={{ position: "relative", flexShrink: 0 }}>
                       <div style={{ width: 36, height: 36, borderRadius: 10, background: gradient, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 900, color: "#fff" }}>
                         {initials}
@@ -158,14 +199,13 @@ export default function HomePage() {
                         <div style={{ position: "absolute", bottom: -2, right: -2, width: 13, height: 13, background: "#6BCB77", borderRadius: "50%", border: "2px solid #fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 6, color: "#fff", fontWeight: 900 }}>✓</div>
                       )}
                     </div>
-
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 13, fontWeight: 900, color: T.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{pack.name}</div>
-                      <div style={{ fontSize: 11, fontWeight: 600, color: T.textSec }}>{c.name} · {c.section === 'buddies' ? 'Study Buddy' : (lang === 'ta' ? 'வழிகாட்டி' : 'Expert')}</div>
+                      <div style={{ fontSize: 11, fontWeight: 600, color: T.textSec }}>
+                        {c.name} · {c.section === 'buddies' ? (lang === 'ta' ? 'சேர்ந்து படிப்போம்' : 'Study Buddy') : (lang === 'ta' ? 'வழிகாட்டி' : 'Expert')}
+                      </div>
                     </div>
                   </div>
-
-                  {/* Pills */}
                   <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 10 }}>
                     {(pack.exams ?? []).slice(0, 2).map(e => (
                       <span key={e} style={{ fontSize: 9, fontWeight: 800, padding: "2px 7px", borderRadius: 20, textTransform: "uppercase", letterSpacing: 0.3, background: T.indigoLight, color: T.indigo }}>
@@ -178,17 +218,15 @@ export default function HomePage() {
                       </span>
                     )}
                   </div>
-
-                  {/* Bottom row */}
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 8, borderTop: `1px solid ${T.border}` }}>
                     <div style={{ fontSize: 11, fontWeight: 700, color: T.textSec }}>
-                      <b style={{ color: T.indigo, fontWeight: 900 }}>{pack.question_count}</b> questions · ~{estimatedMins} mins
+                      <b style={{ color: T.indigo, fontWeight: 900 }}>{pack.question_count}</b> {lang === "ta" ? "வினாக்கள்" : "questions"} · ~{estimatedMins} mins
                     </div>
                     <button
                       onClick={(e) => { e.stopPropagation(); router.push(`/experts/${c.slug}/${pack.id}`); }}
                       style={{ background: T.indigo, color: "#fff", border: "none", borderRadius: 9, padding: "6px 14px", fontSize: 11, fontWeight: 800, cursor: "pointer", fontFamily: "inherit" }}
                     >
-                      Start →
+                      {lang === "ta" ? "தொடங்கு →" : "Start →"}
                     </button>
                   </div>
                 </div>
@@ -197,6 +235,75 @@ export default function HomePage() {
           </div>
         )}
 
+        {/* Creator CTA — translated */}
+        <div style={{
+          width: "100%", marginTop: 24,
+          background: `linear-gradient(135deg, ${T.indigoDark} 0%, #1a2a6c 100%)`,
+          borderRadius: 20, padding: "20px 18px",
+          textAlign: "left", position: "relative", overflow: "hidden",
+          boxShadow: shadow.indigo,
+        }}>
+          <div style={{ position: "absolute", top: -20, right: -20, width: 100, height: 100, borderRadius: "50%", background: "rgba(255,255,255,0.04)" }} />
+          <div style={{ position: "absolute", bottom: -30, right: 20, width: 80, height: 80, borderRadius: "50%", background: "rgba(255,255,255,0.03)" }} />
+
+          <div style={{ fontSize: 22, marginBottom: 6 }}>🎓</div>
+          <div style={{ fontSize: 16, fontWeight: 900, color: "#fff", marginBottom: 4, lineHeight: 1.3 }}>
+            {lang === "ta" ? "நீங்கள் ஒரு ஆசிரியரா அல்லது நிபுணரா?" : "Are you a Teacher or Expert?"}
+          </div>
+          <div style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", marginBottom: 16, lineHeight: 1.6 }}>
+            {lang === "ta"
+              ? "உங்கள் வினாத் தொகுப்புகளை ஆயிரக்கணக்கான TNPSC தேர்வர்களுடன் பகிர்ந்துகொள்ளுங்கள். சரிபார்க்கப்பட்டு இன்றே தொடங்குங்கள்."
+              : "Share your question packs with thousands of TNPSC aspirants. Get verified and start uploading today."}
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 18 }}>
+            {(lang === "ta" ? [
+              { n: "1", text: "பதிவு செய்து நிபுணர் அல்லது Study Buddy தேர்வு செய்யுங்கள்" },
+              { n: "2", text: "எங்கள் குழுவால் சரிபார்க்கப்படுங்கள்" },
+              { n: "3", text: "உங்கள் வினாக்களை பதிவேற்றுங்கள் — மீதியை நாங்கள் பார்த்துக்கொள்கிறோம்" },
+            ] : [
+              { n: "1", text: "Register & select Expert or Study Buddy" },
+              { n: "2", text: "Get verified by our team" },
+              { n: "3", text: "Upload your MCQs — we handle the rest" },
+            ]).map(step => (
+              <div key={step.n} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ width: 22, height: 22, borderRadius: "50%", background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, color: "#fff", flexShrink: 0 }}>
+                  {step.n}
+                </div>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.8)", lineHeight: 1.4 }}>{step.text}</div>
+              </div>
+            ))}
+          </div>
+
+          <button
+            onClick={() => router.push("/login")}
+            style={{ width: "100%", padding: "13px", background: "#fff", color: T.indigoDark, border: "none", borderRadius: 12, fontSize: 14, fontWeight: 800, cursor: "pointer", marginBottom: 14, fontFamily: "inherit" }}
+          >
+            {lang === "ta" ? "படைப்பாளராக சேரு →" : "Join as Creator →"}
+          </button>
+
+          <div style={{ borderTop: "1px solid rgba(255,255,255,0.12)", paddingTop: 14 }}>
+            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", marginBottom: 10, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+              {lang === "ta" ? "தொடர்பு கொள்ளுங்கள்" : "Contact us"}
+            </div>
+            <div style={{ display: "flex", gap: 10 }}>
+              <a href="https://t.me/MCQPalagu" target="_blank" rel="noopener noreferrer"
+                style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "10px", background: "rgba(255,255,255,0.1)", borderRadius: 10, border: "1px solid rgba(255,255,255,0.15)", color: "#fff", textDecoration: "none", fontSize: 13, fontWeight: 700 }}
+              >
+                <TelegramIcon />
+                Telegram
+              </a>
+              <a href="https://www.instagram.com/mcqpalagu" target="_blank" rel="noopener noreferrer"
+                style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "10px", background: "rgba(255,255,255,0.1)", borderRadius: 10, border: "1px solid rgba(255,255,255,0.15)", color: "#fff", textDecoration: "none", fontSize: 13, fontWeight: 700 }}
+              >
+                <InstagramIcon />
+                Instagram
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ height: 24 }} />
       </div>
     </main>
   );

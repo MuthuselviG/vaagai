@@ -6,6 +6,7 @@ import { createClient } from "@supabase/supabase-js";
 import { EXAM_CHIPS } from "./chips/examchips";
 import { ROLE_CHIPS } from "./chips/rolechip";
 import { TAMIL_NADU_TALUKS } from "./chips/taluk";
+import { createCreatorRow } from "@/lib/supabase";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -46,7 +47,6 @@ export default function OnboardingPage() {
   const [error, setError] = useState("");
 
   const allFilled = name.trim() !== "" && selectedExam !== null && selectedRole !== null && selectedTaluk !== "";
-
   const step = name.trim() !== "" ? selectedExam !== null ? 2 : 1 : 0;
 
   async function handleSubmit() {
@@ -60,6 +60,7 @@ export default function OnboardingPage() {
       return;
     }
 
+    // 1. Insert user row
     const { error: insertError } = await supabase.from("users").insert({
       id: user.id,
       email: user.email ?? null,
@@ -70,13 +71,24 @@ export default function OnboardingPage() {
       role: selectedRole,
     });
 
-    setLoading(false);
-
     if (insertError) {
+      setLoading(false);
       setError("Something went wrong. Please try again.");
       return;
     }
 
+    // 2. If study_buddy or expert — create creator row (unverified)
+    if (selectedRole === "study_buddy" || selectedRole === "expert") {
+      const section = selectedRole === "expert" ? "vazhikatti" : "buddies";
+      try {
+        await createCreatorRow(user.id, name.trim(), section);
+      } catch (e) {
+        // Non-fatal — creator row can be created later
+        console.error("Creator row creation failed:", e);
+      }
+    }
+
+    setLoading(false);
     router.push("/subjects");
   }
 
@@ -101,9 +113,7 @@ export default function OnboardingPage() {
             <div style={{ fontSize: "clamp(2rem, 4vw, 2.5rem)", fontWeight: 800, color: "#FFFFFF", lineHeight: 1 }}>
               vaagai
             </div>
-            <div style={{ fontSize: "0.95rem", color: "rgba(255,255,255,0.72)", marginTop: 4, letterSpacing: "0.04em" }}>
-              வாகை
-            </div>
+           
           </div>
           <ProgressDots step={step} />
         </div>
@@ -278,13 +288,11 @@ export default function OnboardingPage() {
               width: "100%", marginTop: 12, padding: "0.8rem",
               background: "none", border: "none",
               fontSize: "0.9rem", fontWeight: 500,
-              color: "#A5AECB", cursor: "pointer",
-              textAlign: "center",
+              color: "#A5AECB", cursor: "pointer", textAlign: "center",
             }}
           >
             Skip for now →
           </button>
-
         </div>
       </div>
     </div>

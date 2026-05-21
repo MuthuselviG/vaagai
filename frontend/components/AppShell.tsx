@@ -65,6 +65,16 @@ function SettingsIcon() {
   );
 }
 
+function PackIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={T.indigo} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+      <polyline points="3.27,6.96 12,12.01 20.73,6.96" />
+      <line x1="12" y1="22.08" x2="12" y2="12" />
+    </svg>
+  );
+}
+
 const tabs = [
   { id: "home" as TabId, label: "Home", path: "/", Icon: HomeIcon },
   { id: "practice" as TabId, label: "Practice", path: "/subjects", Icon: ClockIcon },
@@ -78,24 +88,61 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const active = getActive(pathname);
   const hideNav = pathname.startsWith("/practice");
 
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
   const [showMenu, setShowMenu] = useState(false);
+  const [isVerifiedCreator, setIsVerifiedCreator] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session?.user) checkCreator(session.user.id);
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) checkCreator(session.user.id);
+      else setIsVerifiedCreator(false);
     });
     return () => subscription.unsubscribe();
   }, []);
 
+  async function checkCreator(userId: string) {
+    const { data } = await supabase
+      .from("creators")
+      .select("verified")
+      .eq("user_id", userId)
+      .single();
+    setIsVerifiedCreator(data?.verified === true);
+  }
+
   async function handleLogout() {
     await supabase.auth.signOut();
     setShowMenu(false);
+    setIsVerifiedCreator(false);
     router.push("/");
   }
+
+  const SettingsMenu = ({ right }: { right?: boolean }) => (
+    <div className="settings-menu" style={right ? { bottom: 70, left: "auto", right: 8 } : {}}>
+      {isVerifiedCreator && (
+        <button
+          className="settings-menu-item"
+          style={{ color: T.indigo }}
+          onClick={() => { setShowMenu(false); router.push("/creator"); }}
+        >
+          <PackIcon />
+          என் வினாத் தொகுப்பு
+        </button>
+      )}
+      <button className="settings-menu-item" onClick={handleLogout}>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C0392B" strokeWidth="2" strokeLinecap="round">
+          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+          <polyline points="16,17 21,12 16,7" />
+          <line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
+        Sign Out
+      </button>
+    </div>
+  );
 
   return (
     <>
@@ -121,7 +168,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           border-radius: 12px;
           box-shadow: 0 8px 24px rgba(0,0,0,0.12);
           overflow: hidden;
-          min-width: 160px;
+          min-width: 200px;
           z-index: 200;
         }
         .settings-menu-item {
@@ -137,11 +184,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           width: 100%;
           text-align: left;
           color: #C0392B;
+          font-family: inherit;
         }
-        .settings-menu-item:hover { background: #FFF0F0; }
+        .settings-menu-item:hover { background: #F7F8FC; }
       `}</style>
 
       <div className="app-shell" style={{ minHeight: "100vh", display: "flex", background: T.bg }}>
+        {/* SIDEBAR */}
         <div className="sidebar" style={{
           display: "none", flexDirection: "column", width: 240,
           minHeight: "100vh", background: T.surface,
@@ -163,11 +212,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                   transition: "background 0.15s",
                 }}>
                   <Icon active={isActive} />
-                  <span style={{
-                    fontSize: 14, fontWeight: isActive ? 700 : 500,
-                    color: isActive ? T.indigo : T.textSec,
-                    
-                  }}>{label}</span>
+                  <span style={{ fontSize: 14, fontWeight: isActive ? 700 : 500, color: isActive ? T.indigo : T.textSec }}>{label}</span>
                   {isActive && <div style={{ marginLeft: "auto", width: 6, height: 6, borderRadius: 3, background: T.indigo }} />}
                 </button>
               );
@@ -183,18 +228,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 <SettingsIcon />
                 <span style={{ fontSize: 14, fontWeight: 500, color: T.textSec }}>Settings</span>
               </button>
-              {showMenu && (
-                <div className="settings-menu">
-                  <button className="settings-menu-item" onClick={handleLogout}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C0392B" strokeWidth="2" strokeLinecap="round">
-                      <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
-                      <polyline points="16,17 21,12 16,7" />
-                      <line x1="21" y1="12" x2="9" y2="12" />
-                    </svg>
-                    Sign Out
-                  </button>
-                </div>
-              )}
+              {showMenu && <SettingsMenu />}
             </div>
           )}
         </div>
@@ -204,6 +238,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       </div>
 
+      {/* BOTTOM NAV */}
       {!hideNav && (
         <div className="bottom-nav" style={{
           display: "none", position: "fixed", bottom: 0, left: 0, right: 0,
@@ -218,11 +253,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 alignItems: "center", gap: 4, cursor: "pointer",
               }}>
                 <Icon active={isActive} />
-                <span style={{
-                  fontSize: 10, fontWeight: 600,
-                  color: isActive ? T.indigo : T.textTer, letterSpacing: 0.3,
-                  
-                }}>{label}</span>
+                <span style={{ fontSize: 10, fontWeight: 600, color: isActive ? T.indigo : T.textTer, letterSpacing: 0.3 }}>{label}</span>
                 {isActive && <div style={{ width: 4, height: 4, borderRadius: 2, background: T.indigo, marginTop: -2 }} />}
               </div>
             );
@@ -236,18 +267,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 <SettingsIcon />
                 <span style={{ fontSize: 10, fontWeight: 600, color: T.textTer, letterSpacing: 0.3 }}>Settings</span>
               </div>
-              {showMenu && (
-                <div className="settings-menu" style={{ bottom: 70, left: "auto", right: 8 }}>
-                  <button className="settings-menu-item" onClick={handleLogout}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C0392B" strokeWidth="2" strokeLinecap="round">
-                      <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
-                      <polyline points="16,17 21,12 16,7" />
-                      <line x1="21" y1="12" x2="9" y2="12" />
-                    </svg>
-                    Sign Out
-                  </button>
-                </div>
-              )}
+              {showMenu && <SettingsMenu right />}
             </div>
           )}
         </div>

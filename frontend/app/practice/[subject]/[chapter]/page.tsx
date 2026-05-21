@@ -47,10 +47,26 @@ export default function PracticePage() {
   );
 
   useEffect(() => {
-    if (!isPYQ && !isPack && subject !== "Tamil") {
+    async function loadLang() {
+      if (isPYQ || isPack || subject === "Tamil") return;
+      // Try DB first
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data } = await supabase
+          .from("users")
+          .select("lang")
+          .eq("id", user.id)
+          .single();
+        if (data?.lang === "en" || data?.lang === "ta") {
+          setLang(data.lang as "en" | "ta");
+          return;
+        }
+      }
+      // Fall back to localStorage
       const saved = localStorage.getItem("mcqpalagu_lang");
       if (saved === "en" || saved === "ta") setLang(saved as "en" | "ta");
     }
+    loadLang();
   }, [subject, isPYQ, isPack]);
 
   const [questions, setQuestions] = useState<Question[]>([]);

@@ -123,8 +123,26 @@ export default function SubjectsPage() {
   const [featuredPacks, setFeaturedPacks] = useState<FeaturedPack[]>([]);
 
   useEffect(() => {
-    const saved = localStorage.getItem("mcqpalagu_lang");
-    if (saved === "en" || saved === "ta") setLang(saved as "en" | "ta");
+    async function loadLang() {
+      // Try DB first (logged in users)
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data } = await supabase
+          .from("users")
+          .select("lang")
+          .eq("id", user.id)
+          .single();
+        if (data?.lang === "en" || data?.lang === "ta") {
+          setLang(data.lang as "en" | "ta");
+          localStorage.setItem("mcqpalagu_lang", data.lang);
+          return;
+        }
+      }
+      // Fall back to localStorage
+      const saved = localStorage.getItem("mcqpalagu_lang");
+      if (saved === "en" || saved === "ta") setLang(saved as "en" | "ta");
+    }
+    loadLang();
   }, []);
 
   useEffect(() => {
@@ -218,7 +236,16 @@ export default function SubjectsPage() {
           <div style={{ background: T.indigoLight, border: `1px solid ${T.indigoMid}`, borderRadius: 10, padding: "5px 12px", color: T.indigo, fontSize: 11, fontWeight: 800, letterSpacing: 0.5 }}>
             TNPSC Exam Prep
           </div>
-          <LangToggle lang={lang} setLang={(l) => { setLang(l); setOpenChapter(null); }} />
+          <LangToggle lang={lang} setLang={async (l) => {
+            setLang(l);
+            setOpenChapter(null);
+            localStorage.setItem("mcqpalagu_lang", l);
+            // Save to DB if logged in
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+              await supabase.from("users").update({ lang: l }).eq("id", user.id);
+            }
+          }} />
         </div>
         <h2 style={{ color: T.text, fontSize: 20, fontWeight: 800, marginTop: 14, letterSpacing: -0.4 }}>
           {lang === "ta" ? "பாடங்கள்" : "Subjects"}
@@ -439,7 +466,7 @@ export default function SubjectsPage() {
                       onClick={(e) => { e.stopPropagation(); router.push(`/experts/${c.slug}/${pack.id}`); }}
                       style={{ background: T.indigo, color: "#fff", border: "none", borderRadius: 9, padding: "6px 14px", fontSize: 11, fontWeight: 800, cursor: "pointer", fontFamily: "inherit" }}
                     >
-                      {lang === "ta" ? lang === "ta" ? "தொடங்கு →" : "Start →" : "Start →"}
+                      {lang === "ta" ? "தொடங்கு →" : "Start →"}
                     </button>
                   </div>
                 </div>

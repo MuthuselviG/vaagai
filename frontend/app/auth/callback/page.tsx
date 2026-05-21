@@ -14,7 +14,6 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     async function handleCallback() {
-      // Supabase automatically picks up the hash token
       const { data: { session }, error } = await supabase.auth.getSession();
 
       if (error || !session) {
@@ -22,7 +21,6 @@ export default function AuthCallbackPage() {
         return;
       }
 
-      // Check if user has completed onboarding
       const { data: existingUser } = await supabase
         .from("users")
         .select("id")
