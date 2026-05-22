@@ -31,8 +31,8 @@ export default function CreatorPage() {
   // Upload
   const [tamilFile, setTamilFile] = useState<File | null>(null);
   const [englishFile, setEnglishFile] = useState<File | null>(null);
-  const tamilInputRef = useRef<HTMLInputElement>(null);
-  const englishInputRef = useRef<HTMLInputElement>(null);
+  const tamilInputRef = useRef<HTMLInputElement | null>(null);
+  const englishInputRef = useRef<HTMLInputElement | null>(null);
 
   // Review
   const [extractedQuestions, setExtractedQuestions] = useState<Question[]>([]);
@@ -363,8 +363,8 @@ function CreateDetailsScreen({ packName, setPackName, packDesc, setPackDesc, pac
 function UploadScreen({ tamilFile, setTamilFile, englishFile, setEnglishFile, tamilInputRef, englishInputRef, onBack, onExtract }: {
   tamilFile: File | null; setTamilFile: (f: File | null) => void;
   englishFile: File | null; setEnglishFile: (f: File | null) => void;
-  tamilInputRef: React.RefObject<HTMLInputElement>;
-  englishInputRef: React.RefObject<HTMLInputElement>;
+  tamilInputRef: React.RefObject<HTMLInputElement | null>;
+  englishInputRef: React.RefObject<HTMLInputElement | null>;
   onBack: () => void; onExtract: () => void;
 }) {
   const valid = tamilFile !== null || englishFile !== null;
