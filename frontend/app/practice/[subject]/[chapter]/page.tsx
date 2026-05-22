@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { T, shadow } from "../../../../lib/tokens";
-import { fetchQuestionsForLevel, fetchQuestionsForPYQ, fetchQuestionsForPack, type Question } from "../../../../lib/supabase";
+import { fetchQuestionsForLevel, fetchQuestionsForPYQ, fetchQuestionsForPack, supabase, type Question } from "../../../../lib/supabase";
 import { startSession, recordResponse, completeSession } from "../../../../lib/session";
 
 export default function PracticePage() {
