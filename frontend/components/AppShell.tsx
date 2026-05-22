@@ -91,6 +91,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
   const [showMenu, setShowMenu] = useState(false);
   const [isVerifiedCreator, setIsVerifiedCreator] = useState(false);
+  const [lang, setLang] = useState<"en" | "ta">("ta");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -112,6 +113,15 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       .eq("user_id", userId)
       .single();
     setIsVerifiedCreator(data?.verified === true);
+
+    const { data: userData } = await supabase
+      .from("users")
+      .select("lang")
+      .eq("id", userId)
+      .single();
+    if (userData?.lang === "en" || userData?.lang === "ta") {
+      setLang(userData.lang as "en" | "ta");
+    }
   }
 
   async function handleLogout() {
@@ -130,7 +140,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           onClick={() => { setShowMenu(false); router.push("/creator"); }}
         >
           <PackIcon />
-          என் வினாத் தொகுப்பு
+          {lang === "ta" ? "என் வினாத் தொகுப்பு" : "My Question Bank"}
         </button>
       )}
       <button className="settings-menu-item" onClick={handleLogout}>
