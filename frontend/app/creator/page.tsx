@@ -63,7 +63,7 @@ export default function CreatorPage() {
   // ── NOT VERIFIED ──
   if (!creator.verified) {
     return (
-      <div style={{ minHeight: "100vh", background: T.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24 }}>
+      <div style={{ background: T.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24 }}>
         <div style={{ fontSize: 48, marginBottom: 16 }}>⏳</div>
         <div style={{ fontSize: 18, fontWeight: 800, color: T.text, marginBottom: 8, textAlign: "center" }}>
           உங்கள் கணக்கு சரிபார்க்கப்படுகிறது
@@ -212,7 +212,7 @@ function HomeScreen({ creator, packs, setPacks, totalQuestions, remainingQuestio
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: T.bg, fontFamily: "system-ui, sans-serif" }}>
+    <div style={{ background: T.bg, fontFamily: "system-ui, sans-serif" }}>
       {/* Top bar */}
       <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "14px 16px", display: "flex", alignItems: "center", gap: 10, boxShadow: shadow.sm }}>
         <button onClick={() => router.back()} style={iconBtnStyle}>‹</button>
@@ -222,7 +222,7 @@ function HomeScreen({ creator, packs, setPacks, totalQuestions, remainingQuestio
         </div>
       </div>
 
-      <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 12, maxWidth: 600, margin: "0 auto" }}>
+      <div style={{ padding: 16, paddingBottom: 100, display: "flex", flexDirection: "column", gap: 12, maxWidth: 600, margin: "0 auto" }}>
         {/* Stats */}
         <div style={{ display: "flex", gap: 8 }}>
           <StatChip n={packs.length} label="Packs" />
@@ -415,7 +415,7 @@ function UploadScreen({ tamilFile, setTamilFile, englishFile, setEnglishFile, ta
 // ─────────────────────────────────────────────
 function ProcessingScreen() {
   return (
-    <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+    <div style={{ background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <div style={{ background: T.indigoLight, border: `1px solid ${T.indigoMid}`, borderRadius: 16, padding: "32px 24px", textAlign: "center", maxWidth: 320, width: "100%" }}>
         <div style={{ width: 40, height: 40, border: `3px solid ${T.indigoMid}`, borderTopColor: T.indigo, borderRadius: "50%", margin: "0 auto 16px", animation: "spin 0.8s linear infinite" }} />
         <div style={{ fontSize: 15, fontWeight: 700, color: T.indigo, marginBottom: 6 }}>வினாக்களை சரிபார்க்கப்படுகிறது...</div>
@@ -436,7 +436,7 @@ function ReviewScreen({ questions, setQuestions, onEdit, onDelete, publishing, o
   publishing: boolean; onPublish: () => void;
 }) {
   return (
-    <div style={{ minHeight: "100vh", background: T.bg, fontFamily: "system-ui, sans-serif" }}>
+    <div style={{ background: T.bg, fontFamily: "system-ui, sans-serif" }}>
       <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "14px 16px", display: "flex", alignItems: "center", gap: 10, boxShadow: shadow.sm }}>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 15, fontWeight: 700, color: T.text }}>வினாக்களை சரிபார்</div>
@@ -451,7 +451,7 @@ function ReviewScreen({ questions, setQuestions, onEdit, onDelete, publishing, o
         ✅ {questions.length} வினாக்கள் கண்டறியப்பட்டன — சரிபார்த்து வெளியிடுங்கள்
       </div>
 
-      <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 12, maxWidth: 600, margin: "0 auto" }}>
+      <div style={{ padding: 16, paddingBottom: 100, display: "flex", flexDirection: "column", gap: 12, maxWidth: 600, margin: "0 auto" }}>
         {questions.map((q, i) => (
           <div key={q.id} style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 12, padding: 12, boxShadow: shadow.sm }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
@@ -549,7 +549,7 @@ function PageShell({ title, subtitle, onBack, step, rightAction, children }: {
 }) {
   const stepLabels = ["விவரங்கள்", "பதிவேற்று", "சரிபார்"];
   return (
-    <div style={{ minHeight: "100vh", background: T.bg, fontFamily: "system-ui, sans-serif" }}>
+    <div style={{ background: T.bg, fontFamily: "system-ui, sans-serif" }}>
       <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "14px 16px", display: "flex", alignItems: "center", gap: 10, boxShadow: shadow.sm }}>
         <button onClick={onBack} style={iconBtnStyle}>‹</button>
         <div style={{ flex: 1 }}>
@@ -614,7 +614,7 @@ function Field({ label, children }: { label: React.ReactNode; children: React.Re
 
 function LoadingScreen() {
   return (
-    <div style={{ minHeight: "100vh", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ background: T.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div style={{ fontSize: 14, color: T.textSec }}>Loading...</div>
     </div>
   );
