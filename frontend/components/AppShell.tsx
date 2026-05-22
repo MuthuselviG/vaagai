@@ -199,7 +199,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         .settings-menu-item:hover { background: #F7F8FC; }
       `}</style>
 
-      <div className="app-shell" style={{ minHeight: "100vh", display: "flex", background: T.bg }}>
+      <div className="app-shell" style={{ display: "flex", background: T.bg }}>
         {/* SIDEBAR */}
         <div className="sidebar" style={{
           display: "none", flexDirection: "column", width: 240,
@@ -243,7 +243,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           )}
         </div>
 
-        <div className="main-content" style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+        <div className="main-content" style={{ flex: 1, display: "flex", flexDirection: "column" }}>
           {children}
         </div>
       </div>

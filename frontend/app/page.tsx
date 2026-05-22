@@ -114,8 +114,8 @@ export default function HomePage() {
   }
 
   return (
-    <main style={{ minHeight: "100vh", width: "100%", background: T.bg, display: "flex", flexDirection: "column" }}>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "24px 24px 32px", textAlign: "center", overflowY: "auto" }}>
+    <main style={{ width: "100%", background: T.bg }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "24px 24px 100px", textAlign: "center" }}>
 
         {/* Header with lang toggle */}
         <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>

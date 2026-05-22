@@ -57,6 +57,12 @@ export default function PackDetailPage() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
+    // Lock body scroll — this page manages its own scroll
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = ""; };
+  }, []);
+
+  useEffect(() => {
     async function load() {
       try {
         const { data, error } = await supabase
@@ -83,22 +89,20 @@ export default function PackDetailPage() {
 
   function handleStart() {
     if (!pack) return;
-    // Routes to practice screen with pack_id param
-    // Practice screen already handles fetching by pack_id
     router.push(
       `/practice/pack/${encodeURIComponent(pack.id)}?pack_id=${pack.id}&label=${encodeURIComponent(pack.name)}&level=1&offset=0&limit=${pack.question_count}`
     );
   }
 
   if (loading) return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: T.bg, flexDirection: "column", gap: 12 }}>
+    <div style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", background: T.bg, flexDirection: "column", gap: 12 }}>
       <div style={{ fontSize: 32 }}>📦</div>
       <div style={{ color: T.text, fontSize: 15, fontWeight: 700 }}>Loading pack…</div>
     </div>
   );
 
   if (error || !pack) return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: T.bg, flexDirection: "column", gap: 16, padding: 24 }}>
+    <div style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", background: T.bg, flexDirection: "column", gap: 16, padding: 24 }}>
       <div style={{ color: T.text, fontSize: 15, fontWeight: 600, textAlign: "center" }}>Pack not found.</div>
       <button onClick={() => router.back()} style={{ background: T.indigo, border: "none", borderRadius: 12, padding: "12px 24px", color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
         Go Back
@@ -112,8 +116,12 @@ export default function PackDetailPage() {
   const estimatedMins = Math.round((pack.question_count * 30) / 60);
 
   return (
-    <div style={{ background: T.bg, minHeight: "100dvh", display: "flex", flexDirection: "column", maxWidth: 600, margin: "0 auto", width: "100%" }}>
-
+    <div style={{
+      position: "fixed", inset: 0,
+      background: T.bg,
+      display: "flex", flexDirection: "column",
+      maxWidth: 600, margin: "0 auto", width: "100%",
+    }}>
       {/* Top nav */}
       <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "14px 16px", display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
         <button onClick={() => router.back()} style={{ width: 38, height: 38, borderRadius: 11, background: T.bg, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }}>
@@ -125,25 +133,27 @@ export default function PackDetailPage() {
       </div>
 
       {/* Scrollable content */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 120px", overscrollBehavior: "none", WebkitOverflowScrolling: "touch" as any }}>
-
+      <div style={{
+        flex: 1,
+        overflowY: "scroll",
+        WebkitOverflowScrolling: "touch" as never,
+        overscrollBehavior: "none",
+        padding: "16px 16px 24px",
+      }}>
         {/* Hero */}
         <div style={{ background: T.indigo, borderRadius: 20, padding: "20px 18px", marginBottom: 14, position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", width: 160, height: 160, borderRadius: "50%", background: "rgba(255,255,255,0.05)", top: -50, right: -40 }} />
           <div style={{ position: "absolute", width: 90, height: 90, borderRadius: "50%", background: "rgba(255,255,255,0.04)", bottom: -20, left: 30 }} />
 
-          {/* Subject + exam tag */}
           <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.85)", fontSize: 10, fontWeight: 900, padding: "4px 10px", borderRadius: 20, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 12, position: "relative", zIndex: 1 }}>
             <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#FFD93D" }} />
             {pack.subject ?? "General"}{pack.exams && pack.exams.length > 0 ? ` · ${EXAM_LABELS[pack.exams[0]] ?? pack.exams[0]}` : ""}
           </div>
 
-          {/* Pack name */}
           <div style={{ fontSize: 20, fontWeight: 900, color: "#fff", lineHeight: 1.3, marginBottom: 14, position: "relative", zIndex: 1 }}>
             {pack.name}
           </div>
 
-          {/* Stats */}
           <div style={{ display: "flex", gap: 10, position: "relative", zIndex: 1 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 5, background: "rgba(255,255,255,0.1)", borderRadius: 10, padding: "6px 12px", fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.85)" }}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="2.5" strokeLinecap="round">
@@ -226,16 +236,14 @@ export default function PackDetailPage() {
             </div>
           ))}
         </div>
-
       </div>
 
       {/* Sticky Start button */}
-      <div style={{ padding: "14px 16px 36px", background: T.bg, borderTop: `1px solid ${T.border}`, flexShrink: 0 }}>
+      <div style={{ padding: "14px 16px 36px", background: T.bg, borderTop: `1px solid ${T.border}`, flexShrink: 0, zIndex: 200, position: "relative" }}>
         <button onClick={handleStart} style={{ width: "100%", background: `linear-gradient(135deg, ${T.indigo}, #5062B8)`, border: "none", borderRadius: 16, padding: "17px", color: "#fff", fontSize: 16, fontWeight: 700, cursor: "pointer", boxShadow: shadow.indigo, fontFamily: "inherit" }}>
           Start Pack →
         </button>
       </div>
-
     </div>
   );
 }
