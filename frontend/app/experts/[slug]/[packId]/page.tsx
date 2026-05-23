@@ -164,15 +164,15 @@ export default function PackDetailPage() {
         <div style={{ fontSize: 11, fontWeight: 800, color: T.textTer, textTransform: "uppercase", letterSpacing: 0.8 }}>What's inside</div>
         <div style={{ background: T.surface, borderRadius: 16, padding: "4px 16px", border: `1.5px solid ${T.border}` }}>
           {[
-            { icon: "❓", bg: T.indigoLight, title: `${pack.question_count} MCQ Questions`, sub: `10 questions per level · ${Math.ceil(pack.question_count / 10)} levels` },
-            { icon: "💡", bg: "#F0FDF4", title: "Detailed Explanations", sub: "Every answer explained in full" },
-            { icon: "📄", bg: "#FFFBEB", title: "PYQ Mapped", sub: "Verified against past papers" },
+            { icon: "❓", bg: T.indigoLight, title: `${pack.question_count} MCQ Questions`, sub: "" },
+
+
           ].map((item, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 0", borderBottom: i < 2 ? `1px solid ${T.border}` : "none" }}>
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 0", borderBottom: "none" }}>
               <div style={{ width: 34, height: 34, borderRadius: 10, background: item.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>{item.icon}</div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 800, color: T.text }}>{item.title}</div>
-                <div style={{ fontSize: 11, fontWeight: 600, color: T.textSec, marginTop: 1 }}>{item.sub}</div>
+                {item.sub && <div style={{ fontSize: 11, fontWeight: 600, color: T.textSec, marginTop: 1 }}>{item.sub}</div>}
               </div>
             </div>
           ))}
