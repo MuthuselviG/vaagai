@@ -75,11 +75,18 @@ function PackIcon() {
   );
 }
 
+const TAB_LABELS: Record<TabId, { en: string; ta: string }> = {
+  home:     { en: "Home",     ta: "முகப்பு" },
+  practice: { en: "Practice", ta: "பழகு" },
+  experts:  { en: "Experts",  ta: "நிபுணர்கள்" },
+  scores:   { en: "Scores",   ta: "மதிப்பெண்" },
+};
+
 const tabs = [
-  { id: "home" as TabId, label: "Home", path: "/", Icon: HomeIcon },
-  { id: "practice" as TabId, label: "Practice", path: "/subjects", Icon: ClockIcon },
-  { id: "experts" as TabId, label: "Experts", path: "/experts", Icon: ExpertsIcon },
-  { id: "scores" as TabId, label: "Scores", path: "/score", Icon: BarIcon },
+  { id: "home" as TabId, path: "/", Icon: HomeIcon },
+  { id: "practice" as TabId, path: "/subjects", Icon: ClockIcon },
+  { id: "experts" as TabId, path: "/experts", Icon: ExpertsIcon },
+  { id: "scores" as TabId, path: "/score", Icon: BarIcon },
 ];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -211,8 +218,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             <img src="/logo.png" alt="MCQ பழகு" style={{ height: 48, width: "auto", display: "block" }} />
           </div>
           <nav style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-            {tabs.map(({ id, label, path, Icon }) => {
+            {tabs.map(({ id, path, Icon }) => {
               const isActive = id === active;
+              const label = TAB_LABELS[id][lang];
               return (
                 <button key={id} onClick={() => router.push(path)} style={{
                   display: "flex", alignItems: "center", gap: 12,
@@ -255,8 +263,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           borderTop: `1px solid ${T.border}`, background: T.surface,
           paddingBottom: 24, paddingTop: 10, zIndex: 100,
         }}>
-          {tabs.map(({ id, label, path, Icon }) => {
+          {tabs.map(({ id, path, Icon }) => {
             const isActive = id === active;
+            const label = TAB_LABELS[id][lang];
             return (
               <div key={id} onClick={() => router.push(path)} style={{
                 flex: 1, display: "flex", flexDirection: "column",

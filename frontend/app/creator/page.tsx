@@ -12,7 +12,13 @@ const SUBJECTS = ["History", "Polity", "Geography", "Economy", "Science", "Tamil
 const EXAMS = ["group4", "group2", "tet", "tnusrb"];
 const EXAM_LABELS: Record<string, string> = { group4: "Group 4", group2: "Group 2", tet: "TET", tnusrb: "TNUSRB" };
 
+const MAX_PASTE_CHARS = 5000;
+const PASTE_WARN_CHARS = 4500;
+
 type Screen = "home" | "create_details" | "create_upload" | "processing" | "review" | "edit_question";
+type UploadMode = "pdf" | "text";
+type PasteLang = "ta" | "en";
+type PasteFormat = "with_options" | "qa_only";
 
 export default function CreatorPage() {
   const router = useRouter();
@@ -28,11 +34,17 @@ export default function CreatorPage() {
   const [packExams, setPackExams] = useState<string[]>([]);
   const [currentPack, setCurrentPack] = useState<Pack | null>(null);
 
-  // Upload
+  // Upload — PDF
   const [tamilFile, setTamilFile] = useState<File | null>(null);
   const [englishFile, setEnglishFile] = useState<File | null>(null);
   const tamilInputRef = useRef<HTMLInputElement | null>(null);
   const englishInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Upload — Text paste
+  const [uploadMode, setUploadMode] = useState<UploadMode>("text");
+  const [pasteText, setPasteText] = useState("");
+  const [pasteLang, setPasteLang] = useState<PasteLang>("ta");
+  const [pasteFormat, setPasteFormat] = useState<PasteFormat>("with_options");
 
   // Review
   const [extractedQuestions, setExtractedQuestions] = useState<Question[]>([]);
@@ -45,7 +57,7 @@ export default function CreatorPage() {
       if (!user) { router.push("/login"); return; }
 
       const c = await fetchMyCreatorProfile();
-      if (!c) { router.push("/subjects"); return; } // not a creator
+      if (!c) { router.push("/subjects"); return; }
       setCreator(c);
 
       if (c.verified) {
@@ -60,7 +72,6 @@ export default function CreatorPage() {
   if (loading) return <LoadingScreen />;
   if (!creator) return null;
 
-  // ── NOT VERIFIED ──
   if (!creator.verified) {
     return (
       <div style={{ background: T.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24 }}>
@@ -84,7 +95,6 @@ export default function CreatorPage() {
   const totalQuestions = packs.reduce((s, p) => s + p.question_count, 0);
   const remainingQuestions = 500 - totalQuestions;
 
-  // ── SCREENS ──
   if (screen === "home") return (
     <HomeScreen
       creator={creator}
@@ -117,6 +127,8 @@ export default function CreatorPage() {
         setCurrentPack(pack);
         setTamilFile(null);
         setEnglishFile(null);
+        setPasteText("");
+        setUploadMode("pdf");
         setScreen("create_upload");
       }}
     />
@@ -124,25 +136,41 @@ export default function CreatorPage() {
 
   if (screen === "create_upload") return (
     <UploadScreen
+      // PDF
       tamilFile={tamilFile} setTamilFile={setTamilFile}
       englishFile={englishFile} setEnglishFile={setEnglishFile}
       tamilInputRef={tamilInputRef} englishInputRef={englishInputRef}
+      // Text paste
+      uploadMode={uploadMode} setUploadMode={setUploadMode}
+      pasteText={pasteText} setPasteText={setPasteText}
+      pasteLang={pasteLang} setPasteLang={setPasteLang}
+      pasteFormat={pasteFormat} setPasteFormat={setPasteFormat}
       onBack={() => setScreen("create_details")}
       onExtract={async () => {
-        if (!tamilFile && !englishFile) return;
+        const hasPdf = tamilFile || englishFile;
+        const hasText = pasteText.trim().length >= 50;
+        if (uploadMode === "pdf" && !hasPdf) return;
+        if (uploadMode === "text" && !hasText) return;
+
         setScreen("processing");
         try {
           const formData = new FormData();
-          if (tamilFile) formData.append("tamil", tamilFile);
-          if (englishFile) formData.append("english", englishFile);
           formData.append("pack_id", currentPack!.id);
           formData.append("creator_id", creator.id);
           formData.append("subject", packSubject);
           formData.append("exams", JSON.stringify(packExams));
 
+          if (uploadMode === "pdf") {
+            if (tamilFile) formData.append("tamil", tamilFile);
+            if (englishFile) formData.append("english", englishFile);
+          } else {
+            formData.append("text", pasteText);
+            formData.append("text_lang", pasteLang);
+            formData.append("text_format", pasteFormat);
+          }
+
           const res = await fetch("/api/creator/extract", { method: "POST", body: formData });
           const data = await res.json();
-          console.log("Extract API response:", data);
           if (!res.ok) throw new Error(data.error ?? "Extraction failed");
           setExtractedQuestions(data.questions ?? []);
           setScreen("review");
@@ -213,7 +241,6 @@ function HomeScreen({ creator, packs, setPacks, totalQuestions, remainingQuestio
 
   return (
     <div style={{ background: T.bg, fontFamily: "system-ui, sans-serif" }}>
-      {/* Top bar */}
       <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "14px 16px", display: "flex", alignItems: "center", gap: 10, boxShadow: shadow.sm }}>
         <button onClick={() => router.back()} style={iconBtnStyle}>‹</button>
         <div>
@@ -223,14 +250,12 @@ function HomeScreen({ creator, packs, setPacks, totalQuestions, remainingQuestio
       </div>
 
       <div style={{ padding: 16, paddingBottom: 100, display: "flex", flexDirection: "column", gap: 12, maxWidth: 600, margin: "0 auto" }}>
-        {/* Stats */}
         <div style={{ display: "flex", gap: 8 }}>
           <StatChip n={packs.length} label="Packs" />
           <StatChip n={totalQuestions} label="Questions" />
           <StatChip n={remainingQuestions} label="Remaining" warn={remainingQuestions < 50} />
         </div>
 
-        {/* Template download */}
         <div style={{ background: T.indigoLight, border: `1px solid ${T.indigoMid}`, borderRadius: 14, padding: "12px 14px", display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ fontSize: 22 }}>📄</span>
           <div style={{ flex: 1 }}>
@@ -240,7 +265,6 @@ function HomeScreen({ creator, packs, setPacks, totalQuestions, remainingQuestio
           <a href="/templates/questions-template.pdf" download style={dlBtnStyle}>Download</a>
         </div>
 
-        {/* Create button — gated by feature flag */}
         {UPLOAD_ENABLED && (
           <button onClick={onCreateNew} style={primaryBtnStyle}>
             ＋ புதிய தொகுப்பு உருவாக்கு
@@ -360,50 +384,168 @@ function CreateDetailsScreen({ packName, setPackName, packDesc, setPackDesc, pac
 // ─────────────────────────────────────────────
 // UPLOAD SCREEN
 // ─────────────────────────────────────────────
-function UploadScreen({ tamilFile, setTamilFile, englishFile, setEnglishFile, tamilInputRef, englishInputRef, onBack, onExtract }: {
+function UploadScreen({
+  tamilFile, setTamilFile, englishFile, setEnglishFile,
+  tamilInputRef, englishInputRef,
+  uploadMode, setUploadMode,
+  pasteText, setPasteText,
+  pasteLang, setPasteLang,
+  pasteFormat, setPasteFormat,
+  onBack, onExtract,
+}: {
   tamilFile: File | null; setTamilFile: (f: File | null) => void;
   englishFile: File | null; setEnglishFile: (f: File | null) => void;
   tamilInputRef: React.RefObject<HTMLInputElement | null>;
   englishInputRef: React.RefObject<HTMLInputElement | null>;
+  uploadMode: UploadMode; setUploadMode: (m: UploadMode) => void;
+  pasteText: string; setPasteText: (t: string) => void;
+  pasteLang: PasteLang; setPasteLang: (l: PasteLang) => void;
+  pasteFormat: PasteFormat; setPasteFormat: (f: PasteFormat) => void;
   onBack: () => void; onExtract: () => void;
 }) {
-  const valid = tamilFile !== null || englishFile !== null;
+  const charCount = pasteText.length;
+  const charOver = charCount > PASTE_WARN_CHARS;
+  const pdfValid = tamilFile !== null || englishFile !== null;
+  const textValid = pasteText.trim().length >= 50;
+  const valid = uploadMode === "pdf" ? pdfValid : textValid;
+
+  const withOptionsPlaceholder = pasteLang === "ta"
+    ? `1. எந்த போர் பிரிட்டிஷ் ஆட்சியை நிலைநிறுத்தியது?\nA) பிளாசி போர், 1757\nB) பக்சார் போர், 1764\nC) வந்திவாஷ் போர், 1760\nD) மூன்றாம் பானிபட் போர், 1761\nAnswer: A`
+    : `1. Which battle established British supremacy in India?\nA) Battle of Plassey, 1757\nB) Battle of Buxar, 1764\nC) Battle of Wandiwash, 1760\nD) Third Battle of Panipat, 1761\nAnswer: A`;
+
+  const qaOnlyPlaceholder = pasteLang === "ta"
+    ? `1. எந்த போர் பிரிட்டிஷ் ஆட்சியை நிலைநிறுத்தியது?\nAnswer: பிளாசி போர், 1757\n\n2. திருக்குறளை எழுதியவர் யார்?\nAnswer: திருவள்ளுவர்`
+    : `1. Which battle established British supremacy in India?\nAnswer: Battle of Plassey, 1757\n\n2. Who wrote Thirukkural?\nAnswer: Thiruvalluvar`;
+
   return (
     <PageShell title="புதிய தொகுப்பு" onBack={onBack} step={2}>
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-        <Field label="தமிழ் வினாக்கள் (PDF)">
-          <input ref={tamilInputRef} type="file" accept=".pdf" style={{ display: "none" }} onChange={e => setTamilFile(e.target.files?.[0] ?? null)} />
-          <div onClick={() => tamilInputRef.current?.click()} style={uploadZoneStyle(!!tamilFile)}>
-            <div style={{ fontSize: 26 }}>{tamilFile ? "✅" : "📎"}</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: tamilFile ? T.green : T.indigo }}>
-              {tamilFile ? tamilFile.name : "கோப்பை இங்கே போடுங்கள்"}
-            </div>
-            <div style={{ fontSize: 11, color: T.textSec }}>
-              {tamilFile ? `${(tamilFile.size / 1024 / 1024).toFixed(1)} MB` : "PDF only · Max 20MB"}
-            </div>
-          </div>
-        </Field>
 
-        <Field label={<>English Questions (PDF) <span style={{ color: T.textTer, fontWeight: 400 }}>optional</span></>}>
-          <input ref={englishInputRef} type="file" accept=".pdf" style={{ display: "none" }} onChange={e => setEnglishFile(e.target.files?.[0] ?? null)} />
-          <div onClick={() => englishInputRef.current?.click()} style={uploadZoneStyle(!!englishFile)}>
-            <div style={{ fontSize: 26 }}>{englishFile ? "✅" : "📎"}</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: englishFile ? T.green : T.indigo }}>
-              {englishFile ? englishFile.name : "Drop file here"}
-            </div>
-            <div style={{ fontSize: 11, color: T.textSec }}>
-              {englishFile ? `${(englishFile.size / 1024 / 1024).toFixed(1)} MB` : "PDF only · Max 20MB"}
-            </div>
-          </div>
-        </Field>
-
-        <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: 10, padding: "10px 12px", fontSize: 11, color: "#92400E", lineHeight: 1.5 }}>
-          💡 <strong>சிறந்த முடிவுகளுக்கு</strong> — நமது template பயன்படுத்துங்கள். எந்த format-லும் upload செய்யலாம்.
+        {/* ── Mode toggle ── */}
+        <div style={{ display: "flex", background: T.bg, border: `1.5px solid ${T.border}`, borderRadius: 12, padding: 3, gap: 3 }}>
+          {(["pdf", "text"] as UploadMode[]).map(mode => (
+            <button
+              key={mode}
+              onClick={() => setUploadMode(mode)}
+              style={{
+                flex: 1, padding: "9px 0", borderRadius: 9, border: "none", cursor: "pointer",
+                fontSize: 13, fontWeight: 600,
+                background: uploadMode === mode ? T.indigo : "transparent",
+                color: uploadMode === mode ? "#fff" : T.textSec,
+                transition: "all 0.15s",
+              }}
+            >
+              {mode === "pdf" ? "📎 PDF Upload" : "📋 Paste Text"}
+            </button>
+          ))}
         </div>
 
+        {/* ── PDF mode ── */}
+        {uploadMode === "pdf" && (
+          <>
+            <Field label="தமிழ் வினாக்கள் (PDF)">
+              <input ref={tamilInputRef} type="file" accept=".pdf" style={{ display: "none" }} onChange={e => setTamilFile(e.target.files?.[0] ?? null)} />
+              <div onClick={() => tamilInputRef.current?.click()} style={uploadZoneStyle(!!tamilFile)}>
+                <div style={{ fontSize: 26 }}>{tamilFile ? "✅" : "📎"}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: tamilFile ? T.green : T.indigo }}>
+                  {tamilFile ? tamilFile.name : "கோப்பை இங்கே போடுங்கள்"}
+                </div>
+                <div style={{ fontSize: 11, color: T.textSec }}>
+                  {tamilFile ? `${(tamilFile.size / 1024 / 1024).toFixed(1)} MB` : "PDF only · Max 20MB"}
+                </div>
+              </div>
+            </Field>
+
+            <Field label={<>English Questions (PDF) <span style={{ color: T.textTer, fontWeight: 400 }}>optional</span></>}>
+              <input ref={englishInputRef} type="file" accept=".pdf" style={{ display: "none" }} onChange={e => setEnglishFile(e.target.files?.[0] ?? null)} />
+              <div onClick={() => englishInputRef.current?.click()} style={uploadZoneStyle(!!englishFile)}>
+                <div style={{ fontSize: 26 }}>{englishFile ? "✅" : "📎"}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: englishFile ? T.green : T.indigo }}>
+                  {englishFile ? englishFile.name : "Drop file here"}
+                </div>
+                <div style={{ fontSize: 11, color: T.textSec }}>
+                  {englishFile ? `${(englishFile.size / 1024 / 1024).toFixed(1)} MB` : "PDF only · Max 20MB"}
+                </div>
+              </div>
+            </Field>
+
+            <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: 10, padding: "10px 12px", fontSize: 11, color: "#92400E", lineHeight: 1.5 }}>
+              💡 <strong>சிறந்த முடிவுகளுக்கு</strong> — நமது template பயன்படுத்துங்கள். எந்த format-லும் upload செய்யலாம்.
+            </div>
+          </>
+        )}
+
+        {/* ── Text paste mode ── */}
+        {uploadMode === "text" && (
+          <>
+            {/* Language picker */}
+            <Field label="மொழி *">
+              <div style={{ display: "flex", gap: 6 }}>
+                {(["ta", "en"] as PasteLang[]).map(l => (
+                  <button key={l} onClick={() => setPasteLang(l)} style={pillSelectStyle(pasteLang === l)}>
+                    {l === "ta" ? "தமிழ்" : "English"}
+                  </button>
+                ))}
+              </div>
+            </Field>
+
+            {/* Format picker */}
+            <Field label="வடிவம் *">
+              <div style={{ display: "flex", gap: 6 }}>
+                <button
+                  onClick={() => setPasteFormat("with_options")}
+                  style={{ ...pillSelectStyle(pasteFormat === "with_options"), flex: 1, whiteSpace: "nowrap" as const }}
+                >
+                  Q + A + Options
+                </button>
+                <button
+                  onClick={() => setPasteFormat("qa_only")}
+                  style={{ ...pillSelectStyle(pasteFormat === "qa_only"), flex: 1, whiteSpace: "nowrap" as const }}
+                >
+                  Q + A only
+                </button>
+              </div>
+              {pasteFormat === "qa_only" && (
+                <div style={{ fontSize: 11, color: T.textSec, marginTop: 4, lineHeight: 1.5 }}>
+                  AI will generate 3 realistic wrong options based on the subject.
+                </div>
+              )}
+            </Field>
+
+            {/* Textarea */}
+            <Field label="வினாக்களை ஒட்டுங்கள் *">
+              <textarea
+                value={pasteText}
+                onChange={e => {
+                  if (e.target.value.length <= MAX_PASTE_CHARS) setPasteText(e.target.value);
+                }}
+                placeholder={pasteFormat === "with_options" ? withOptionsPlaceholder : qaOnlyPlaceholder}
+                rows={10}
+                style={{
+                  ...inputStyle,
+                  resize: "none",
+                  fontFamily: "monospace",
+                  fontSize: 12,
+                  lineHeight: 1.6,
+                }}
+              />
+              <div style={{
+                fontSize: 11, textAlign: "right",
+                color: charOver ? T.red : T.textTer,
+                fontWeight: charOver ? 600 : 400,
+              }}>
+                {charCount.toLocaleString()} / {MAX_PASTE_CHARS.toLocaleString()}
+              </div>
+            </Field>
+          </>
+        )}
+
+        {/* ── Action buttons ── */}
         <div style={{ display: "flex", gap: 8 }}>
           <button onClick={onBack} style={{ flex: 1, padding: 12, background: T.surface, color: T.indigo, border: `1.5px solid ${T.indigoMid}`, borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>← Back</button>
-          <button onClick={onExtract} disabled={!valid} style={{ ...primaryBtnStyle, flex: 2, opacity: valid ? 1 : 0.5 }}>வினாக்களை சேர் →</button>
+          <button onClick={onExtract} disabled={!valid} style={{ ...primaryBtnStyle, flex: 2, opacity: valid ? 1 : 0.5 }}>
+            வினாக்களை சேர் →
+          </button>
         </div>
       </div>
     </PageShell>
@@ -419,7 +561,7 @@ function ProcessingScreen() {
       <div style={{ background: T.indigoLight, border: `1px solid ${T.indigoMid}`, borderRadius: 16, padding: "32px 24px", textAlign: "center", maxWidth: 320, width: "100%" }}>
         <div style={{ width: 40, height: 40, border: `3px solid ${T.indigoMid}`, borderTopColor: T.indigo, borderRadius: "50%", margin: "0 auto 16px", animation: "spin 0.8s linear infinite" }} />
         <div style={{ fontSize: 15, fontWeight: 700, color: T.indigo, marginBottom: 6 }}>வினாக்களை சரிபார்க்கப்படுகிறது...</div>
-        <div style={{ fontSize: 12, color: T.textSec, marginBottom: 12 }}>உங்கள் கோப்பிலிருந்து வினாக்கள் எடுக்கப்படுகின்றன</div>
+        <div style={{ fontSize: 12, color: T.textSec, marginBottom: 12 }}>உங்கள் உள்ளீட்டிலிருந்து வினாக்கள் எடுக்கப்படுகின்றன</div>
         <div style={{ fontSize: 11, color: T.textSec }}>இது சில நிமிடங்கள் ஆகலாம்</div>
       </div>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
@@ -509,7 +651,7 @@ function EditQuestionScreen({ question, onSave, onBack }: { question: Question; 
   }
 
   return (
-    <PageShell title="வினா திருத்து" subtitle={`Question`} onBack={onBack} rightAction={
+    <PageShell title="வினா திருத்து" subtitle="Question" onBack={onBack} rightAction={
       <button onClick={handleSave} disabled={saving} style={{ padding: "8px 14px", background: T.surface, color: T.indigo, border: `1.5px solid ${T.indigoMid}`, borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
         {saving ? "..." : "சேமி"}
       </button>
