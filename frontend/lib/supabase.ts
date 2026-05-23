@@ -122,35 +122,83 @@ export async function fetchQuestionsForPack(packId: string): Promise<Question[]>
   return (data as Question[]) ?? [];
 }
 
+// Fetch current affairs for a specific date (daily practice)
+export async function fetchQuestionsForCADaily(date: string, lang: "en" | "ta"): Promise<Question[]> {
+  const { data, error } = await supabase
+    .from("current_affairs")
+    .select("id, question, options, correct_option, explanation, topic")
+    .eq("published_date", date)
+    .eq("lang", lang)
+    .order("created_at", { ascending: true });
+  if (error) throw error;
+  // Map to Question type
+  return (data ?? []).map((r: any) => ({
+    id: r.id,
+    question: r.question,
+    lang,
+    options: r.options,
+    correct_option: r.correct_option,
+    explanation: r.explanation,
+    class: null,
+    subject: "Current Affairs",
+    chapter: date,
+    topic: r.topic,
+    difficulty: null,
+    source_type: "current_affairs",
+  }));
+}
+
+// Fetch current affairs for a full month (monthly practice)
+export async function fetchQuestionsForCAMonthly(month: string, lang: "en" | "ta"): Promise<Question[]> {
+  const start = month + "-01";
+  const end = month + "-31";
+  const { data, error } = await supabase
+    .from("current_affairs")
+    .select("id, question, options, correct_option, explanation, topic, published_date")
+    .gte("published_date", start)
+    .lte("published_date", end)
+    .eq("lang", lang)
+    .order("published_date", { ascending: true })
+    .order("created_at", { ascending: true });
+  if (error) throw error;
+  return (data ?? []).map((r: any) => ({
+    id: r.id,
+    question: r.question,
+    lang,
+    options: r.options,
+    correct_option: r.correct_option,
+    explanation: r.explanation,
+    class: null,
+    subject: "Current Affairs",
+    chapter: r.published_date,
+    topic: r.topic,
+    difficulty: null,
+    source_type: "current_affairs",
+  }));
+}
+
 // ─── CREATOR FUNCTIONS ────────────────────────────────────
 
-// Get creator row for the logged-in user
 export async function fetchMyCreatorProfile(): Promise<Creator | null> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
-
   const { data, error } = await supabase
     .from("creators")
     .select("*")
     .eq("user_id", user.id)
     .single();
-
   if (error || !data) return null;
   return data as Creator;
 }
 
-// Create creator row during onboarding (unverified)
 export async function createCreatorRow(
   userId: string,
   name: string,
   section: "vazhikatti" | "buddies"
 ): Promise<void> {
-  // Generate slug via DB function
   const { data: slugData, error: slugError } = await supabase
     .rpc("generate_creator_slug", { base_name: name });
-
   if (slugError) throw slugError;
-
   const { error } = await supabase.from("creators").insert({
     user_id: userId,
     name: name,
@@ -159,13 +207,11 @@ export async function createCreatorRow(
     type: "individual",
     verified: false,
   });
-
   if (error) throw error;
 }
 
 // ─── PACK FUNCTIONS ───────────────────────────────────────
 
-// Get all packs for the logged-in creator
 export async function fetchMyPacks(creatorId: string): Promise<Pack[]> {
   const { data, error } = await supabase
     .from("packs")
@@ -176,7 +222,6 @@ export async function fetchMyPacks(creatorId: string): Promise<Pack[]> {
   return (data as Pack[]) ?? [];
 }
 
-// Create a new pack
 export async function createPack(pack: {
   creator_id: string;
   name: string;
@@ -194,87 +239,54 @@ export async function createPack(pack: {
   return data as Pack;
 }
 
-// Unpublish a pack (creator side)
 export async function unpublishPack(packId: string): Promise<void> {
-  const { error } = await supabase
-    .from("packs")
-    .update({ is_published: false })
-    .eq("id", packId);
+  const { error } = await supabase.from("packs").update({ is_published: false }).eq("id", packId);
   if (error) throw error;
 }
 
-// Publish a pack
 export async function publishPack(packId: string): Promise<void> {
-  const { error } = await supabase
-    .from("packs")
-    .update({ is_published: true })
-    .eq("id", packId);
+  const { error } = await supabase.from("packs").update({ is_published: true }).eq("id", packId);
   if (error) throw error;
 }
 
-// Update pack question_count after upload
 export async function updatePackQuestionCount(packId: string, count: number): Promise<void> {
-  const { error } = await supabase
-    .from("packs")
-    .update({ question_count: count })
-    .eq("id", packId);
+  const { error } = await supabase.from("packs").update({ question_count: count }).eq("id", packId);
   if (error) throw error;
 }
 
-// Bulk insert questions for a pack
 export async function insertPackQuestions(questions: Omit<Question, "id">[]): Promise<void> {
   const { error } = await supabase.from("questions").insert(questions);
   if (error) throw error;
 }
 
-// Update a single question
 export async function updateQuestion(
   questionId: string,
   updates: Partial<Pick<Question, "question" | "options" | "correct_option" | "explanation">>
 ): Promise<void> {
-  const { error } = await supabase
-    .from("questions")
-    .update(updates)
-    .eq("id", questionId);
+  const { error } = await supabase.from("questions").update(updates).eq("id", questionId);
   if (error) throw error;
 }
 
-// Delete a single question
 export async function deleteQuestion(questionId: string): Promise<void> {
-  const { error } = await supabase
-    .from("questions")
-    .delete()
-    .eq("id", questionId);
+  const { error } = await supabase.from("questions").delete().eq("id", questionId);
   if (error) throw error;
 }
 
 // ─── ADMIN FUNCTIONS ──────────────────────────────────────
 
-// Get all creators (admin only)
 export async function fetchAllCreators(): Promise<Creator[]> {
-  const { data, error } = await supabase
-    .from("creators")
-    .select("*")
-    .order("created_at", { ascending: false });
+  const { data, error } = await supabase.from("creators").select("*").order("created_at", { ascending: false });
   if (error) throw error;
   return (data as Creator[]) ?? [];
 }
 
-// Get all packs with creator name (admin only)
 export async function fetchAllPacks(): Promise<(Pack & { creator_name: string })[]> {
-  const { data, error } = await supabase
-    .from("packs")
-    .select("*, creators(name)")
-    .order("created_at", { ascending: false });
+  const { data, error } = await supabase.from("packs").select("*, creators(name)").order("created_at", { ascending: false });
   if (error) throw error;
   return (data as (Pack & { creator_name: string })[]) ?? [];
 }
 
-// Verify a creator (admin only — requires service role in real impl)
 export async function verifyCreator(creatorId: string): Promise<void> {
-  const { error } = await supabase
-    .from("creators")
-    .update({ verified: true })
-    .eq("id", creatorId);
+  const { error } = await supabase.from("creators").update({ verified: true }).eq("id", creatorId);
   if (error) throw error;
 }

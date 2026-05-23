@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { T, shadow } from "../../../../lib/tokens";
-import { fetchQuestionsForLevel, fetchQuestionsForPYQ, fetchQuestionsForPack, supabase, type Question } from "../../../../lib/supabase";
+import { fetchQuestionsForLevel, fetchQuestionsForPYQ, fetchQuestionsForPack, fetchQuestionsForCADaily, fetchQuestionsForCAMonthly, supabase, type Question } from "../../../../lib/supabase";
 import { startSession, recordResponse, completeSession } from "../../../../lib/session";
 
 export default function PracticePage() {
@@ -15,8 +15,11 @@ export default function PracticePage() {
   const chapter = decodeURIComponent(params.chapter as string);
 
   const isPYQ = subject === "pyq";
-  const isPack = subject === "pack"; // NEW — pack mode
+  const isPack = subject === "pack";
+  const isCA = subject === "current-affairs";
   const packId = searchParams.get("pack_id") ?? null;
+  const caDate = searchParams.get("date") ?? null;
+  const caMonth = searchParams.get("month") ?? null;
 
   const pyqYear = parseInt(searchParams.get("year") ?? "0");
   const pyqPaper = (searchParams.get("paper") ?? "tamil") as "tamil" | "general";
@@ -42,13 +45,14 @@ export default function PracticePage() {
   const offset = parseInt(searchParams.get("offset") ?? "0");
   const limit = parseInt(searchParams.get("limit") ?? "10");
 
+  const urlLang = searchParams.get("lang") as "en" | "ta" | null;
   const [lang, setLang] = useState<"en" | "ta">(
-    isPYQ ? (pyqPaper === "tamil" ? "ta" : "en") : subject === "Tamil" ? "ta" : "en"
+    isCA && urlLang ? urlLang : isPYQ ? (pyqPaper === "tamil" ? "ta" : "en") : subject === "Tamil" ? "ta" : "en"
   );
 
   useEffect(() => {
     async function loadLang() {
-      if (isPYQ || isPack || subject === "Tamil") return;
+      if (isCA || isPYQ || isPack || subject === "Tamil") return;
       // Try DB first
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
@@ -113,7 +117,15 @@ export default function PracticePage() {
       level, offset, isPYQ || isPack ? 100 : limit
     );
 
-    if (isPack && packId) {
+    if (isCA && caDate) {
+      fetchQuestionsForCADaily(caDate, lang)
+        .then(qs => { setQuestions(qs); setLoading(false); })
+        .catch(() => { setError("Could not load current affairs."); setLoading(false); });
+    } else if (isCA && caMonth) {
+      fetchQuestionsForCAMonthly(caMonth, lang)
+        .then(qs => { setQuestions(qs); setLoading(false); })
+        .catch(() => { setError("Could not load current affairs."); setLoading(false); });
+    } else if (isPack && packId) {
       fetchQuestionsForPack(packId)
         .then(qs => { setQuestions(qs); setLoading(false); })
         .catch(() => { setError("Could not load pack questions."); setLoading(false); });
@@ -126,7 +138,7 @@ export default function PracticePage() {
         .then(qs => { setQuestions(qs); setLoading(false); })
         .catch(() => { setError("Could not load questions."); setLoading(false); });
     }
-  }, [subject, chapter, lang, offset, limit, level, isPYQ, isPack, packId, pyqYear, pyqGroup, pyqPaper]);
+  }, [subject, chapter, lang, offset, limit, level, isPYQ, isPack, isCA, packId, caDate, caMonth, pyqYear, pyqGroup, pyqPaper]);
 
   useEffect(() => {
     questionStartRef.current = Date.now();
