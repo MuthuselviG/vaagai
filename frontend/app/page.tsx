@@ -94,7 +94,8 @@ export default function HomePage() {
         .select("id, name, subject, exams, question_count, is_free, creators(name, slug, verified, accent_color, section)")
         .eq("is_published", true)
         .eq("is_featured", true)
-        .limit(3)
+        .order("created_at", { ascending: false })
+        .limit(5)
         .then(({ data }) => { if (data) setFeaturedPacks(data as unknown as FeaturedPack[]); });
     }
 
