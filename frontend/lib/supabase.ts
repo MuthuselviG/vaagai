@@ -186,6 +186,19 @@ export async function fetchQuestionsForCAMonthly(month: string, lang: "en" | "ta
   }));
 }
 
+export async function fetchQuestionsForMock(year: number): Promise<Question[]> {
+  const { data, error } = await supabase
+    .from("questions")
+    .select("id, question, lang, options, correct_option, explanation, class, subject, chapter, topic, difficulty, source_type")
+    .contains("pyq_years", [year])
+    .contains("pyq_groups", ["group4"])
+    .eq("lang", "ta")
+    .eq("source_type", "pyq")
+    .limit(200);
+  if (error) throw error;
+  return (data as Question[]) ?? [];
+}
+
 // ─── CREATOR FUNCTIONS ────────────────────────────────────
 
 export async function fetchMyCreatorProfile(): Promise<Creator | null> {

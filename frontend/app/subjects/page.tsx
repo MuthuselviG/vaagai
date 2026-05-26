@@ -288,6 +288,22 @@ export default function SubjectsPage() {
           </div>
         </div>
 
+        {/* Mock Test CTA */}
+        <div
+          onClick={() => router.push("/mock")}
+          style={{ background: T.surface, border: `1.5px solid ${T.indigoMid}`, borderRadius: 16, padding: "13px 14px", display: "flex", alignItems: "center", gap: 12, cursor: "pointer", marginBottom: 14, boxShadow: shadow.sm }}
+        >
+          <div style={{ width: 44, height: 44, borderRadius: 13, background: T.indigoLight, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>🏆</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 800, color: T.text }}>{lang === "ta" ? "முழு தேர்வு பயிற்சி" : "Mock Test"}</div>
+            <div style={{ fontSize: 11, color: T.textSec, marginTop: 2 }}>200 {lang === "ta" ? "வினாக்கள் · 3 மணி நேரம் · உண்மையான தேர்வு வடிவம்" : "questions · 3 hours · Real exam format"}</div>
+            <div style={{ fontSize: 11, color: T.indigo, fontWeight: 700, marginTop: 3 }}>PYQ · AI Predicted</div>
+          </div>
+          <div style={{ background: T.indigo, color: "#fff", borderRadius: 10, padding: "8px 12px", fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
+            {lang === "ta" ? "தொடங்கு →" : "Start →"}
+          </div>
+        </div>
+
         {/* Important questions section — unchanged */}
         <div style={{ fontSize: 11, fontWeight: 800, color: T.textTer, letterSpacing: 0.8, marginBottom: 10, marginTop: 6 }}>
           {lang === "ta" ? "குரூப் 4 — முக்கிய வினாக்கள்" : "GROUP 4 — IMPORTANT QUESTIONS"}
