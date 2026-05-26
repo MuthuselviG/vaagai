@@ -100,14 +100,23 @@ export async function fetchQuestionsForPYQ(
   group: string,
   paper: "tamil" | "general"
 ): Promise<Question[]> {
-  const lang = paper === "tamil" ? "ta" : "en";
-  const { data, error } = await supabase
+  let query = supabase
     .from("questions")
     .select("id, question, lang, options, correct_option, explanation, class, subject, chapter, topic, difficulty, source_type")
     .contains("pyq_years", [year])
-    .eq("lang", lang)
+    .contains("pyq_groups", [group])
     .eq("source_type", "pyq")
     .limit(100);
+
+  if (paper === "tamil") {
+    // Tamil eligibility paper — Tamil language, subject = General Tamil
+    query = query.eq("lang", "ta").eq("subject", "General Tamil");
+  } else {
+    // General Studies paper — English language, exclude General Tamil
+    query = query.eq("lang", "en").neq("subject", "General Tamil");
+  }
+
+  const { data, error } = await query;
   if (error) throw error;
   return (data as Question[]) ?? [];
 }
