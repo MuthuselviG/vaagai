@@ -209,7 +209,6 @@ export default function SubjectsPage() {
           .from("packs")
           .select("id, name, subject, exams, question_count, is_free, creators(name, slug, verified, accent_color, section)")
           .eq("is_published", true)
-          .eq("is_featured", true)
           .order("created_at", { ascending: false })
           .limit(5);
         if (data) setFeaturedPacks(data as unknown as FeaturedPack[]);

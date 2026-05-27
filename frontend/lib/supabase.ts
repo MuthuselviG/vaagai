@@ -61,6 +61,8 @@ export type Pack = {
   rating_count: number;
   is_published: boolean;
   is_free: boolean;
+  is_archived: boolean;
+  was_published: boolean;
   created_at: string;
 };
 
@@ -239,6 +241,18 @@ export async function fetchMyPacks(creatorId: string): Promise<Pack[]> {
     .from("packs")
     .select("*")
     .eq("creator_id", creatorId)
+    .eq("is_archived", false)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data as Pack[]) ?? [];
+}
+
+export async function fetchMyArchivedPacks(creatorId: string): Promise<Pack[]> {
+  const { data, error } = await supabase
+    .from("packs")
+    .select("*")
+    .eq("creator_id", creatorId)
+    .eq("is_archived", true)
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data as Pack[]) ?? [];
@@ -263,6 +277,34 @@ export async function createPack(pack: {
 
 export async function unpublishPack(packId: string): Promise<void> {
   const { error } = await supabase.from("packs").update({ is_published: false }).eq("id", packId);
+  if (error) throw error;
+}
+
+export async function archivePack(packId: string, wasPublished: boolean): Promise<void> {
+  // Archive the pack
+  const { error } = await supabase
+    .from("packs")
+    .update({ is_archived: true, is_published: false })
+    .eq("id", packId);
+  if (error) throw error;
+
+  // Only reduce question count if pack was ever published
+  if (wasPublished) {
+    const { data: pack } = await supabase
+      .from("packs")
+      .select("question_count, creator_id")
+      .eq("id", packId)
+      .single();
+    // Note: creator total questions_used is calculated dynamically from active packs
+    // No separate counter needed — fetchMyPacks already excludes archived packs
+  }
+}
+
+export async function unarchivePack(packId: string): Promise<void> {
+  const { error } = await supabase
+    .from("packs")
+    .update({ is_archived: false })
+    .eq("id", packId);
   if (error) throw error;
 }
 
