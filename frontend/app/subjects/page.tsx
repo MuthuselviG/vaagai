@@ -251,7 +251,7 @@ export default function SubjectsPage() {
           {lang === "ta" ? "பாடங்கள்" : "Subjects"}
         </h2>
         <p style={{ color: T.textSec, fontSize: 12, marginTop: 3 }}>
-          {loading ? "Loading…" : `${ALL_SUBJECTS.length} subjects · ${totalChapters} chapters · ${totalQ.toLocaleString()} questions`}
+          {loading ? "Loading…" : `${ACTIVE_SUBJECTS.length} subjects · ${totalChapters} chapters · ${totalQ.toLocaleString()} questions`}
         </p>
       </div>
 
@@ -268,7 +268,7 @@ export default function SubjectsPage() {
             <div>
               <div style={{ fontSize: 14, fontWeight: 800, color: T.text }}>{lang === "ta" ? "குரூப் 4" : "Group 4"}</div>
               <div style={{ fontSize: 11, color: T.textSec, marginTop: 1 }}>
-                {lang === "ta" ? `9 ஆண்டுகள் · 900 வினாக்கள்` : `9 years · 900 questions`}
+                {lang === "ta" ? `9 ஆண்டுகள் · 1,800 வினாக்கள்` : `9 years · 1,800 questions`}
               </div>
               <div style={{ fontSize: 11, color: T.indigo, fontWeight: 700, marginTop: 3 }}>
                 {lang === "ta" ? "பயிற்சி செய்ய ஆண்டை தேர்வு செய்யுங்கள்" : "Select a year to start practising"}

@@ -100,7 +100,8 @@ export async function fetchQuestionsForLevel(
 export async function fetchQuestionsForPYQ(
   year: number,
   group: string,
-  paper: "tamil" | "general"
+  paper: "tamil" | "general",
+  lang: "en" | "ta" = "en"
 ): Promise<Question[]> {
   let query = supabase
     .from("questions")
@@ -111,11 +112,11 @@ export async function fetchQuestionsForPYQ(
     .limit(100);
 
   if (paper === "tamil") {
-    // Tamil eligibility paper — Tamil language, subject = General Tamil
+    // Tamil eligibility paper — always Tamil language, subject = General Tamil
     query = query.eq("lang", "ta").eq("subject", "General Tamil");
   } else {
-    // General Studies paper — English language, exclude General Tamil
-    query = query.eq("lang", "en").neq("subject", "General Tamil");
+    // General Studies paper — use user's lang preference, exclude General Tamil
+    query = query.eq("lang", lang).neq("subject", "General Tamil");
   }
 
   const { data, error } = await query;
