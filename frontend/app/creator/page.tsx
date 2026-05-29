@@ -16,9 +16,12 @@ const MAX_PASTE_CHARS = 5000;
 const PASTE_WARN_CHARS = 4500;
 
 type Screen = "home" | "create_details" | "create_upload" | "processing" | "review" | "edit_question";
-type UploadMode = "pdf" | "text";
+type UploadMode = "text" | "image" | "pdf";
 type PasteLang = "ta" | "en";
 type PasteFormat = "with_options" | "qa_only";
+type ImageMode = "auto" | "extract" | "generate";
+
+const UPLOAD_TAB_ORDER: UploadMode[] = ["text", "image", "pdf"];
 type HomeTab = "active" | "archived";
 
 // ── LANG LABELS ──
@@ -48,6 +51,12 @@ export default function CreatorPage() {
   const [pasteText, setPasteText] = useState("");
   const [pasteLang, setPasteLang] = useState<PasteLang>("ta");
   const [pasteFormat, setPasteFormat] = useState<PasteFormat>("with_options");
+
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
+  const [imageLang, setImageLang] = useState<PasteLang>("ta");
+  const [imageMode, setImageMode] = useState<ImageMode>("generate");
+  const [processingMode, setProcessingMode] = useState<UploadMode>("text");
 
   const [extractedQuestions, setExtractedQuestions] = useState<Question[]>([]);
   const [editingQ, setEditingQ] = useState<Question | null>(null);
@@ -122,7 +131,9 @@ export default function CreatorPage() {
         if (!packName || !packSubject || packExams.length === 0) return;
         const pack = await createPack({ creator_id: creator.id, name: packName, description: packDesc, subject: packSubject, exams: packExams, lang: "both" });
         setCurrentPack(pack);
-        setTamilFile(null); setEnglishFile(null); setPasteText(""); setUploadMode("pdf");
+        setTamilFile(null); setEnglishFile(null); setPasteText("");
+        setImageFile(null); setImageLang("ta"); setImageMode("generate");
+        setUploadMode("text");
         setScreen("create_upload");
       }}
     />
@@ -137,13 +148,20 @@ export default function CreatorPage() {
       pasteText={pasteText} setPasteText={setPasteText}
       pasteLang={pasteLang} setPasteLang={setPasteLang}
       pasteFormat={pasteFormat} setPasteFormat={setPasteFormat}
+      imageFile={imageFile} setImageFile={setImageFile}
+      imageInputRef={imageInputRef}
+      imageLang={imageLang} setImageLang={setImageLang}
+      imageMode={imageMode} setImageMode={setImageMode}
       lang={lang}
       onBack={() => setScreen("create_details")}
       onExtract={async () => {
         const hasPdf = tamilFile || englishFile;
         const hasText = pasteText.trim().length >= 50;
+        const hasImage = imageFile !== null;
         if (uploadMode === "pdf" && !hasPdf) return;
         if (uploadMode === "text" && !hasText) return;
+        if (uploadMode === "image" && !hasImage) return;
+        setProcessingMode(uploadMode);
         setScreen("processing");
         try {
           const formData = new FormData();
@@ -154,6 +172,10 @@ export default function CreatorPage() {
           if (uploadMode === "pdf") {
             if (tamilFile) formData.append("tamil", tamilFile);
             if (englishFile) formData.append("english", englishFile);
+          } else if (uploadMode === "image") {
+            formData.append("image", imageFile!);
+            formData.append("image_lang", imageLang);
+            formData.append("image_mode", imageMode);
           } else {
             formData.append("text", pasteText);
             formData.append("text_lang", pasteLang);
@@ -172,7 +194,7 @@ export default function CreatorPage() {
     />
   );
 
-  if (screen === "processing") return <ProcessingScreen lang={lang} />;
+  if (screen === "processing") return <ProcessingScreen lang={lang} uploadMode={processingMode} />;
 
   if (screen === "review") return (
     <ReviewScreen
@@ -407,7 +429,13 @@ function CreateDetailsScreen({ packName, setPackName, packDesc, setPackDesc, pac
 // ─────────────────────────────────────────────
 // UPLOAD SCREEN
 // ─────────────────────────────────────────────
-function UploadScreen({ tamilFile, setTamilFile, englishFile, setEnglishFile, tamilInputRef, englishInputRef, uploadMode, setUploadMode, pasteText, setPasteText, pasteLang, setPasteLang, pasteFormat, setPasteFormat, lang, onBack, onExtract }: {
+function uploadTabLabel(mode: UploadMode, lang: "en" | "ta"): string {
+  if (mode === "text") return `📋 ${L(lang, "Paste Text", "உரை ஒட்டு")}`;
+  if (mode === "image") return `🖼 ${L(lang, "Image", "படம்")}`;
+  return "📎 PDF";
+}
+
+function UploadScreen({ tamilFile, setTamilFile, englishFile, setEnglishFile, tamilInputRef, englishInputRef, uploadMode, setUploadMode, pasteText, setPasteText, pasteLang, setPasteLang, pasteFormat, setPasteFormat, imageFile, setImageFile, imageInputRef, imageLang, setImageLang, imageMode, setImageMode, lang, onBack, onExtract }: {
   tamilFile: File | null; setTamilFile: (f: File | null) => void;
   englishFile: File | null; setEnglishFile: (f: File | null) => void;
   tamilInputRef: React.RefObject<HTMLInputElement | null>;
@@ -416,13 +444,33 @@ function UploadScreen({ tamilFile, setTamilFile, englishFile, setEnglishFile, ta
   pasteText: string; setPasteText: (t: string) => void;
   pasteLang: PasteLang; setPasteLang: (l: PasteLang) => void;
   pasteFormat: PasteFormat; setPasteFormat: (f: PasteFormat) => void;
+  imageFile: File | null; setImageFile: (f: File | null) => void;
+  imageInputRef: React.RefObject<HTMLInputElement | null>;
+  imageLang: PasteLang; setImageLang: (l: PasteLang) => void;
+  imageMode: ImageMode; setImageMode: (m: ImageMode) => void;
   lang: "en" | "ta"; onBack: () => void; onExtract: () => void;
 }) {
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!imageFile) {
+      setImagePreviewUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(imageFile);
+    setImagePreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [imageFile]);
+
   const charCount = pasteText.length;
   const charOver = charCount > PASTE_WARN_CHARS;
   const pdfValid = tamilFile !== null || englishFile !== null;
   const textValid = pasteText.trim().length >= 50;
-  const valid = uploadMode === "pdf" ? pdfValid : textValid;
+  const imageValid = imageFile !== null;
+  const valid =
+    uploadMode === "pdf" ? pdfValid :
+    uploadMode === "image" ? imageValid :
+    textValid;
 
   const withOptionsPlaceholder = pasteLang === "ta"
     ? `1. எந்த போர் பிரிட்டிஷ் ஆட்சியை நிலைநிறுத்தியது?\nA) பிளாசி போர், 1757\nB) பக்சார் போர், 1764\nC) வந்திவாஷ் போர், 1760\nD) மூன்றாம் பானிபட் போர், 1761\nAnswer: A`
@@ -436,33 +484,12 @@ function UploadScreen({ tamilFile, setTamilFile, englishFile, setEnglishFile, ta
     <PageShell title={L(lang, "New Pack", "புதிய தொகுப்பு")} onBack={onBack} step={2} lang={lang}>
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <div style={{ display: "flex", background: T.bg, border: `1.5px solid ${T.border}`, borderRadius: 12, padding: 3, gap: 3 }}>
-          {(["pdf", "text"] as UploadMode[]).map(mode => (
-            <button key={mode} onClick={() => setUploadMode(mode)} style={{ flex: 1, padding: "9px 0", borderRadius: 9, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, background: uploadMode === mode ? T.indigo : "transparent", color: uploadMode === mode ? "#fff" : T.textSec, transition: "all 0.15s" }}>
-              {mode === "pdf" ? "📎 PDF" : `📋 ${L(lang, "Paste Text", "உரை ஒட்டு")}`}
+          {UPLOAD_TAB_ORDER.map(mode => (
+            <button key={mode} onClick={() => setUploadMode(mode)} style={{ flex: 1, padding: "9px 4px", borderRadius: 9, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600, background: uploadMode === mode ? T.indigo : "transparent", color: uploadMode === mode ? "#fff" : T.textSec, transition: "all 0.15s" }}>
+              {uploadTabLabel(mode, lang)}
             </button>
           ))}
         </div>
-
-        {uploadMode === "pdf" && (
-          <>
-            <Field label={L(lang, "Tamil Questions (PDF)", "தமிழ் வினாக்கள் (PDF)")}>
-              <input ref={tamilInputRef} type="file" accept=".pdf" style={{ display: "none" }} onChange={e => setTamilFile(e.target.files?.[0] ?? null)} />
-              <div onClick={() => tamilInputRef.current?.click()} style={uploadZoneStyle(!!tamilFile)}>
-                <div style={{ fontSize: 26 }}>{tamilFile ? "✅" : "📎"}</div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: tamilFile ? T.green : T.indigo }}>{tamilFile ? tamilFile.name : L(lang, "Drop file here", "கோப்பை இங்கே போடுங்கள்")}</div>
-                <div style={{ fontSize: 11, color: T.textSec }}>{tamilFile ? `${(tamilFile.size / 1024 / 1024).toFixed(1)} MB` : "PDF only · Max 20MB"}</div>
-              </div>
-            </Field>
-            <Field label={<>{L(lang, "English Questions (PDF)", "ஆங்கில வினாக்கள் (PDF)")} <span style={{ color: T.textTer, fontWeight: 400 }}>{L(lang, "optional", "விருப்பமானது")}</span></>}>
-              <input ref={englishInputRef} type="file" accept=".pdf" style={{ display: "none" }} onChange={e => setEnglishFile(e.target.files?.[0] ?? null)} />
-              <div onClick={() => englishInputRef.current?.click()} style={uploadZoneStyle(!!englishFile)}>
-                <div style={{ fontSize: 26 }}>{englishFile ? "✅" : "📎"}</div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: englishFile ? T.green : T.indigo }}>{englishFile ? englishFile.name : L(lang, "Drop file here", "கோப்பை இங்கே போடுங்கள்")}</div>
-                <div style={{ fontSize: 11, color: T.textSec }}>{englishFile ? `${(englishFile.size / 1024 / 1024).toFixed(1)} MB` : "PDF only · Max 20MB"}</div>
-              </div>
-            </Field>
-          </>
-        )}
 
         {uploadMode === "text" && (
           <>
@@ -485,6 +512,71 @@ function UploadScreen({ tamilFile, setTamilFile, englishFile, setEnglishFile, ta
           </>
         )}
 
+        {uploadMode === "image" && (
+          <>
+            <Field label={L(lang, "Image *", "படம் *")}>
+              <input ref={imageInputRef} type="file" accept="image/jpeg,image/png,image/webp" style={{ display: "none" }} onChange={e => setImageFile(e.target.files?.[0] ?? null)} />
+              <div onClick={() => imageInputRef.current?.click()} style={uploadZoneStyle(!!imageFile)}>
+                <div style={{ fontSize: 26 }}>{imageFile ? "✅" : "🖼"}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: imageFile ? T.green : T.indigo }}>{imageFile ? imageFile.name : L(lang, "Drop image here", "படத்தை இங்கே போடுங்கள்")}</div>
+                <div style={{ fontSize: 11, color: T.textSec }}>{imageFile ? `${(imageFile.size / 1024 / 1024).toFixed(1)} MB` : L(lang, "One image · JPEG/PNG/WebP · Max 20MB · Up to 30 questions", "ஒரு படம் · JPEG/PNG/WebP · அதிகபட்சம் 20MB · 30 வினாக்கள் வரை")}</div>
+              </div>
+              {imagePreviewUrl && (
+                <img src={imagePreviewUrl} alt="" style={{ marginTop: 10, width: "100%", maxHeight: 200, objectFit: "contain", borderRadius: 10, border: `1px solid ${T.border}` }} />
+              )}
+            </Field>
+            <Field label={L(lang, "Language *", "மொழி *")}>
+              <div style={{ display: "flex", gap: 6 }}>
+                {(["ta", "en"] as PasteLang[]).map(l => <button key={l} onClick={() => setImageLang(l)} style={pillSelectStyle(imageLang === l)}>{l === "ta" ? "தமிழ்" : "English"}</button>)}
+              </div>
+            </Field>
+            <Field label={L(lang, "What should we do? *", "என்ன செய்ய வேண்டும்? *")}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                <button onClick={() => setImageMode("extract")} style={{ ...pillSelectStyle(imageMode === "extract"), textAlign: "left" }}>
+                  {L(lang, "Extract MCQs from image", "படத்திலிருந்து MCQ எடு")}
+                </button>
+                <button onClick={() => setImageMode("generate")} style={{ ...pillSelectStyle(imageMode === "generate"), textAlign: "left" }}>
+                  {L(lang, "Generate from notes/tables", "குறிப்புகள்/அட்டவணையிலிருந்து உருவாக்கு")}
+                </button>
+                <button onClick={() => setImageMode("auto")} style={{ ...pillSelectStyle(imageMode === "auto"), textAlign: "left" }}>
+                  {L(lang, "Auto", "தானியங்கி")}
+                </button>
+              </div>
+              {imageMode === "generate" && (
+                <div style={{ fontSize: 11, color: T.textSec, marginTop: 4 }}>
+                  {L(lang, "Creates MCQs from notes, tables, or study material in the image.", "படத்தில் உள்ள குறிப்புகள், அட்டவணை அல்லது படிப்பொருளிலிருந்து MCQ உருவாக்கும்.")}
+                </div>
+              )}
+              {imageMode === "auto" && (
+                <div style={{ fontSize: 11, color: T.textSec, marginTop: 4 }}>
+                  {L(lang, "Extracts visible MCQs, or generates from study content.", "தெரியும் MCQ எடுக்கும், அல்லது படிப்பொருளிலிருந்து உருவாக்கும்.")}
+                </div>
+              )}
+            </Field>
+          </>
+        )}
+
+        {uploadMode === "pdf" && (
+          <>
+            <Field label={L(lang, "Tamil Questions (PDF)", "தமிழ் வினாக்கள் (PDF)")}>
+              <input ref={tamilInputRef} type="file" accept=".pdf" style={{ display: "none" }} onChange={e => setTamilFile(e.target.files?.[0] ?? null)} />
+              <div onClick={() => tamilInputRef.current?.click()} style={uploadZoneStyle(!!tamilFile)}>
+                <div style={{ fontSize: 26 }}>{tamilFile ? "✅" : "📎"}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: tamilFile ? T.green : T.indigo }}>{tamilFile ? tamilFile.name : L(lang, "Drop file here", "கோப்பை இங்கே போடுங்கள்")}</div>
+                <div style={{ fontSize: 11, color: T.textSec }}>{tamilFile ? `${(tamilFile.size / 1024 / 1024).toFixed(1)} MB` : "PDF only · Max 20MB"}</div>
+              </div>
+            </Field>
+            <Field label={<>{L(lang, "English Questions (PDF)", "ஆங்கில வினாக்கள் (PDF)")} <span style={{ color: T.textTer, fontWeight: 400 }}>{L(lang, "optional", "விருப்பமானது")}</span></>}>
+              <input ref={englishInputRef} type="file" accept=".pdf" style={{ display: "none" }} onChange={e => setEnglishFile(e.target.files?.[0] ?? null)} />
+              <div onClick={() => englishInputRef.current?.click()} style={uploadZoneStyle(!!englishFile)}>
+                <div style={{ fontSize: 26 }}>{englishFile ? "✅" : "📎"}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: englishFile ? T.green : T.indigo }}>{englishFile ? englishFile.name : L(lang, "Drop file here", "கோப்பை இங்கே போடுங்கள்")}</div>
+                <div style={{ fontSize: 11, color: T.textSec }}>{englishFile ? `${(englishFile.size / 1024 / 1024).toFixed(1)} MB` : "PDF only · Max 20MB"}</div>
+              </div>
+            </Field>
+          </>
+        )}
+
         <div style={{ display: "flex", gap: 8 }}>
           <button onClick={onBack} style={{ flex: 1, padding: 12, background: T.surface, color: T.indigo, border: `1.5px solid ${T.indigoMid}`, borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>← {L(lang, "Back", "பின்னோக்கு")}</button>
           <button onClick={onExtract} disabled={!valid} style={{ ...primaryBtnStyle, flex: 2, opacity: valid ? 1 : 0.5 }}>{L(lang, "Add Questions →", "வினாக்களை சேர் →")}</button>
@@ -497,13 +589,20 @@ function UploadScreen({ tamilFile, setTamilFile, englishFile, setEnglishFile, ta
 // ─────────────────────────────────────────────
 // PROCESSING SCREEN
 // ─────────────────────────────────────────────
-function ProcessingScreen({ lang }: { lang: "en" | "ta" }) {
+function ProcessingScreen({ lang, uploadMode }: { lang: "en" | "ta"; uploadMode: UploadMode }) {
+  const subtitle =
+    uploadMode === "image"
+      ? L(lang, "Reading your image and building questions", "உங்கள் படத்தை படித்து வினாக்கள் உருவாக்கப்படுகின்றன")
+      : uploadMode === "text"
+        ? L(lang, "Processing your pasted questions", "ஒட்டிய வினாக்கள் செயலாக்கப்படுகின்றன")
+        : L(lang, "Extracting questions from your PDF", "PDF-லிருந்து வினாக்கள் எடுக்கப்படுகின்றன");
+
   return (
     <div style={{ background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, paddingTop: "30vh" }}>
       <div style={{ background: T.indigoLight, border: `1px solid ${T.indigoMid}`, borderRadius: 16, padding: "32px 24px", textAlign: "center", maxWidth: 320, width: "100%" }}>
         <div style={{ width: 40, height: 40, border: `3px solid ${T.indigoMid}`, borderTopColor: T.indigo, borderRadius: "50%", margin: "0 auto 16px", animation: "spin 0.8s linear infinite" }} />
         <div style={{ fontSize: 15, fontWeight: 700, color: T.indigo, marginBottom: 6 }}>{L(lang, "Processing questions...", "வினாக்களை சரிபார்க்கப்படுகிறது...")}</div>
-        <div style={{ fontSize: 12, color: T.textSec, marginBottom: 12 }}>{L(lang, "Extracting questions from your input", "உங்கள் உள்ளீட்டிலிருந்து வினாக்கள் எடுக்கப்படுகின்றன")}</div>
+        <div style={{ fontSize: 12, color: T.textSec, marginBottom: 12 }}>{subtitle}</div>
         <div style={{ fontSize: 11, color: T.textSec }}>{L(lang, "This may take a few minutes", "இது சில நிமிடங்கள் ஆகலாம்")}</div>
       </div>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
