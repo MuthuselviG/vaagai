@@ -3,7 +3,7 @@ name: Daily Current Affairs
 on:
   schedule:
     - cron: '30 20 * * *'  # 2:00am IST (8:30pm UTC)
-  workflow_dispatch:  # allows manual trigger from GitHub UI
+  workflow_dispatch:
 
 jobs:
   generate:
@@ -25,6 +25,6 @@ jobs:
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: npx ts-node --esm scripts/current-affairs.ts
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY_CRON }}
+        run: npx tsx scripts/current-affairs.ts
         working-directory: frontend
