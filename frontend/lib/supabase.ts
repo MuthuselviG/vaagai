@@ -66,6 +66,53 @@ export type Pack = {
   created_at: string;
 };
 
+export type CAQuestion = {
+  id: string;
+  question: string;
+  lang: "en" | "ta";
+  options: string[];
+  correct_option: string;
+  explanation: string | null;
+  topic: string | null;
+  subject: string | null;
+  published_date: string;
+  source_url: string | null;
+};
+
+export type CAUnitMeta = {
+  subject: string;
+  count: number;
+};
+
+// ─── CURRENT AFFAIRS CONSTANTS ────────────────────────────
+
+export const CA_UNIT_SUBJECTS: Record<string, string[]> = {
+  "general-science":     ["General Science"],
+  "geography":           ["Geography"],
+  "indian-history":      ["History", "Indian National Movement"],
+  "indian-polity":       ["Indian Polity"],
+  "welfare-schemes":     ["Economy"],
+  "archaeology-updates": ["Tamil Nadu History"],
+};
+
+export const CA_UNIT_LABELS: Record<string, { en: string; ta: string; icon: string }> = {
+  "general-science":     { en: "General Science",          ta: "பொது அறிவியல்",                      icon: "🔬" },
+  "geography":           { en: "Geography",                ta: "நிலவியல்",                           icon: "🌍" },
+  "indian-history":      { en: "Indian History",           ta: "இந்திய வரலாறு",                      icon: "🏛️" },
+  "indian-polity":       { en: "Indian Polity",            ta: "இந்திய அரசியல்",                     icon: "⚖️" },
+  "welfare-schemes":     { en: "Welfare Schemes",          ta: "நலத்திட்டங்கள்",                     icon: "💰" },
+  "archaeology-updates": { en: "TN History & Archaeology", ta: "தமிழ்நாடு வரலாறு & அகழ்வாராய்ச்சி", icon: "🏺" },
+};
+
+export const CA_UNIT_ORDER = [
+  "general-science",
+  "geography",
+  "indian-history",
+  "indian-polity",
+  "welfare-schemes",
+  "archaeology-updates",
+];
+
 // ─── QUESTION FETCHES ─────────────────────────────────────
 
 export async function fetchChapterCounts(subject: string, lang: "en" | "ta"): Promise<ChapterCount[]> {
@@ -112,10 +159,8 @@ export async function fetchQuestionsForPYQ(
     .limit(100);
 
   if (paper === "tamil") {
-    // Tamil eligibility paper — always Tamil language, subject = General Tamil
     query = query.eq("lang", "ta").eq("subject", "General Tamil");
   } else {
-    // General Studies paper — use user's lang preference, exclude General Tamil
     query = query.eq("lang", lang).neq("subject", "General Tamil");
   }
 
@@ -134,7 +179,6 @@ export async function fetchQuestionsForPack(packId: string): Promise<Question[]>
   return (data as Question[]) ?? [];
 }
 
-// Fetch current affairs for a specific date (daily practice)
 export async function fetchQuestionsForCADaily(date: string, lang: "en" | "ta"): Promise<Question[]> {
   const { data, error } = await supabase
     .from("current_affairs")
@@ -143,7 +187,6 @@ export async function fetchQuestionsForCADaily(date: string, lang: "en" | "ta"):
     .eq("lang", lang)
     .order("created_at", { ascending: true });
   if (error) throw error;
-  // Map to Question type
   return (data ?? []).map((r: any) => ({
     id: r.id,
     question: r.question,
@@ -160,7 +203,6 @@ export async function fetchQuestionsForCADaily(date: string, lang: "en" | "ta"):
   }));
 }
 
-// Fetch current affairs for a full month (monthly practice)
 export async function fetchQuestionsForCAMonthly(month: string, lang: "en" | "ta"): Promise<Question[]> {
   const start = month + "-01";
   const end = month + "-31";
@@ -200,6 +242,79 @@ export async function fetchQuestionsForMock(year: number): Promise<Question[]> {
     .limit(200);
   if (error) throw error;
   return (data as Question[]) ?? [];
+}
+
+// ─── CURRENT AFFAIRS SEO FETCHES ─────────────────────────
+
+export async function fetchCAForUnit(
+  month: string,
+  unitSlug: string,
+  lang: "en" | "ta"
+): Promise<CAQuestion[]> {
+  const subjects = CA_UNIT_SUBJECTS[unitSlug];
+  if (!subjects) return [];
+  const start = `${month}-01`;
+  const end = `${month}-31`;
+  const { data, error } = await supabase
+    .from("current_affairs")
+    .select("id, question, lang, options, correct_option, explanation, topic, subject, published_date, source_url")
+    .gte("published_date", start)
+    .lte("published_date", end)
+    .eq("lang", lang)
+    .in("subject", subjects)
+    .order("published_date", { ascending: true });
+  if (error) {
+    console.error(`[fetchCAForUnit] error:`, error);
+    throw error;
+  }
+  console.log(`[fetchCAForUnit] month=${month} unit=${unitSlug} lang=${lang} count=${data?.length ?? 0}`);
+  return (data ?? []) as CAQuestion[];
+}
+
+export async function fetchCAMonthlyUnitCounts(
+  month: string,
+  lang: "en" | "ta"
+): Promise<CAUnitMeta[]> {
+  const start = `${month}-01`;
+  const end = `${month}-31`;
+  const { data, error } = await supabase
+    .from("current_affairs")
+    .select("subject")
+    .gte("published_date", start)
+    .lte("published_date", end)
+    .eq("lang", lang);
+  if (error) {
+    console.error(`[fetchCAMonthlyUnitCounts] error:`, error);
+    throw error;
+  }
+  const counts: Record<string, number> = {};
+  (data ?? []).forEach((r: any) => {
+    if (r.subject) counts[r.subject] = (counts[r.subject] || 0) + 1;
+  });
+  console.log(`[fetchCAMonthlyUnitCounts] month=${month} counts=${JSON.stringify(counts)}`);
+  return Object.entries(counts).map(([subject, count]) => ({ subject, count }));
+}
+
+export async function fetchCAMonthlyPreview(
+  month: string,
+  unitSlug: string,
+  lang: "en" | "ta"
+): Promise<CAQuestion[]> {
+  const subjects = CA_UNIT_SUBJECTS[unitSlug];
+  if (!subjects) return [];
+  const start = `${month}-01`;
+  const end = `${month}-31`;
+  const { data, error } = await supabase
+    .from("current_affairs")
+    .select("id, question, lang, options, correct_option, explanation, topic, subject, published_date, source_url")
+    .gte("published_date", start)
+    .lte("published_date", end)
+    .eq("lang", lang)
+    .in("subject", subjects)
+    .order("published_date", { ascending: true })
+    .limit(2);
+  if (error) throw error;
+  return (data ?? []) as CAQuestion[];
 }
 
 // ─── CREATOR FUNCTIONS ────────────────────────────────────
@@ -282,23 +397,11 @@ export async function unpublishPack(packId: string): Promise<void> {
 }
 
 export async function archivePack(packId: string, wasPublished: boolean): Promise<void> {
-  // Archive the pack
   const { error } = await supabase
     .from("packs")
     .update({ is_archived: true, is_published: false })
     .eq("id", packId);
   if (error) throw error;
-
-  // Only reduce question count if pack was ever published
-  if (wasPublished) {
-    const { data: pack } = await supabase
-      .from("packs")
-      .select("question_count, creator_id")
-      .eq("id", packId)
-      .single();
-    // Note: creator total questions_used is calculated dynamically from active packs
-    // No separate counter needed — fetchMyPacks already excludes archived packs
-  }
 }
 
 export async function unarchivePack(packId: string): Promise<void> {

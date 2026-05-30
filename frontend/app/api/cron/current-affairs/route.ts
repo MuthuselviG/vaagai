@@ -8,8 +8,22 @@ const supabase = createClient(
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
+// Strict subject values — must match exactly for SEO unit pages to work
+const VALID_SUBJECTS = [
+  "General Science",
+  "Geography",
+  "History",
+  "Indian National Movement",
+  "Indian Polity",
+  "Economy",
+  "Tamil Nadu History",
+] as const;
+
+type ValidSubject = typeof VALID_SUBJECTS[number];
+
 interface GeminiBilingualQuestion {
   topic: string;
+  subject: ValidSubject; // NEW — strict syllabus unit mapping
   question_en: string;
   question_ta: string;
   options_en: string[];
@@ -118,7 +132,17 @@ async function generateQuestions(
     console.log(`[Gemini] ${batchLabel} response length: ${response.text.length}`);
     const parsed: GeminiBilingualQuestion[] = JSON.parse(response.text);
     console.log(`[Gemini] ${batchLabel} parsed ${parsed.length} questions`);
-    return parsed;
+
+    // Validate subject values — fallback to "General Science" if invalid
+    const validated = parsed.map(q => {
+      if (!VALID_SUBJECTS.includes(q.subject as ValidSubject)) {
+        console.warn(`[Validate] Invalid subject "${q.subject}" for topic "${q.topic}" — falling back to "General Science"`);
+        return { ...q, subject: "General Science" as ValidSubject };
+      }
+      return q;
+    });
+
+    return validated;
   } catch (err) {
     console.error(`[Gemini] Error in ${batchLabel}:`, err);
     return [];
@@ -161,8 +185,18 @@ async function runDailyTNPSCCron(overrideDate?: string) {
     4. "Science & Technology"
     5. "Socio-Economic Issues"
 
+    SUBJECT CLASSIFICATION — CRITICAL:
+    Every question MUST have a "subject" field set to EXACTLY one of these values (no variations, no other values allowed):
+    - "General Science"       → space, technology, health, physics, chemistry, biology, ISRO, defense
+    - "Geography"             → climate, rivers, disasters, environment, wildlife, maps
+    - "History"               → Indian history, ancient/medieval/modern India, national leaders
+    - "Indian National Movement" → freedom struggle, Gandhi, independence movement
+    - "Indian Polity"         → constitution, bills, amendments, judiciary, elections, governance
+    - "Economy"               → TN/India economy, welfare schemes, budgets, development, Naan Mudhalvan, Pudhumai Penn
+    - "Tamil Nadu History"    → Keeladi, archaeology, Tamil culture, Tamil literature, TN social movements
+
     CRITICAL RULES:
-    - Target Date: For PIB-grounded questions, focus on events from ${currentMonthYear}. For Gemini-generated questions, cover recent noteworthy events from the last 3 months — do not force month mentions in question text.
+    - Target Date: For PIB-grounded questions, focus on events from ${currentMonthYear}. For Gemini-generated questions, cover recent noteworthy events from the last 3 months.
     - Ratio: At least 3 out of every 5 questions must target Tamil Nadu specifically.
     - Anti-Duplication: Avoid topics similar to: [${excludedTopics.join(", ")}].
     - Question formats (vary within each batch):
@@ -187,12 +221,14 @@ async function runDailyTNPSCCron(overrideDate?: string) {
 
     const userPrompt = `
       Using the PIB news articles below, generate exactly 5 distinct TNPSC current affairs MCQs.
-      
+      Each question MUST include a "subject" field set to exactly one of:
+      "General Science", "Geography", "History", "Indian National Movement", "Indian Polity", "Economy", "Tamil Nadu History"
+
       Live News Articles:
       ${batchArticles}
 
       Return a raw JSON array of exactly 5 objects:
-      [{ "topic", "question_en", "question_ta", "options_en", "options_ta", "correct_option_en", "correct_option_ta", "explanation_en", "explanation_ta" }]
+      [{ "topic", "subject", "question_en", "question_ta", "options_en", "options_ta", "correct_option_en", "correct_option_ta", "explanation_en", "explanation_ta" }]
     `;
 
     const batch = await generateQuestions(systemInstruction, userPrompt, `PIB batch [${i + 1}/${pibBatchCount}]`);
@@ -207,9 +243,11 @@ async function runDailyTNPSCCron(overrideDate?: string) {
       Generate exactly 5 high-quality TNPSC current affairs MCQs based on your knowledge of major events in ${currentMonthYear}.
       Focus on: national governance, science & technology, economy, awards, sports milestones.
       Avoid topics already covered: [${allQuestions.map(q => q.topic).join(", ")}].
+      Each question MUST include a "subject" field set to exactly one of:
+      "General Science", "Geography", "History", "Indian National Movement", "Indian Polity", "Economy", "Tamil Nadu History"
 
       Return a raw JSON array of exactly 5 objects:
-      [{ "topic", "question_en", "question_ta", "options_en", "options_ta", "correct_option_en", "correct_option_ta", "explanation_en", "explanation_ta" }]
+      [{ "topic", "subject", "question_en", "question_ta", "options_en", "options_ta", "correct_option_en", "correct_option_ta", "explanation_en", "explanation_ta" }]
     `;
 
     const batch = await generateQuestions(systemInstruction, userPrompt, `Gemini batch [${i + 1}/2]`);
@@ -232,18 +270,31 @@ async function runDailyTNPSCCron(overrideDate?: string) {
   const compiledRowsToInsert: any[] = [];
   unique.forEach(q => {
     compiledRowsToInsert.push({
-      question: q.question_en, options: q.options_en,
-      correct_option: q.correct_option_en, explanation: q.explanation_en,
-      topic: q.topic, published_date: todayStr, lang: "en"
+      question: q.question_en,
+      options: q.options_en,
+      correct_option: q.correct_option_en,
+      explanation: q.explanation_en,
+      topic: q.topic,
+      subject: q.subject, // NOW INCLUDED
+      published_date: todayStr,
+      lang: "en",
     });
     compiledRowsToInsert.push({
-      question: q.question_ta, options: q.options_ta,
-      correct_option: q.correct_option_ta, explanation: q.explanation_ta,
-      topic: q.topic, published_date: todayStr, lang: "ta"
+      question: q.question_ta,
+      options: q.options_ta,
+      correct_option: q.correct_option_ta,
+      explanation: q.explanation_ta,
+      topic: q.topic,
+      subject: q.subject, // NOW INCLUDED
+      published_date: todayStr,
+      lang: "ta",
     });
   });
 
   console.log(`[DB] Total rows to insert: ${compiledRowsToInsert.length}`);
+  console.log(`[DB] Subject distribution: ${JSON.stringify(
+    unique.reduce((acc, q) => { acc[q.subject] = (acc[q.subject] || 0) + 1; return acc; }, {} as Record<string, number>)
+  )}`);
 
   if (compiledRowsToInsert.length > 0) {
     const { error } = await supabase
@@ -267,7 +318,6 @@ export async function GET(request: Request) {
     }
   }
 
-  // To generate for a specific date, pass ?date=YYYY-MM-DD
   const url = new URL(request.url);
   const overrideDate = url.searchParams.get("date") ?? undefined;
   if (overrideDate) console.log(`[Pipeline] Override date: ${overrideDate}`);
