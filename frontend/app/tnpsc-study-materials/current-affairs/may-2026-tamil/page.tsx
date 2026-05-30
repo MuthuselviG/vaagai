@@ -104,7 +104,7 @@ export default async function CAMonthlyTamilPage() {
 
       <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "24px 20px 20px" }}>
         <div style={{ fontSize: 12, color: T.textTer, marginBottom: 12, display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" as const }}>
-          <Link href="/tnpsc-study-materials" style={{ color: T.indigo, textDecoration: "none", fontWeight: 500 }}>படிப்பு பொருட்கள்</Link>
+          <Link href="/tnpsc-study-materials" style={{ color: T.indigo, textDecoration: "none", fontWeight: 500 }}>படிப்பகம்</Link>
           <span>›</span>
           <Link href="/tnpsc-study-materials/current-affairs" style={{ color: T.indigo, textDecoration: "none", fontWeight: 500 }}>நடப்பு நிகழ்வுகள்</Link>
           <span>›</span>

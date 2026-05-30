@@ -110,7 +110,7 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
 
       <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "24px 20px 20px" }}>
         <div style={{ fontSize: 12, color: T.textTer, marginBottom: 12, display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" as const }}>
-          <Link href="/tnpsc-study-materials" style={{ color: T.indigo, textDecoration: "none", fontWeight: 500 }}>படிப்பு பொருட்கள்</Link>
+          <Link href="/tnpsc-study-materials" style={{ color: T.indigo, textDecoration: "none", fontWeight: 500 }}>படிப்பகம்</Link>
           <span>›</span>
           <Link href="/tnpsc-study-materials/current-affairs/may-2026-tamil" style={{ color: T.indigo, textDecoration: "none", fontWeight: 500 }}>மே 2026</Link>
           <span>›</span>

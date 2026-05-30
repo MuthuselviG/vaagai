@@ -86,7 +86,11 @@ export default function HomePage() {
           .single();
         if (data?.lang === "en" || data?.lang === "ta") {
           setLang(data.lang as "en" | "ta");
+          localStorage.setItem("mcqpalagu_lang", data.lang);
         }
+      } else {
+        const saved = localStorage.getItem("mcqpalagu_lang");
+        if (saved === "en" || saved === "ta") setLang(saved);
       }
 
       supabase
@@ -106,6 +110,21 @@ export default function HomePage() {
 
   async function handleLangChange(l: "en" | "ta") {
     setLang(l);
+    localStorage.setItem("mcqpalagu_lang", l);
+    // #region agent log
+    fetch("http://127.0.0.1:7324/ingest/b166cebd-de6c-4af6-9494-076088f0a173", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "7e99b3" },
+      body: JSON.stringify({
+        sessionId: "7e99b3",
+        hypothesisId: "C",
+        location: "page.tsx:handleLangChange",
+        message: "homepage lang toggle",
+        data: { selected: l, storedMcq: localStorage.getItem("mcqpalagu_lang"), storedLang: localStorage.getItem("lang") },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       await supabase.from("users").update({ lang: l }).eq("id", user.id);
