@@ -40,15 +40,16 @@ export async function generateStaticParams() {
   return CA_UNIT_ORDER.map((unit) => ({ unit }));
 }
 
-export async function generateMetadata({ params }: { params: { unit: string } }): Promise<Metadata> {
-  const seo = UNIT_SEO[params.unit];
+export async function generateMetadata({ params }: { params: Promise<{ unit: string }> }): Promise<Metadata> {
+  const { unit } = await params;
+  const seo = UNIT_SEO[unit];
   if (!seo) return {};
   return {
     title: seo.title,
     description: seo.description,
     alternates: {
-      canonical: `https://mcqpalagu.in/tnpsc-study-materials/current-affairs/may-2026/${params.unit}`,
-      languages: { ta: `https://mcqpalagu.in/tnpsc-study-materials/current-affairs/may-2026-tamil/${params.unit}` },
+      canonical: `https://mcqpalagu.in/tnpsc-study-materials/current-affairs/may-2026/${unit}`,
+      languages: { ta: `https://mcqpalagu.in/tnpsc-study-materials/current-affairs/may-2026-tamil/${unit}` },
     },
   };
 }
@@ -86,8 +87,8 @@ function QCard({ q, num }: { q: CAQuestion; num: number }) {
   );
 }
 
-export default async function CAUnitPage({ params }: { params: { unit: string } }) {
-  const { unit } = params;
+export default async function CAUnitPage({ params }: { params: Promise<{ unit: string }> }) {
+  const { unit } = await params;
   if (!CA_UNIT_ORDER.includes(unit)) notFound();
 
   const label = CA_UNIT_LABELS[unit];
