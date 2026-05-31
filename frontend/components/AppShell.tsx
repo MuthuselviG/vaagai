@@ -106,6 +106,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [lang, setLang] = useState<"en" | "ta">("ta");
 
   useEffect(() => {
+    const stored = localStorage.getItem("mcqpalagu_lang");
+    if (stored === "en" || stored === "ta") setLang(stored);
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       if (session?.user) checkCreator(session.user.id);
@@ -133,6 +136,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       .single();
     if (userData?.lang === "en" || userData?.lang === "ta") {
       setLang(userData.lang as "en" | "ta");
+      localStorage.setItem("mcqpalagu_lang", userData.lang);
     }
   }
 
