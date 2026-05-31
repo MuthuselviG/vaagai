@@ -20,12 +20,13 @@ const COPY = {
     comingTitle: "PYQ Study Materials",
     comingDesc: "Year-wise previous year question analysis with topic breakdown and answer keys.",
     comingSoon: "Coming Soon",
+    monthTitle: "May 2026",
     monthHref: "/tnpsc-study-materials/current-affairs/may-2026",
     altHref: "/tnpsc-study-materials/current-affairs/may-2026-tamil",
   },
   ta: {
     badge: "படிப்பகம்",
-    title: <>TNPSC <span style={{ color: T.indigo }}>படிப்பு</span> பொருட்கள்</>,
+    title: <>TNPSC <span style={{ color: T.indigo }}>படிப்பகம்</span></>,
     subtitle: "நடப்பு நிகழ்வுகள், குறிப்புகள் மற்றும் பல — தமிழ் & ஆங்கிலம்.",
     caHeading: "நடப்பு நிகழ்வுகள்",
     dailyUpdated: "தினமும் புதுப்பிப்பு",
@@ -35,6 +36,7 @@ const COPY = {
     comingTitle: "PYQ படிப்பகம்",
     comingDesc: "ஆண்டு வாரியான முந்தைய ஆண்டு வினா பகுப்பாய்வு, தலைப்பு பிரிப்பு மற்றும் விடை விசைகள்.",
     comingSoon: "விரைவில்",
+    monthTitle: "மே 2026",
     monthHref: "/tnpsc-study-materials/current-affairs/may-2026-tamil",
     altHref: "/tnpsc-study-materials/current-affairs/may-2026",
   },
@@ -121,23 +123,12 @@ export default function StudyMaterialsClient() {
         ref={heroRef}
         style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "12px 16px 14px" }}
       >
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8, gap: 8 }}>
-          <div
-            style={{
-              display: "inline-flex", alignItems: "center",
-              background: T.greenBg, border: `1px solid ${T.greenBorder}`,
-              color: T.green, fontSize: 11, fontWeight: 600,
-              padding: "3px 10px", borderRadius: 20,
-              textTransform: "uppercase" as const, letterSpacing: "0.4px",
-            }}
-          >
-            {c.badge}
-          </div>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 6 }}>
+          <h1 style={{ fontFamily: "serif", fontSize: 24, fontWeight: 800, color: T.text, lineHeight: 1.15, letterSpacing: "-0.5px", margin: 0 }}>
+            {c.title}
+          </h1>
           <LangToggle lang={lang} setLang={handleLangChange} />
         </div>
-        <h1 style={{ fontFamily: "serif", fontSize: 24, fontWeight: 800, color: T.text, lineHeight: 1.15, letterSpacing: "-0.5px", margin: "0 0 6px" }}>
-          {c.title}
-        </h1>
         <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.45, margin: 0 }}>
           {c.subtitle}
         </p>
@@ -153,7 +144,7 @@ export default function StudyMaterialsClient() {
 
         <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, overflow: "hidden", marginBottom: 12, boxShadow: shadow.sm }}>
           <div style={{ background: `linear-gradient(135deg, ${T.indigo} 0%, ${T.indigoDark} 100%)`, padding: "14px 16px 12px" }}>
-            <span style={{ fontFamily: "serif", fontSize: 20, fontWeight: 800, color: "white", display: "block", marginBottom: 2 }}>May 2026</span>
+            <span style={{ fontFamily: "serif", fontSize: 20, fontWeight: 800, color: "white", display: "block", marginBottom: 2 }}>{c.monthTitle}</span>
             <span style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>{c.monthLabel}</span>
             <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" as const }}>
               {["248 Questions", "6 Units", "✅ Complete"].map((s) => (
