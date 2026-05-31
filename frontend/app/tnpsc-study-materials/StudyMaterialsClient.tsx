@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import LangToggle from "../../components/LangToggle";
 import { T, shadow } from "../../lib/tokens";
@@ -58,56 +58,11 @@ function readStoredLang(): Lang {
 }
 
 export default function StudyMaterialsClient() {
-  const heroRef = useRef<HTMLDivElement>(null);
   const [lang, setLang] = useState<Lang>("ta");
 
   useEffect(() => {
     const initial = readStoredLang();
     setLang(initial);
-
-    const heroRect = heroRef.current?.getBoundingClientRect();
-    const heroStyle = heroRef.current ? window.getComputedStyle(heroRef.current) : null;
-
-    // #region agent log
-    fetch("http://127.0.0.1:7324/ingest/b166cebd-de6c-4af6-9494-076088f0a173", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "7e99b3" },
-      body: JSON.stringify({
-        sessionId: "7e99b3",
-        runId: "post-fix",
-        hypothesisId: "C-D",
-        location: "StudyMaterialsClient.tsx:mount",
-        message: "lang storage on study hub mount",
-        data: {
-          initial,
-          storedMcq: localStorage.getItem("mcqpalagu_lang"),
-          storedLang: localStorage.getItem("lang"),
-        },
-        timestamp: Date.now(),
-      }),
-    }).catch(() => {});
-    // #endregion
-
-    // #region agent log
-    fetch("http://127.0.0.1:7324/ingest/b166cebd-de6c-4af6-9494-076088f0a173", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "7e99b3" },
-      body: JSON.stringify({
-        sessionId: "7e99b3",
-        runId: "post-fix",
-        hypothesisId: "A-B",
-        location: "StudyMaterialsClient.tsx:mount",
-        message: "hero spacing metrics",
-        data: {
-          heroTop: heroRect?.top,
-          heroHeight: heroRect?.height,
-          heroPaddingTop: heroStyle?.paddingTop,
-          heroPaddingBottom: heroStyle?.paddingBottom,
-        },
-        timestamp: Date.now(),
-      }),
-    }).catch(() => {});
-    // #endregion
   }, []);
 
   function handleLangChange(l: Lang) {
@@ -119,10 +74,7 @@ export default function StudyMaterialsClient() {
 
   return (
     <>
-      <div
-        ref={heroRef}
-        style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "12px 16px 14px" }}
-      >
+      <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "12px 16px 14px" }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 6 }}>
           <h1 style={{ fontFamily: "serif", fontSize: 24, fontWeight: 800, color: T.text, lineHeight: 1.15, letterSpacing: "-0.5px", margin: 0 }}>
             {c.title}
