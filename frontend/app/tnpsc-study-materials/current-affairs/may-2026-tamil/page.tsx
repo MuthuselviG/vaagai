@@ -95,7 +95,7 @@ export default async function CAMonthlyTamilPage() {
       <nav style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: shadow.sm }}>
         <Link href="/tnpsc-study-materials" style={{ height: 34, borderRadius: 10, background: T.bg, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 6, padding: "0 12px", textDecoration: "none", color: T.text, fontSize: 13, fontWeight: 600 }}>← படிப்பகம்</Link>
         <Link href="/tnpsc-study-materials/current-affairs/may-2026" style={{ background: T.greenBg, color: T.green, border: `1px solid ${T.greenBorder}`, borderRadius: 20, padding: "5px 12px", fontSize: 12, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" as const }}>
-          Read in English →
+          ஆங்கிலத்தில் படிக்க →
         </Link>
       </nav>
 
@@ -196,7 +196,7 @@ export default async function CAMonthlyTamilPage() {
             { href: "/current-affairs", icon: "📰", bg: T.greenBg, title: "இன்றைய நடப்பு நிகழ்வுகள்", sub: "தினமும் புதுப்பிக்கப்படும் வினாக்கள்" },
             { href: "/pyq/group4", icon: "📋", bg: "#FEF3C7", title: "குரூப் 4 PYQ பயிற்சி", sub: "முந்தைய ஆண்டு வினாத்தாள்கள்" },
             { href: "/tnpsc-study-materials/syllabus/group-4", icon: "📚", bg: T.indigoLight, title: "TNPSC குரூப் 4 பாடத்திட்டம்", sub: "அலகு வாரியான பாடத்திட்ட விவரம்" },
-            { href: "/tnpsc-study-materials/current-affairs/may-2026", icon: "🔤", bg: "#F5F3FF", title: "Read in English →", sub: "May 2026 in English" },
+            { href: "/tnpsc-study-materials/current-affairs/may-2026", icon: "🔤", bg: "#F5F3FF", title: "ஆங்கிலத்தில் படிக்க →", sub: "May 2026 in English" },
           ].map((link) => (
             <Link key={link.href} href={link.href} style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 12, padding: "14px 16px", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: shadow.sm }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
