@@ -97,8 +97,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const active = getActive(pathname);
   const hideNav =
     pathname.startsWith("/practice") ||
-    pathname.startsWith("/mock/") ||
-    (pathname.startsWith("/tnpsc-study-materials/current-affairs/") && pathname.split("/").length > 4);
+    pathname.startsWith("/mock/");
 
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
   const [showMenu, setShowMenu] = useState(false);
