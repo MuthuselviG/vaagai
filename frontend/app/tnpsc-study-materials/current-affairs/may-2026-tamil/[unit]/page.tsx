@@ -132,15 +132,6 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
         </div>
       </div>
 
-      <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "12px 20px", display: "flex", gap: 10 }}>
-        <Link href={`/practice/current-affairs/${unit}?month=may-2026&lang=ta`} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "10px 12px", borderRadius: 10, background: T.indigo, color: "white", fontSize: 13, fontWeight: 700, textDecoration: "none", boxShadow: shadow.indigo }}>
-          🎯 தேர்வு எழுது — {questions.length} வினாக்கள்
-        </Link>
-        <Link href={`/login?redirect=/tnpsc-study-materials/current-affairs/may-2026-tamil/${unit}?download=pdf`} style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "10px 12px", borderRadius: 10, background: T.bg, color: T.textSec, border: `1px solid ${T.border}`, fontSize: 13, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" as const }}>
-          ⬇️ PDF பதிவிறக்கம்
-        </Link>
-      </div>
-
       <div style={{ padding: "20px 20px 0" }}>
         <div style={{ fontFamily: "serif", fontSize: 20, fontWeight: 700, color: T.text, marginBottom: 4 }}>மே 2026 — {label.ta} வினாக்கள்</div>
         <div style={{ fontSize: 13, color: T.textSec, marginBottom: 16 }}>அனைத்து வினாக்களும் விடைகளும் விளக்கங்களும். TNPSC குரூப் 4 பாடத்திட்டம் அலகு {numeral}-க்கு ஏற்ப வரிசைப்படுத்தப்பட்டுள்ளது.</div>
