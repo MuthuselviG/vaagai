@@ -123,7 +123,7 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
           <span>📅 மே 2026</span><span>🎯 குரூப் 4 &amp; குரூப் 2</span>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
-          {[{ num: questions.length || "—", label: "வினாக்கள்" }, { num: `~${Math.ceil((questions.length || 10) * 0.4)}`, label: "நிமிட வாசிப்பு" }, { num: "இலவசம்", label: "முழு அணுகல்" }].map((s) => (
+          {[{ num: questions.length || "—", label: "வினாக்கள்" }, { num: `~${Math.ceil((questions.length || 10) * 0.4)}`, label: "நிமிட வாசிப்பு" }, { num: "Free", label: "Full Access" }].map((s) => (
             <div key={s.label} style={{ background: T.bg, border: `1px solid ${T.border}`, borderRadius: 12, padding: "12px 8px", textAlign: "center" as const }}>
               <span style={{ fontFamily: "serif", fontSize: 20, fontWeight: 700, color: col.text, display: "block" }}>{s.num}</span>
               <span style={{ fontSize: 11, color: T.textSec, marginTop: 2, fontWeight: 500 }}>{s.label}</span>
