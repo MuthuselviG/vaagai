@@ -203,9 +203,9 @@ export default function HomePage() {
         {featuredPacks.length > 0 && (
           <div style={{ width: "100%", marginTop: 24 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-              <div style={{ fontSize: 15, fontWeight: 900, color: T.text }}>
+              <h2 style={{ fontSize: 15, fontWeight: 900, color: T.text, margin: 0 }}>
                 🎯 {lang === "ta" ? "நிபுணர் பேக்குகள்" : "Expert Packs"}
-              </div>
+              </h2>
               <button
                 onClick={() => router.push("/experts")}
                 style={{ fontSize: 12, fontWeight: 700, color: T.indigo, background: T.indigoLight, border: "none", borderRadius: 8, padding: "5px 10px", cursor: "pointer", fontFamily: "inherit" }}

@@ -137,7 +137,7 @@ export default async function CAUnitPage({ params }: { params: Promise<{ unit: s
       </div>
 
       <div style={{ padding: "20px 20px 0" }}>
-        <div style={{ fontFamily: "serif", fontSize: 20, fontWeight: 700, color: T.text, marginBottom: 4 }}>{MONTH_LABEL} — {label.en} Questions</div>
+        <h2 style={{ fontFamily: "serif", fontSize: 20, fontWeight: 700, color: T.text, margin: "0 0 4px 0" }}>{MONTH_LABEL} — {label.en} Questions</h2>
         <div style={{ fontSize: 13, color: T.textSec, marginBottom: 16 }}>All questions with answers &amp; explanations. Mapped to TNPSC Group 4 syllabus Unit {numeral}.</div>
         {questions.length === 0
           ? <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 14, padding: 24, textAlign: "center" as const, color: T.textSec }}>Questions for this unit are being added — check back soon.</div>
@@ -147,7 +147,7 @@ export default async function CAUnitPage({ params }: { params: Promise<{ unit: s
 
       {/* INTERNAL LINKS */}
       <div style={{ padding: "24px 20px 0" }}>
-        <div style={{ fontFamily: "serif", fontSize: 18, fontWeight: 700, color: T.text, marginBottom: 14 }}>More May 2026 Units</div>
+        <h2 style={{ fontFamily: "serif", fontSize: 18, fontWeight: 700, color: T.text, margin: "0 0 14px 0" }}>More May 2026 Units</h2>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
           {otherUnits.map((slug, i) => {
             const c = UNIT_COLORS[slug];
@@ -163,7 +163,7 @@ export default async function CAUnitPage({ params }: { params: Promise<{ unit: s
           })}
         </div>
 
-        <div style={{ fontFamily: "serif", fontSize: 18, fontWeight: 700, color: T.text, marginBottom: 14 }}>Explore More</div>
+        <h2 style={{ fontFamily: "serif", fontSize: 18, fontWeight: 700, color: T.text, margin: "0 0 14px 0" }}>Explore More</h2>
         <div style={{ display: "flex", flexDirection: "column" as const, gap: 10, marginBottom: 24 }}>
           {[
             { href: "/tnpsc-study-materials/current-affairs/may-2026", icon: "📅", bg: T.indigoLight, title: "May 2026 — All Units", sub: "All current affairs for May 2026" },

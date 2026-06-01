@@ -93,8 +93,28 @@ export default async function CAMonthlyPage() {
     return seg;
   });
 
+  const faqItems = previews
+    .flat()
+    .filter((q) => q && q.question && q.correct_option)
+    .slice(0, 8)
+    .map((q) => ({
+      "@type": "Question",
+      name: q.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: q.explanation ? `${q.correct_option}. ${q.explanation}` : q.correct_option,
+      },
+    }));
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems,
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <nav style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: shadow.sm }}>
         <Link href="/tnpsc-study-materials" style={{ height: 34, borderRadius: 10, background: T.bg, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 6, padding: "0 12px", textDecoration: "none", color: T.text, fontSize: 13, fontWeight: 600 }}>← படிப்பகம்</Link>
         <Link href="/tnpsc-study-materials/current-affairs/may-2026-tamil" style={{ background: T.indigoLight, color: T.indigo, border: `1px solid ${T.indigoMid}`, borderRadius: 20, padding: "5px 12px", fontSize: 12, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" as const }}>
@@ -128,7 +148,7 @@ export default async function CAMonthlyPage() {
 
       {/* DONUT */}
       <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "24px 20px" }}>
-        <div style={{ fontFamily: "serif", fontSize: 18, fontWeight: 700, marginBottom: 20, color: T.text }}>Unit-wise Distribution</div>
+        <h2 style={{ fontFamily: "serif", fontSize: 18, fontWeight: 700, margin: "0 0 20px 0", color: T.text }}>Unit-wise Distribution</h2>
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
           <div style={{ position: "relative", width: 130, height: 130, flexShrink: 0 }}>
             <svg width="130" height="130" viewBox="0 0 130 130" style={{ transform: "rotate(-90deg)" }}>
@@ -157,7 +177,7 @@ export default async function CAMonthlyPage() {
 
       {/* UNIT CARDS */}
       <div style={{ padding: "24px 20px 0" }}>
-        <div style={{ fontFamily: "serif", fontSize: 20, fontWeight: 700, marginBottom: 4 }}>Read by Unit</div>
+        <h2 style={{ fontFamily: "serif", fontSize: 20, fontWeight: 700, margin: "0 0 4px 0" }}>Read by Unit</h2>
         <div style={{ fontSize: 14, color: T.textSec, marginBottom: 16 }}>Expand a unit to preview questions, then read all or test yourself</div>
 
         {CA_UNIT_ORDER.map((slug, idx) => {
@@ -196,7 +216,7 @@ export default async function CAMonthlyPage() {
 
       {/* INTERNAL LINKS */}
       <div style={{ padding: "24px 20px 0" }}>
-        <div style={{ fontFamily: "serif", fontSize: 18, fontWeight: 700, color: T.text, marginBottom: 14 }}>Explore More</div>
+        <h2 style={{ fontFamily: "serif", fontSize: 18, fontWeight: 700, color: T.text, margin: "0 0 14px 0" }}>Explore More</h2>
         <div style={{ display: "flex", flexDirection: "column" as const, gap: 10, marginBottom: 24 }}>
           {[
             { href: "/current-affairs", icon: "📰", bg: T.greenBg, title: "Today's Current Affairs", sub: "Daily updated questions" },
