@@ -2,6 +2,7 @@
 
 import { createClient } from "@supabase/supabase-js";
 import { useMemo, useState, useEffect } from "react";
+import LangToggle from "../../components/LangToggle";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -67,9 +68,11 @@ function hexToRgba(hex: string, alpha: number): string {
 
 function mapRowToCreator(row: Record<string, unknown>): Creator {
   const rawType = (row.type as string | null) ?? "";
-  // Strictly map only "academy" or "individual"; anything else defaults to "individual"
   const resolvedType: "academy" | "individual" =
     rawType === "academy" ? "academy" : "individual";
+
+  const packs = (row.packs as Array<{ id: string; question_count: number; is_published: boolean }> | null) ?? [];
+  const publishedPacks = packs.filter((p) => p.is_published);
 
   return {
     id: (row.id as string) ?? "",
@@ -88,8 +91,8 @@ function mapRowToCreator(row: Record<string, unknown>): Creator {
     youtubeUrl: (row.social_youtube as string | null) ?? undefined,
     instagramUrl: (row.social_instagram as string | null) ?? undefined,
     telegramUrl: (row.social_telegram as string | null) ?? undefined,
-    packCount: (row.pack_count as number | null) ?? 0,
-    questionCount: (row.question_count as number | null) ?? 0,
+    packCount: publishedPacks.length,
+    questionCount: publishedPacks.reduce((sum, p) => sum + (p.question_count || 0), 0),
     section: (row.section as string | null) ?? undefined,
   };
 }
@@ -231,11 +234,13 @@ function StatsRow({
   questionCount,
   slug,
   isBuddiesTab,
+  lang,
 }: {
   packCount?: number;
   questionCount?: number;
   slug: string;
   isBuddiesTab: boolean;
+  lang: "en" | "ta";
 }) {
   return (
     <div
@@ -266,12 +271,10 @@ function StatsRow({
               fontWeight: 700,
               color: "#94A3B8",
               letterSpacing: "0.6px",
-              textTransform: isBuddiesTab
-                ? ("none" as const)
-                : ("uppercase" as const),
+              textTransform: "uppercase" as const,
             }}
           >
-            {isBuddiesTab ? "தொகுப்புகள்" : "PACKS"}
+            {lang === "ta" ? "தொகுப்புகள்" : "PACKS"}
           </p>
         </div>
         <div>
@@ -293,12 +296,10 @@ function StatsRow({
               fontWeight: 700,
               color: "#94A3B8",
               letterSpacing: "0.6px",
-              textTransform: isBuddiesTab
-                ? ("none" as const)
-                : ("uppercase" as const),
+              textTransform: "uppercase" as const,
             }}
           >
-            {isBuddiesTab ? "கேள்விகள்" : "QUESTIONS"}
+            {lang === "ta" ? "கேள்விகள்" : "QUESTIONS"}
           </p>
         </div>
       </div>
@@ -316,7 +317,7 @@ function StatsRow({
           letterSpacing: "-0.1px",
         }}
       >
-        {isBuddiesTab ? "காண்க →" : "View →"}
+        {lang === "ta" ? "காண்க →" : "View →"}
       </a>
     </div>
   );
@@ -372,10 +373,9 @@ const dividerStyle: React.CSSProperties = {
 };
 
 
-function IndividualCard({ creator }: { creator: Creator }) {
+function IndividualCard({ creator, lang }: { creator: Creator; lang: "en" | "ta" }) {
   const accent = creator.accentColor;
 
-  // Build initials from name words (max 2 letters)
   const initials = creator.name
     .split(" ")
     .map((w: string) => w[0] ?? "")
@@ -386,7 +386,8 @@ function IndividualCard({ creator }: { creator: Creator }) {
 
   const tags = [...creator.exams, ...creator.subjects];
   const baseText = creator.bio ?? creator.tagline;
-  const subtitle = baseText ? baseText + " · வழிகாட்டி" : "வழிகாட்டி";
+  const guideLabel = lang === "ta" ? "வழிகாட்டி" : "Guide";
+  const subtitle = baseText ? baseText + " · " + guideLabel : guideLabel;
 
   return (
     <div style={{ ...cardShell, borderTop: "3.5px solid " + accent }}>
@@ -464,17 +465,12 @@ function IndividualCard({ creator }: { creator: Creator }) {
 
       <TagsRow tags={tags} accent={accent} />
       <div style={dividerStyle} />
-      <StatsRow
-        packCount={creator.packCount}
-        questionCount={creator.questionCount}
-        slug={creator.slug}
-        isBuddiesTab={false}
-      />
+      <StatsRow packCount={creator.packCount} questionCount={creator.questionCount} slug={creator.slug} isBuddiesTab={false} lang={lang} />
     </div>
   );
 }
 
-function AcademyCard({ creator }: { creator: Creator }) {
+function AcademyCard({ creator, lang }: { creator: Creator; lang: "en" | "ta" }) {
   const accent = creator.accentColor;
   const headerBg = creator.headerBg ?? accent;
   const onDark = isDark(headerBg);
@@ -560,18 +556,13 @@ function AcademyCard({ creator }: { creator: Creator }) {
 
       <TagsRow tags={tags} accent={accent} />
       <div style={dividerStyle} />
-      <StatsRow
-        packCount={creator.packCount}
-        questionCount={creator.questionCount}
-        slug={creator.slug}
-        isBuddiesTab={false}
-      />
+      <StatsRow packCount={creator.packCount} questionCount={creator.questionCount} slug={creator.slug} isBuddiesTab={false} lang={lang} />
     </div>
   );
 }
 
 
-function StudyBuddyCard({ creator }: { creator: Creator }) {
+function StudyBuddyCard({ creator, lang }: { creator: Creator; lang: "en" | "ta" }) {
   const accent = creator.accentColor;
   const initials = creator.name
     .split(" ")
@@ -654,7 +645,7 @@ function StudyBuddyCard({ creator }: { creator: Creator }) {
                 flexShrink: 0,
               }}
             >
-              படிப்பு தோழர்
+              {lang === "ta" ? "படிப்பு தோழர்" : "Study Buddy"}
             </span>
           </div>
           {baseText && (
@@ -683,12 +674,7 @@ function StudyBuddyCard({ creator }: { creator: Creator }) {
 
       <TagsRow tags={tags} accent={accent} />
       <div style={dividerStyle} />
-      <StatsRow
-        packCount={creator.packCount}
-        questionCount={creator.questionCount}
-        slug={creator.slug}
-        isBuddiesTab={true}
-      />
+      <StatsRow packCount={creator.packCount} questionCount={creator.questionCount} slug={creator.slug} isBuddiesTab={true} lang={lang} />
     </div>
   );
 }
@@ -696,14 +682,15 @@ function StudyBuddyCard({ creator }: { creator: Creator }) {
 function CreatorCard({
   creator,
   isBuddiesTab,
+  lang,
 }: {
   creator: Creator;
   isBuddiesTab: boolean;
+  lang: "en" | "ta";
 }) {
-  if (isBuddiesTab) return <StudyBuddyCard creator={creator} />;
-  if (creator.type === "academy") return <AcademyCard creator={creator} />;
-  // type === "individual" → IndividualCard
-  return <IndividualCard creator={creator} />;
+  if (isBuddiesTab) return <StudyBuddyCard creator={creator} lang={lang} />;
+  if (creator.type === "academy") return <AcademyCard creator={creator} lang={lang} />;
+  return <IndividualCard creator={creator} lang={lang} />;
 }
 
 /* ─────────────────────────── Empty / Loading / Error states ─────────────────────────── */
@@ -765,6 +752,17 @@ export default function ExpertsPage() {
   const [creators, setCreators] = useState<Creator[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [lang, setLang] = useState<"en" | "ta">("ta");
+
+  useEffect(() => {
+    const stored = localStorage.getItem("mcqpalagu_lang");
+    if (stored === "en" || stored === "ta") setLang(stored);
+  }, []);
+
+  function handleLangChange(l: "en" | "ta") {
+    setLang(l);
+    localStorage.setItem("mcqpalagu_lang", l);
+  }
 
   useEffect(() => {
     async function fetchCreators() {
@@ -773,12 +771,11 @@ export default function ExpertsPage() {
       try {
         const { data, error: fetchError } = await supabase
           .from("creators")
-          .select("*");
+          .select("*, packs(id, question_count, is_published)");
         if (fetchError) {
           setError(fetchError.message);
           return;
         }
-        console.log(data[0]);
         setCreators((data ?? []).map(mapRowToCreator));
       } catch (err) {
         setError("தரவு ஏற்றுவதில் பிழை ஏற்பட்டது.");
@@ -796,7 +793,6 @@ export default function ExpertsPage() {
       activeTab === "vazhikaati" ? SECTION_vazhikaati : SECTION_BUDDIES;
     const q = search.toLowerCase().trim();
     return creators.filter((c) => {
-      // Match section
       if ((c.section ?? "").trim() !== sectionValue) return false;
       // Match search query
       if (q) {
@@ -854,19 +850,14 @@ export default function ExpertsPage() {
       }}
     >
       <div style={{ maxWidth: 520, margin: "0 auto", padding: "24px 16px" }}>
-        <h1
-          style={{
-            margin: "0 0 2px",
-            fontSize: 24,
-            fontWeight: 800,
-            color: "#0F172A",
-            letterSpacing: "-0.5px",
-          }}
-        >
-          நிபுணர்கள்
-        </h1>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 2 }}>
+          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: "#0F172A", letterSpacing: "-0.5px" }}>
+            {lang === "ta" ? "நிபுணர்கள்" : "Experts"}
+          </h1>
+          <LangToggle lang={lang} setLang={handleLangChange} />
+        </div>
         <p style={{ margin: "0 0 20px", fontSize: 14, color: "#64748B" }}>
-          சிறந்தவர்களிடம் கற்றுக்கொள்ளுங்கள் 🔥
+          {lang === "ta" ? "சிறந்தவர்களிடம் கற்றுக்கொள்ளுங்கள் 🔥" : "Learn from the best 🔥"}
         </p>
 
         {/* Search bar */}
@@ -907,8 +898,8 @@ export default function ExpertsPage() {
             }}
             placeholder={
               activeTab === "vazhikaati"
-                ? "படைப்பாளர்கள் அல்லது தொகுப்பைத் தேடுங்கள்"
-                : "படிப்பு நண்பரை தேடுங்கள்..."
+                ? (lang === "ta" ? "படைப்பாளர்கள் அல்லது தொகுப்பைத் தேடுங்கள்" : "Search creators or packs...")
+                : (lang === "ta" ? "படிப்பு நண்பரை தேடுங்கள்..." : "Search study buddies...")
             }
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -945,7 +936,7 @@ export default function ExpertsPage() {
                   marginBottom: 1,
                 }}
               >
-                வழிகாட்டி
+                {lang === "ta" ? "வழிகாட்டி" : "Guides"}
               </div>
               <div
                 style={{
@@ -956,7 +947,7 @@ export default function ExpertsPage() {
                     activeTab === "vazhikaati" ? "#475569" : "#CBD5E1",
                 }}
               >
-                ஆசிரியர்கள் &amp; நிபுணர்கள்
+                {lang === "ta" ? "ஆசிரியர்கள் & நிபுணர்கள்" : "Teachers & Experts"}
               </div>
               <div
                 style={{
@@ -995,7 +986,7 @@ export default function ExpertsPage() {
                   marginBottom: 1,
                 }}
               >
-                சேர்ந்து படிப்போம்
+                {lang === "ta" ? "சேர்ந்து படிப்போம்" : "Study Together"}
               </div>
               <div
                 style={{
@@ -1005,7 +996,7 @@ export default function ExpertsPage() {
                   color: activeTab === "buddies" ? "#475569" : "#CBD5E1",
                 }}
               >
-                படிப்பு நண்பர்கள்
+                {lang === "ta" ? "படிப்பு நண்பர்கள்" : "Study Buddies"}
               </div>
               <div
                 style={{
@@ -1029,9 +1020,9 @@ export default function ExpertsPage() {
             <div>
               {academies.length > 0 && (
                 <>
-                  <p style={sectionLabelStyle}>அகாடமிகள்</p>
+                  <p style={sectionLabelStyle}>{lang === "ta" ? "அகாடமிகள்" : "ACADEMIES"}</p>
                   {academies.map((c) => (
-                    <CreatorCard key={c.id} creator={c} isBuddiesTab={false} />
+                    <CreatorCard key={c.id} creator={c} isBuddiesTab={false} lang={lang} />
                   ))}
                 </>
               )}
@@ -1039,13 +1030,13 @@ export default function ExpertsPage() {
                 <div style={{ marginTop: academies.length > 0 ? 20 : 0 }}>
                   <p style={sectionLabelStyle}>INDIVIDUALS</p>
                   {individuals.map((c) => (
-                    <CreatorCard key={c.id} creator={c} isBuddiesTab={false} />
+                    <CreatorCard key={c.id} creator={c} isBuddiesTab={false} lang={lang} />
                   ))}
                 </div>
               )}
             </div>
           ) : (
-            <EmptyState message="யாரும் கிடைக்கவில்லை." />
+            <EmptyState message={lang === "ta" ? "யாரும் கிடைக்கவில்லை." : "No creators found."} />
           )
         )}
 
@@ -1054,11 +1045,11 @@ export default function ExpertsPage() {
           filteredCreators.length > 0 ? (
             <div>
               {filteredCreators.map((c) => (
-                <CreatorCard key={c.id} creator={c} isBuddiesTab={true} />
+                <CreatorCard key={c.id} creator={c} isBuddiesTab={true} lang={lang} />
               ))}
             </div>
           ) : (
-            <EmptyState message="இன்னும் யாரும் இல்லை. விரைவில் வருகிறது!" />
+            <EmptyState message={lang === "ta" ? "இன்னும் யாரும் இல்லை. விரைவில் வருகிறது!" : "No study buddies yet. Coming soon!"} />
           )
         )}
       </div>
