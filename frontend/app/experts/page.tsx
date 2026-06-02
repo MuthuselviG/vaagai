@@ -1,23 +1,20 @@
 "use client";
 
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from "@supabase/supabase-js";
+import { useMemo, useState, useEffect } from "react";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-import { useMemo, useState } from "react";
 
 interface Creator {
   id: string;
   type: "academy" | "individual";
-  section: "teachers" | "buddies";
   name: string;
   tagline?: string;
-  description?: string;
+  bio?: string;
   logoEmoji?: string;
-  initials?: string;
   accentColor: string;
   headerBg?: string;
   logoBg?: string;
@@ -25,7 +22,16 @@ interface Creator {
   exams: string[];
   subjects: string[];
   slug: string;
+  youtubeUrl?: string;
+  instagramUrl?: string;
+  telegramUrl?: string;
+  packCount?: number;
+  questionCount?: number;
+  section?: string;
 }
+
+const SECTION_vazhikaati = "vazhikaati";
+const SECTION_BUDDIES = "study_buddy";
 
 const ACCENT_MAP: Record<string, string> = {
   yellow: "#F59E0B",
@@ -33,68 +39,14 @@ const ACCENT_MAP: Record<string, string> = {
   blue: "#0284C7",
   green: "#10B981",
   purple: "#7C3AED",
+  red: "#EF4444",
+  orange: "#F97316",
+  pink: "#EC4899",
 };
 
 function resolveAccent(color: string): string {
   return ACCENT_MAP[color] ?? color;
 }
-
-const creators: Creator[] = [
-  {
-    id: "80aa5b32-908a-4b8f-a9d8-3d79938bbdc6",
-    type: "individual",
-    section: "buddies",
-    name: "Daily GK Thoughts",
-    description:
-      "Digital creator sharing daily GK facts. Facts | Knowledge | Curiosity — simple and quick learning for everyone.",
-    verified: true,
-    initials: "DG",
-    accentColor: resolveAccent("yellow"),
-    exams: [],
-    subjects: ["GK", "Current Affairs"],
-    slug: "daily-gk-thoughts",
-  },
-  {
-    id: "4652c5db-b16b-4335-9e02-cefed8ee2efc",
-    type: "individual",
-    section: "buddies",
-    name: "Tipps Academy",
-    description: "Verified study buddy",
-    verified: true,
-    initials: "TA",
-    accentColor: resolveAccent("yellow"),
-    exams: [],
-    subjects: [],
-    slug: "tipps-academy",
-  },
-  {
-    id: "f1e3c0bc-299c-4186-ab99-87c3c16ca774",
-    type: "individual",
-    section: "buddies",
-    name: "Sandy",
-    description:
-      "TNPSC Group 4 aspirant. Sharing my Tamil prep journey. வாங்க சேர்ந்து படிப்போம்!",
-    verified: true,
-    initials: "SA",
-    accentColor: resolveAccent("coral"),
-    exams: ["Group 4"],
-    subjects: ["Tamil"],
-    slug: "tnpsc-sandy",
-  },
-  {
-    id: "42b943f3-7caf-4ed0-8be2-14ca6842139a",
-    type: "individual",
-    section: "buddies",
-    name: "Gomathi Devi",
-    description: "Samacheer History specialist. 8 yrs teaching.",
-    verified: true,
-    initials: "GD",
-    accentColor: resolveAccent("yellow"),
-    exams: ["Group 4", "TET"],
-    subjects: ["History"],
-    slug: "gomathi",
-  },
-];
 
 function isDark(hex: string): boolean {
   const h = hex.replace("#", "");
@@ -109,102 +61,161 @@ function hexToRgba(hex: string, alpha: number): string {
   const r = parseInt(h.slice(0, 2), 16);
   const g = parseInt(h.slice(2, 4), 16);
   const b = parseInt(h.slice(4, 6), 16);
-  return `rgba(${r},${g},${b},${alpha})`;
+  return "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
 }
 
-function ViewBtn({ slug }: { slug: string }) {
-  return (
-    <a
-      href={`/experts/${slug}`}
-      style={{
-        background: "#2048a5",
-        color: "#fff",
-        border: "none",
-        borderRadius: 12,
-        padding: "12px 24px",
-        fontSize: 14,
-        fontWeight: 700,
-        cursor: "pointer",
-        fontFamily: "inherit",
-        textDecoration: "none",
-        display: "inline-block",
-      }}
-    >
-      View →
-    </a>
-  );
+
+function mapRowToCreator(row: Record<string, unknown>): Creator {
+  const rawType = (row.type as string | null) ?? "";
+  // Strictly map only "academy" or "individual"; anything else defaults to "individual"
+  const resolvedType: "academy" | "individual" =
+    rawType === "academy" ? "academy" : "individual";
+
+  return {
+    id: (row.id as string) ?? "",
+    type: resolvedType,
+    name: (row.name as string) ?? "",
+    tagline: (row.tagline as string | null) ?? undefined,
+    bio: (row.bio as string | null) ?? undefined,
+    logoEmoji: (row.logo_emoji as string | null) ?? undefined,
+    accentColor: resolveAccent((row.accent_color as string) ?? "blue"),
+    headerBg: (row.header_bg as string | null) ?? undefined,
+    logoBg: (row.logo_bg as string | null) ?? undefined,
+    verified: (row.verified as boolean | null) ?? false,
+    exams: (row.exams as string[] | null) ?? [],
+    subjects: (row.subjects as string[] | null) ?? [],
+    slug: (row.slug as string) ?? "",
+    youtubeUrl: (row.social_youtube as string | null) ?? undefined,
+    instagramUrl: (row.social_instagram as string | null) ?? undefined,
+    telegramUrl: (row.social_telegram as string | null) ?? undefined,
+    packCount: (row.pack_count as number | null) ?? 0,
+    questionCount: (row.question_count as number | null) ?? 0,
+    section: (row.section as string | null) ?? undefined,
+  };
 }
 
-function EmptyState() {
-  return (
-    <div
-      style={{
-        padding: "48px 0",
-        textAlign: "center",
-        color: "#94A3B8",
-        fontSize: 14,
-      }}
-    >
-      No creators found.
-    </div>
-  );
-}
+/* ─────────────────────────── Icons ─────────────────────────── */
 
-function CardShell({
-  children,
-  accentColor,
+const YtIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+  </svg>
+);
+
+const IgIcon = () => (
+  <svg
+    width="15"
+    height="15"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+    <circle cx="12" cy="12" r="4" />
+    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+  </svg>
+);
+
+const TgIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+  </svg>
+);
+
+
+function SocialButtons({
+  youtubeUrl,
+  instagramUrl,
+  telegramUrl,
+  dark = false,
 }: {
-  children: React.ReactNode;
-  accentColor: string;
+  youtubeUrl?: string;
+  instagramUrl?: string;
+  telegramUrl?: string;
+  dark?: boolean;
 }) {
+  const btn = (
+    bg: string,
+    color: string,
+    border?: string
+  ): React.CSSProperties => ({
+    width: 32,
+    height: 32,
+    borderRadius: "50%",
+    background: dark ? hexToRgba("#ffffff", 0.2) : bg,
+    color: dark ? "#fff" : color,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    textDecoration: "none",
+    border: dark ? "none" : border ?? "none",
+    flexShrink: 0,
+  });
   return (
-    <div style={{ position: "relative", marginBottom: 24 }}>
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          borderRadius: 20,
-          background: accentColor,
-          transform: "translate(5px, 7px)",
-          zIndex: 0,
-          opacity: 0.9,
-        }}
-      />
-      <div
-        style={{
-          position: "relative",
-          zIndex: 1,
-          background: "#fff",
-          borderRadius: 20,
-          border: `1.5px solid ${hexToRgba(accentColor, 0.25)}`,
-          overflow: "hidden",
-          boxShadow: `0 4px 24px ${hexToRgba(accentColor, 0.13)}`,
-        }}
-      >
-        {children}
-      </div>
+    <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
+      {youtubeUrl && (
+        <a
+          href={youtubeUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={btn("#FFF0F0", "#FF0000", "1px solid rgba(255,0,0,0.15)")}
+        >
+          <YtIcon />
+        </a>
+      )}
+      {instagramUrl && (
+        <a
+          href={instagramUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={btn("#FFF0F5", "#E1306C", "1px solid rgba(225,48,108,0.15)")}
+        >
+          <IgIcon />
+        </a>
+      )}
+      {telegramUrl && (
+        <a
+          href={telegramUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={btn("#F0F8FF", "#0088cc", "1px solid rgba(0,136,204,0.15)")}
+        >
+          <TgIcon />
+        </a>
+      )}
     </div>
   );
 }
 
-function TagsRow({ exams, subjects }: { exams: string[]; subjects: string[] }) {
-  const tags = [...exams, ...subjects];
+
+function TagsRow({ tags, accent }: { tags: string[]; accent: string }) {
   if (tags.length === 0) return null;
+  const accentIdx = tags.length - 1;
   return (
     <div
-      style={{ display: "flex", flexWrap: "wrap", gap: 7, padding: "14px 18px 0" }}
+      style={{
+        display: "flex",
+        flexWrap: "wrap" as const,
+        gap: 7,
+        padding: "10px 14px 0 14px",
+      }}
     >
-      {tags.map((t) => (
+      {tags.map((t, i) => (
         <span
           key={t}
           style={{
-            background: "#F1F5F9",
-            color: "#334155",
+            background: i === accentIdx ? accent : "#F1F5F9",
+            color: i === accentIdx ? "#fff" : "#475569",
             fontSize: 11,
             fontWeight: 700,
-            padding: "6px 13px",
-            borderRadius: 8,
-            border: "1px solid #E2E8F0",
+            padding: "4px 11px",
+            borderRadius: 6,
+            border: i === accentIdx ? "none" : "1px solid #E2E8F0",
+            letterSpacing: "0.5px",
+            textTransform: "uppercase" as const,
           }}
         >
           {t}
@@ -214,224 +225,625 @@ function TagsRow({ exams, subjects }: { exams: string[]; subjects: string[] }) {
   );
 }
 
-function AcademyCard({ creator }: { creator: Creator }) {
-  const dark = isDark(creator.headerBg ?? "#ffffff");
-  const badgeBg = dark ? hexToRgba("#ffffff", 0.22) : creator.accentColor;
-  const nameColor = dark ? "#ffffff" : "#0F172A";
-  const taglineColor = dark ? hexToRgba("#ffffff", 0.72) : creator.accentColor;
 
+function StatsRow({
+  packCount,
+  questionCount,
+  slug,
+  isBuddiesTab,
+}: {
+  packCount?: number;
+  questionCount?: number;
+  slug: string;
+  isBuddiesTab: boolean;
+}) {
   return (
-    <CardShell accentColor={creator.accentColor}>
-      <div
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "12px 14px 14px",
+      }}
+    >
+      <div style={{ display: "flex", gap: 22 }}>
+        <div>
+          <p
+            style={{
+              margin: 0,
+              fontSize: 18,
+              fontWeight: 800,
+              color: "#0F172A",
+              lineHeight: 1,
+            }}
+          >
+            {packCount ?? 0}
+          </p>
+          <p
+            style={{
+              margin: "3px 0 0",
+              fontSize: 10,
+              fontWeight: 700,
+              color: "#94A3B8",
+              letterSpacing: "0.6px",
+              textTransform: isBuddiesTab
+                ? ("none" as const)
+                : ("uppercase" as const),
+            }}
+          >
+            {isBuddiesTab ? "தொகுப்புகள்" : "PACKS"}
+          </p>
+        </div>
+        <div>
+          <p
+            style={{
+              margin: 0,
+              fontSize: 18,
+              fontWeight: 800,
+              color: "#0F172A",
+              lineHeight: 1,
+            }}
+          >
+            {questionCount ?? 0}
+          </p>
+          <p
+            style={{
+              margin: "3px 0 0",
+              fontSize: 10,
+              fontWeight: 700,
+              color: "#94A3B8",
+              letterSpacing: "0.6px",
+              textTransform: isBuddiesTab
+                ? ("none" as const)
+                : ("uppercase" as const),
+            }}
+          >
+            {isBuddiesTab ? "கேள்விகள்" : "QUESTIONS"}
+          </p>
+        </div>
+      </div>
+      <a
+        href={"/experts/" + slug}
         style={{
-          background: creator.headerBg ?? creator.accentColor,
-          padding: "16px 18px 18px",
+          background: "#1B2E4B",
+          color: "#fff",
+          borderRadius: 12,
+          padding: "11px 22px",
+          fontSize: 14,
+          fontWeight: 700,
+          textDecoration: "none",
+          display: "inline-block",
+          letterSpacing: "-0.1px",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+        {isBuddiesTab ? "காண்க →" : "View →"}
+      </a>
+    </div>
+  );
+}
+
+
+function VerifiedBadge() {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        bottom: -3,
+        right: -3,
+        width: 18,
+        height: 18,
+        borderRadius: "50%",
+        background: "#22C55E",
+        border: "2.5px solid #fff",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <svg width="8" height="8" viewBox="0 0 12 12" fill="none">
+        <path
+          d="M2 6l3 3 5-5"
+          stroke="#fff"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </div>
+  );
+}
+
+
+const cardShell: React.CSSProperties = {
+  background: "#fff",
+  borderRadius: 16,
+  border: "1px solid #E8ECF4",
+  overflow: "hidden",
+  marginBottom: 14,
+  boxShadow:
+    "0 1px 6px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.04)",
+  fontFamily: "'Inter', -apple-system, sans-serif",
+};
+
+const dividerStyle: React.CSSProperties = {
+  height: 1,
+  background: "#F1F5F9",
+  margin: "12px 14px 0",
+};
+
+
+function IndividualCard({ creator }: { creator: Creator }) {
+  const accent = creator.accentColor;
+
+  // Build initials from name words (max 2 letters)
+  const initials = creator.name
+    .split(" ")
+    .map((w: string) => w[0] ?? "")
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
+  const tags = [...creator.exams, ...creator.subjects];
+  const baseText = creator.bio ?? creator.tagline;
+  const subtitle = baseText ? baseText + " · வழிகாட்டி" : "வழிகாட்டி";
+
+  return (
+    <div style={{ ...cardShell, borderTop: "3.5px solid " + accent }}>
+      {/* Header row */}
+      <div
+        style={{
+          padding: "14px 14px 0 14px",
+          display: "flex",
+          alignItems: "flex-start",
+          gap: 12,
+        }}
+      >
+        {/* Avatar */}
+        <div style={{ position: "relative", flexShrink: 0 }}>
           <div
             style={{
               width: 54,
               height: 54,
               borderRadius: 14,
-              flexShrink: 0,
-              background: creator.logoBg ?? creator.accentColor,
+              background: accent,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 26,
-              boxShadow: "0 2px 10px rgba(0,0,0,0.22)",
+              fontSize: creator.logoEmoji ? 26 : 20,
+              fontWeight: 800,
+              color: "#fff",
+              letterSpacing: "-0.5px",
             }}
           >
-            {creator.logoEmoji}
+            {creator.logoEmoji ? (
+              <span>{creator.logoEmoji}</span>
+            ) : (
+              initials
+            )}
           </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 5,
-                background: badgeBg,
-                color: "#ffffff",
-                fontSize: 10,
-                fontWeight: 800,
-                letterSpacing: "0.8px",
-                textTransform: "uppercase",
-                padding: "3px 10px",
-                borderRadius: 20,
-                marginBottom: 5,
-              }}
-            >
-              <span>✦</span> Academy
-            </div>
-            <p
-              style={{
-                margin: 0,
-                fontSize: 18,
-                fontWeight: 800,
-                lineHeight: 1.2,
-                color: nameColor,
-              }}
-            >
-              {creator.name}
-            </p>
-            <p
-              style={{
-                margin: "3px 0 0",
-                fontSize: 12.5,
-                color: taglineColor,
-              }}
-            >
-              {creator.tagline}
-            </p>
-          </div>
+          {creator.verified && <VerifiedBadge />}
+        </div>
+
+        {/* Name + subtitle */}
+        <div style={{ flex: 1, minWidth: 0, paddingTop: 4 }}>
+          <p
+            style={{
+              margin: 0,
+              fontSize: 15.5,
+              fontWeight: 800,
+              color: "#0F172A",
+              lineHeight: 1.2,
+              letterSpacing: "-0.2px",
+            }}
+          >
+            {creator.name}
+          </p>
+          <p
+            style={{
+              margin: "3px 0 0",
+              fontSize: 12.5,
+              color: "#64748B",
+              lineHeight: 1.4,
+              fontWeight: 500,
+            }}
+          >
+            {subtitle}
+          </p>
+        </div>
+
+        {/* Social buttons */}
+        <div style={{ paddingTop: 4, flexShrink: 0 }}>
+          <SocialButtons
+            youtubeUrl={creator.youtubeUrl}
+            instagramUrl={creator.instagramUrl}
+            telegramUrl={creator.telegramUrl}
+          />
         </div>
       </div>
-      <TagsRow exams={creator.exams} subjects={creator.subjects} />
-      <div style={{ padding: "14px 18px 18px", textAlign: "right" }}>
-        <ViewBtn slug={creator.slug} />
-      </div>
-    </CardShell>
+
+      <TagsRow tags={tags} accent={accent} />
+      <div style={dividerStyle} />
+      <StatsRow
+        packCount={creator.packCount}
+        questionCount={creator.questionCount}
+        slug={creator.slug}
+        isBuddiesTab={false}
+      />
+    </div>
   );
 }
 
-function IndividualCard({ creator }: { creator: Creator }) {
+function AcademyCard({ creator }: { creator: Creator }) {
+  const accent = creator.accentColor;
+  const headerBg = creator.headerBg ?? accent;
+  const onDark = isDark(headerBg);
+  const tags = [...creator.exams, ...creator.subjects];
+
   return (
-    <CardShell accentColor={creator.accentColor}>
+    <div style={{ ...cardShell, borderTop: "3.5px solid " + accent }}>
       <div
         style={{
+          background: headerBg,
+          padding: "14px",
           display: "flex",
-          alignItems: "flex-start",
-          gap: 14,
-          padding: "18px 18px 12px",
+          alignItems: "center",
+          gap: 12,
         }}
       >
         <div
           style={{
-            width: 56,
-            height: 56,
+            width: 54,
+            height: 54,
             borderRadius: 14,
             flexShrink: 0,
-            background: creator.accentColor,
+            background: creator.logoBg ?? hexToRgba("#ffffff", 0.22),
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: 18,
-            fontWeight: 800,
-            color: "#ffffff",
-            boxShadow: "0 2px 10px rgba(0,0,0,0.18)",
+            fontSize: 26,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
           }}
         >
-          {creator.initials}
+          {creator.logoEmoji ?? creator.name[0]}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
+          <p
+            style={{
+              margin: 0,
+              fontSize: 16,
+              fontWeight: 800,
+              lineHeight: 1.2,
+              color: onDark ? "#fff" : "#0F172A",
+            }}
+          >
+            {creator.name}
+          </p>
+          {creator.tagline && (
+            <p
+              style={{
+                margin: "2px 0 0",
+                fontSize: 12,
+                color: onDark
+                  ? hexToRgba("#ffffff", 0.78)
+                  : "#475569",
+              }}
+            >
+              {creator.tagline}
+            </p>
+          )}
+        </div>
+        <SocialButtons
+          youtubeUrl={creator.youtubeUrl}
+          instagramUrl={creator.instagramUrl}
+          telegramUrl={creator.telegramUrl}
+          dark
+        />
+      </div>
+
+      {creator.bio && (
+        <div style={{ padding: "11px 14px 0 14px" }}>
+          <p
+            style={{
+              margin: 0,
+              fontSize: 12.5,
+              color: "#475569",
+              lineHeight: 1.6,
+              borderLeft: "3px solid " + hexToRgba(accent, 0.35),
+              paddingLeft: 9,
+            }}
+          >
+            {creator.bio}
+          </p>
+        </div>
+      )}
+
+      <TagsRow tags={tags} accent={accent} />
+      <div style={dividerStyle} />
+      <StatsRow
+        packCount={creator.packCount}
+        questionCount={creator.questionCount}
+        slug={creator.slug}
+        isBuddiesTab={false}
+      />
+    </div>
+  );
+}
+
+
+function StudyBuddyCard({ creator }: { creator: Creator }) {
+  const accent = creator.accentColor;
+  const initials = creator.name
+    .split(" ")
+    .map((w: string) => w[0] ?? "")
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+  const tags = [...creator.exams, ...creator.subjects];
+  const baseText = creator.bio ?? creator.tagline;
+
+  return (
+    <div style={{ ...cardShell, borderTop: "3.5px solid " + accent }}>
+      <div
+        style={{
+          padding: "14px 14px 0 14px",
+          display: "flex",
+          alignItems: "flex-start",
+          gap: 12,
+        }}
+      >
+        {/* Tinted avatar */}
+        <div style={{ position: "relative", flexShrink: 0 }}>
+          <div
+            style={{
+              width: 54,
+              height: 54,
+              borderRadius: 14,
+              background: hexToRgba(accent, 0.13),
+              border: "2px solid " + hexToRgba(accent, 0.45),
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: creator.logoEmoji ? 26 : 20,
+              fontWeight: 800,
+              color: accent,
+              letterSpacing: "-0.5px",
+            }}
+          >
+            {creator.logoEmoji ? (
+              <span>{creator.logoEmoji}</span>
+            ) : (
+              initials
+            )}
+          </div>
+          {creator.verified && <VerifiedBadge />}
+        </div>
+
+        <div style={{ flex: 1, minWidth: 0, paddingTop: 4 }}>
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              flexWrap: "wrap",
-              gap: 8,
+              gap: 6,
+              flexWrap: "wrap" as const,
             }}
           >
             <p
               style={{
                 margin: 0,
-                fontSize: 17,
+                fontSize: 15.5,
                 fontWeight: 800,
                 color: "#0F172A",
-                lineHeight: 1.25,
+                lineHeight: 1.2,
+                letterSpacing: "-0.2px",
               }}
             >
               {creator.name}
             </p>
-            {creator.verified === true && (
-              <span
-                style={{
-                  background: "#DCFCE7",
-                  color: "#16A34A",
-                  fontSize: 9,
-                  fontWeight: 700,
-                  padding: "2px 7px",
-                  borderRadius: 5,
-                }}
-              >
-                ✓ Verified
-              </span>
-            )}
+            <span
+              style={{
+                background: hexToRgba(accent, 0.12),
+                color: accent,
+                fontSize: 9,
+                fontWeight: 800,
+                padding: "2px 7px",
+                borderRadius: 5,
+                letterSpacing: "0.5px",
+                textTransform: "uppercase" as const,
+                flexShrink: 0,
+              }}
+            >
+              படிப்பு தோழர்
+            </span>
           </div>
-          <p
-            style={{
-              margin: "4px 0 0",
-              fontSize: 12.5,
-              color: "#64748B",
-            }}
-          >
-            {creator.description}
-          </p>
+          {baseText && (
+            <p
+              style={{
+                margin: "3px 0 0",
+                fontSize: 12.5,
+                color: "#64748B",
+                lineHeight: 1.4,
+                fontWeight: 500,
+              }}
+            >
+              {baseText}
+            </p>
+          )}
+        </div>
+
+        <div style={{ paddingTop: 4, flexShrink: 0 }}>
+          <SocialButtons
+            youtubeUrl={creator.youtubeUrl}
+            instagramUrl={creator.instagramUrl}
+            telegramUrl={creator.telegramUrl}
+          />
         </div>
       </div>
-      <TagsRow exams={creator.exams} subjects={creator.subjects} />
-      <div style={{ padding: "14px 18px 18px", textAlign: "right" }}>
-        <ViewBtn slug={creator.slug} />
-      </div>
-    </CardShell>
+
+      <TagsRow tags={tags} accent={accent} />
+      <div style={dividerStyle} />
+      <StatsRow
+        packCount={creator.packCount}
+        questionCount={creator.questionCount}
+        slug={creator.slug}
+        isBuddiesTab={true}
+      />
+    </div>
   );
 }
 
+function CreatorCard({
+  creator,
+  isBuddiesTab,
+}: {
+  creator: Creator;
+  isBuddiesTab: boolean;
+}) {
+  if (isBuddiesTab) return <StudyBuddyCard creator={creator} />;
+  if (creator.type === "academy") return <AcademyCard creator={creator} />;
+  // type === "individual" → IndividualCard
+  return <IndividualCard creator={creator} />;
+}
+
+/* ─────────────────────────── Empty / Loading / Error states ─────────────────────────── */
+
+function EmptyState({ message }: { message?: string }) {
+  return (
+    <div
+      style={{
+        padding: "48px 0",
+        textAlign: "center",
+        color: "#94A3B8",
+        fontSize: 14,
+        fontFamily: "'Inter', sans-serif",
+      }}
+    >
+      {message ?? "யாரும் கிடைக்கவில்லை."}
+    </div>
+  );
+}
+
+function LoadingState() {
+  return (
+    <p
+      style={{
+        color: "#94A3B8",
+        fontSize: 14,
+        textAlign: "center",
+        padding: "48px 0",
+        fontFamily: "'Inter', sans-serif",
+      }}
+    >
+      ஏற்றுகிறது...
+    </p>
+  );
+}
+
+function ErrorState({ message }: { message: string }) {
+  return (
+    <p
+      style={{
+        color: "#EF4444",
+        fontSize: 14,
+        textAlign: "center",
+        padding: "48px 0",
+        fontFamily: "'Inter', sans-serif",
+      }}
+    >
+      {message}
+    </p>
+  );
+}
+
+
+type TabKey = "vazhikaati" | "buddies";
+
 export default function ExpertsPage() {
+  const [activeTab, setActiveTab] = useState<TabKey>("vazhikaati");
   const [search, setSearch] = useState("");
-  const [activeTab, setActiveTab] = useState<"teachers" | "buddies">("buddies");
+  const [creators, setCreators] = useState<Creator[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const filtered = useMemo(() => {
-    const q = search.toLowerCase();
+  useEffect(() => {
+    async function fetchCreators() {
+      setLoading(true);
+      setError(null);
+      try {
+        const { data, error: fetchError } = await supabase
+          .from("creators")
+          .select("*");
+        if (fetchError) {
+          setError(fetchError.message);
+          return;
+        }
+        console.log(data[0]);
+        setCreators((data ?? []).map(mapRowToCreator));
+      } catch (err) {
+        setError("தரவு ஏற்றுவதில் பிழை ஏற்பட்டது.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchCreators();
+  }, []);
+
+  // Filter by active tab section + search query
+  const filteredCreators = useMemo(() => {
+    const sectionValue =
+      activeTab === "vazhikaati" ? SECTION_vazhikaati : SECTION_BUDDIES;
+    const q = search.toLowerCase().trim();
     return creators.filter((c) => {
-      const text = [
-        c.name,
-        c.tagline ?? "",
-        c.description ?? "",
-        ...c.subjects,
-        ...c.exams,
-      ]
-        .join(" ")
-        .toLowerCase();
-      return text.includes(q);
+      // Match section
+      if ((c.section ?? "").trim() !== sectionValue) return false;
+      // Match search query
+      if (q) {
+        const haystack = [
+          c.name,
+          c.tagline ?? "",
+          c.bio ?? "",
+          ...c.subjects,
+          ...c.exams,
+        ]
+          .join(" ")
+          .toLowerCase();
+        return haystack.includes(q);
+      }
+      return true;
     });
-  }, [search]);
+  }, [creators, activeTab, search]);
 
-  const teachers = filtered
-    .filter((c) => c.section === "teachers")
-    .sort((a, b) => {
-      if (a.type === "academy" && b.type !== "academy") return -1;
-      if (a.type !== "academy" && b.type === "academy") return 1;
-      return 0;
-    });
+  // Split vazhikaati tab into academies and individuals
+  const academies = useMemo(
+    () => filteredCreators.filter((c) => c.type === "academy"),
+    [filteredCreators]
+  );
+  const individuals = useMemo(
+    () => filteredCreators.filter((c) => c.type === "individual"),
+    [filteredCreators]
+  );
 
-  const buddies = filtered.filter((c) => c.section === "buddies");
-  const academies = teachers.filter((c) => c.type === "academy");
-  const individuals = teachers.filter((c) => c.type === "individual");
-
-  const sectionLabel: React.CSSProperties = {
-    fontSize: 11,
-    fontWeight: 800,
-    textTransform: "uppercase",
-    letterSpacing: "1.5px",
-    color: "#94A3B8",
-    margin: "0 0 14px",
+  const tabBase: React.CSSProperties = {
+    flex: 1,
+    textAlign: "center",
+    cursor: "pointer",
+    border: "none",
+    background: "transparent",
+    fontFamily: "'Inter', -apple-system, sans-serif",
+    padding: "14px 0 0 0",
   };
 
-  const tabs: { key: "teachers" | "buddies"; tamil: string; english: string }[] =
-    [
-      {
-        key: "buddies",
-        tamil: "சேர்ந்து படிப்போம்",
-        english: "Study Buddies",
-      },
-      {
-        key: "teachers",
-        tamil: "வழிகாட்டி",
-        english: "Teachers & Experts",
-      },
-    ];
+  const sectionLabelStyle: React.CSSProperties = {
+    fontSize: 11,
+    fontWeight: 800,
+    color: "#94A3B8",
+    letterSpacing: "1.6px",
+    textTransform: "uppercase",
+    margin: "0 0 10px 0",
+    fontFamily: "'Inter', sans-serif",
+  };
 
   return (
     <main
@@ -448,15 +860,16 @@ export default function ExpertsPage() {
             fontSize: 24,
             fontWeight: 800,
             color: "#0F172A",
+            letterSpacing: "-0.5px",
           }}
         >
           நிபுணர்கள்
         </h1>
         <p style={{ margin: "0 0 20px", fontSize: 14, color: "#64748B" }}>
-          Learn from the best 🔥
+          சிறந்தவர்களிடம் கற்றுக்கொள்ளுங்கள் 🔥
         </p>
 
-        {/* Search */}
+        {/* Search bar */}
         <div
           style={{
             display: "flex",
@@ -464,14 +877,15 @@ export default function ExpertsPage() {
             gap: 10,
             background: "#fff",
             borderRadius: 14,
-            border: "1.5px solid #E2E8F0",
-            padding: "12px 16px",
-            marginBottom: 16,
+            border: "1px solid #E2E8F0",
+            padding: "11px 15px",
+            marginBottom: 20,
+            boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
           }}
         >
           <svg
-            width="17"
-            height="17"
+            width="16"
+            height="16"
             fill="none"
             stroke="#94A3B8"
             strokeWidth="2"
@@ -485,117 +899,167 @@ export default function ExpertsPage() {
             style={{
               border: "none",
               outline: "none",
-              fontSize: 15,
+              fontSize: 14,
               color: "#334155",
               width: "100%",
               background: "transparent",
               fontFamily: "inherit",
             }}
-            placeholder="Search creators or packs..."
+            placeholder={
+              activeTab === "vazhikaati"
+                ? "படைப்பாளர்கள் அல்லது தொகுப்பைத் தேடுங்கள்"
+                : "படிப்பு நண்பரை தேடுங்கள்..."
+            }
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
 
-        {/* Tabs */}
+        {/* Tab switcher */}
         <div
           style={{
-            display: "flex",
-            background: "#D9E1F8",
+            background: "#fff",
             borderRadius: 14,
-            padding: 4,
-            marginBottom: 28,
+            border: "1px solid #E2E8F0",
+            marginBottom: 24,
+            boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
+            overflow: "hidden",
           }}
         >
-          {tabs.map(({ key, tamil, english }) => {
-            const active = activeTab === key;
-            return (
-              <button
-                key={key}
-                onClick={() => setActiveTab(key)}
+          <div style={{ display: "flex" }}>
+            <button
+              onClick={() => {
+                setActiveTab("vazhikaati");
+                setSearch("");
+              }}
+              style={{
+                ...tabBase,
+                color: activeTab === "vazhikaati" ? "#0F172A" : "#94A3B8",
+              }}
+            >
+              <div
                 style={{
-                  flex: 1,
-                  border: "none",
-                  cursor: "pointer",
-                  borderRadius: 11,
-                  padding: "10px 8px",
-                  textAlign: "center",
-                  background: active ? "#fff" : "transparent",
-                  boxShadow: active ? "0 2px 8px rgba(0,0,0,0.09)" : "none",
-                  transition: "all 0.2s",
-                  fontFamily: "inherit",
+                  fontSize: 13,
+                  fontWeight: 800,
+                  letterSpacing: "-0.2px",
+                  marginBottom: 1,
                 }}
               >
-                <p
-                  style={{
-                    margin: 0,
-                    fontWeight: 700,
-                    fontSize: 13,
-                    color: active ? "#1E3A8A" : "#64748B",
-                  }}
-                >
-                  {tamil}
-                </p>
-                <p
-                  style={{
-                    margin: "2px 0 0",
-                    fontSize: 10,
-                    fontWeight: 500,
-                    color: active ? "#64748B" : "#94A3B8",
-                  }}
-                >
-                  {english}
-                </p>
-                {active && (
-                  <div
-                    style={{
-                      height: 2,
-                      background: "#8a1e20",
-                      borderRadius: 2,
-                      marginTop: 6,
-                      width: "40%",
-                      marginLeft: "auto",
-                      marginRight: "auto",
-                    }}
-                  />
-                )}
-              </button>
-            );
-          })}
+                வழிகாட்டி
+              </div>
+              <div
+                style={{
+                  fontSize: 10,
+                  fontWeight: 500,
+                  marginBottom: 11,
+                  color:
+                    activeTab === "vazhikaati" ? "#475569" : "#CBD5E1",
+                }}
+              >
+                ஆசிரியர்கள் &amp; நிபுணர்கள்
+              </div>
+              <div
+                style={{
+                  height: 2.5,
+                  background:
+                    activeTab === "vazhikaati" ? "#0F172A" : "transparent",
+                  borderRadius: "2px 2px 0 0",
+                }}
+              />
+            </button>
+
+            <div
+              style={{
+                width: 1,
+                background: "#F1F5F9",
+                alignSelf: "stretch",
+                margin: "10px 0",
+              }}
+            />
+
+            <button
+              onClick={() => {
+                setActiveTab("buddies");
+                setSearch("");
+              }}
+              style={{
+                ...tabBase,
+                color: activeTab === "buddies" ? "#0F172A" : "#94A3B8",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 13,
+                  fontWeight: 800,
+                  letterSpacing: "-0.2px",
+                  marginBottom: 1,
+                }}
+              >
+                சேர்ந்து படிப்போம்
+              </div>
+              <div
+                style={{
+                  fontSize: 10,
+                  fontWeight: 500,
+                  marginBottom: 11,
+                  color: activeTab === "buddies" ? "#475569" : "#CBD5E1",
+                }}
+              >
+                படிப்பு நண்பர்கள்
+              </div>
+              <div
+                style={{
+                  height: 2.5,
+                  background:
+                    activeTab === "buddies" ? "#0F172A" : "transparent",
+                  borderRadius: "2px 2px 0 0",
+                }}
+              />
+            </button>
+          </div>
         </div>
 
-        {/* Teachers tab */}
-        {activeTab === "teachers" && (
-          <div>
-            {academies.length > 0 && (
-              <div style={{ marginBottom: 8 }}>
-                <p style={sectionLabel}>Academies</p>
-                {academies.map((c) => (
-                  <AcademyCard key={c.id} creator={c} />
-                ))}
-              </div>
-            )}
-            {individuals.length > 0 && (
-              <div>
-                <p style={sectionLabel}>Individuals</p>
-                {individuals.map((c) => (
-                  <IndividualCard key={c.id} creator={c} />
-                ))}
-              </div>
-            )}
-            {teachers.length === 0 && <EmptyState />}
-          </div>
+        {/* Content */}
+        {loading && <LoadingState />}
+        {!loading && error && <ErrorState message={error} />}
+
+        {/* vazhikaati tab: Academies section → Individuals section */}
+        {!loading && !error && activeTab === "vazhikaati" && (
+          filteredCreators.length > 0 ? (
+            <div>
+              {academies.length > 0 && (
+                <>
+                  <p style={sectionLabelStyle}>அகாடமிகள்</p>
+                  {academies.map((c) => (
+                    <CreatorCard key={c.id} creator={c} isBuddiesTab={false} />
+                  ))}
+                </>
+              )}
+              {individuals.length > 0 && (
+                <div style={{ marginTop: academies.length > 0 ? 20 : 0 }}>
+                  <p style={sectionLabelStyle}>INDIVIDUALS</p>
+                  {individuals.map((c) => (
+                    <CreatorCard key={c.id} creator={c} isBuddiesTab={false} />
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <EmptyState message="யாரும் கிடைக்கவில்லை." />
+          )
         )}
 
         {/* Buddies tab */}
-        {activeTab === "buddies" && (
-          <div>
-            <p style={sectionLabel}>Study Buddies</p>
-            {buddies.map((c) => (
-              <IndividualCard key={c.id} creator={c} />
-            ))}
-            {buddies.length === 0 && <EmptyState />}
-          </div>
+        {!loading && !error && activeTab === "buddies" && (
+          filteredCreators.length > 0 ? (
+            <div>
+              {filteredCreators.map((c) => (
+                <CreatorCard key={c.id} creator={c} isBuddiesTab={true} />
+              ))}
+            </div>
+          ) : (
+            <EmptyState message="இன்னும் யாரும் இல்லை. விரைவில் வருகிறது!" />
+          )
         )}
       </div>
     </main>
