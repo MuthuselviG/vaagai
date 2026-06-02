@@ -1,3 +1,5 @@
+// PASTE TO: components/AppShell.tsx
+
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
@@ -10,12 +12,12 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-type TabId = "home" | "practice" | "experts" | "scores";
+type TabId = "home" | "practice" | "study" | "scores";
 
 function getActive(pathname: string): TabId {
   if (pathname.startsWith("/subjects") || pathname.startsWith("/practice") || pathname.startsWith("/pyq")) return "practice";
   if (pathname.startsWith("/score")) return "scores";
-  if (pathname.startsWith("/experts")) return "experts";
+  if (pathname.startsWith("/tnpsc-study-materials")) return "study";
   return "home";
 }
 
@@ -37,11 +39,11 @@ function ClockIcon({ active }: { active: boolean }) {
   );
 }
 
-function ExpertsIcon({ active }: { active: boolean }) {
+function StudyIcon({ active }: { active: boolean }) {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={active ? T.indigo : T.textTer} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-      <path d="M6 12v5c3 3 9 3 12 0v-5" />
+      <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
     </svg>
   );
 }
@@ -75,18 +77,27 @@ function PackIcon() {
   );
 }
 
+const TAB_LABELS: Record<TabId, { en: string; ta: string }> = {
+  home:     { en: "Home",     ta: "முகப்பு" },
+  practice: { en: "Practice", ta: "பழகு" },
+  study:    { en: "Study",    ta: "படிப்பகம்" },
+  scores:   { en: "Scores",   ta: "மதிப்பெண்" },
+};
+
 const tabs = [
-  { id: "home" as TabId, label: "Home", path: "/", Icon: HomeIcon },
-  { id: "practice" as TabId, label: "Practice", path: "/subjects", Icon: ClockIcon },
-  { id: "experts" as TabId, label: "Experts", path: "/experts", Icon: ExpertsIcon },
-  { id: "scores" as TabId, label: "Scores", path: "/score", Icon: BarIcon },
+  { id: "home" as TabId,     path: "/",                      Icon: HomeIcon },
+  { id: "practice" as TabId, path: "/subjects",              Icon: ClockIcon },
+  { id: "study" as TabId,    path: "/tnpsc-study-materials", Icon: StudyIcon },
+  { id: "scores" as TabId,   path: "/score",                 Icon: BarIcon },
 ];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const active = getActive(pathname);
-  const hideNav = pathname.startsWith("/practice") || pathname.includes("/experts/") && pathname.split("/").length > 3;
+  const hideNav =
+    pathname.startsWith("/practice") ||
+    pathname.startsWith("/mock/");
 
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
   const [showMenu, setShowMenu] = useState(false);
@@ -94,6 +105,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [lang, setLang] = useState<"en" | "ta">("ta");
 
   useEffect(() => {
+    const stored = localStorage.getItem("mcqpalagu_lang");
+    if (stored === "en" || stored === "ta") setLang(stored);
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       if (session?.user) checkCreator(session.user.id);
@@ -121,6 +135,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       .single();
     if (userData?.lang === "en" || userData?.lang === "ta") {
       setLang(userData.lang as "en" | "ta");
+      localStorage.setItem("mcqpalagu_lang", userData.lang);
     }
   }
 
@@ -211,8 +226,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             <img src="/logo.png" alt="MCQ பழகு" style={{ height: 48, width: "auto", display: "block" }} />
           </div>
           <nav style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-            {tabs.map(({ id, label, path, Icon }) => {
+            {tabs.map(({ id, path, Icon }) => {
               const isActive = id === active;
+              const label = TAB_LABELS[id][lang];
               return (
                 <button key={id} onClick={() => router.push(path)} style={{
                   display: "flex", alignItems: "center", gap: 12,
@@ -255,8 +271,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           borderTop: `1px solid ${T.border}`, background: T.surface,
           paddingBottom: 24, paddingTop: 10, zIndex: 100,
         }}>
-          {tabs.map(({ id, label, path, Icon }) => {
+          {tabs.map(({ id, path, Icon }) => {
             const isActive = id === active;
+            const label = TAB_LABELS[id][lang];
             return (
               <div key={id} onClick={() => router.push(path)} style={{
                 flex: 1, display: "flex", flexDirection: "column",

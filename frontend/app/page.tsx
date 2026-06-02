@@ -86,15 +86,19 @@ export default function HomePage() {
           .single();
         if (data?.lang === "en" || data?.lang === "ta") {
           setLang(data.lang as "en" | "ta");
+          localStorage.setItem("mcqpalagu_lang", data.lang);
         }
+      } else {
+        const saved = localStorage.getItem("mcqpalagu_lang");
+        if (saved === "en" || saved === "ta") setLang(saved);
       }
 
       supabase
         .from("packs")
         .select("id, name, subject, exams, question_count, is_free, creators(name, slug, verified, accent_color, section)")
         .eq("is_published", true)
-        .eq("is_featured", true)
-        .limit(3)
+        .order("created_at", { ascending: false })
+        .limit(5)
         .then(({ data }) => { if (data) setFeaturedPacks(data as unknown as FeaturedPack[]); });
     }
 
@@ -106,6 +110,21 @@ export default function HomePage() {
 
   async function handleLangChange(l: "en" | "ta") {
     setLang(l);
+    localStorage.setItem("mcqpalagu_lang", l);
+    // #region agent log
+    fetch("http://127.0.0.1:7324/ingest/b166cebd-de6c-4af6-9494-076088f0a173", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "7e99b3" },
+      body: JSON.stringify({
+        sessionId: "7e99b3",
+        hypothesisId: "C",
+        location: "page.tsx:handleLangChange",
+        message: "homepage lang toggle",
+        data: { selected: l, storedMcq: localStorage.getItem("mcqpalagu_lang"), storedLang: localStorage.getItem("lang") },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       await supabase.from("users").update({ lang: l }).eq("id", user.id);
@@ -184,9 +203,9 @@ export default function HomePage() {
         {featuredPacks.length > 0 && (
           <div style={{ width: "100%", marginTop: 24 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-              <div style={{ fontSize: 15, fontWeight: 900, color: T.text }}>
+              <h2 style={{ fontSize: 15, fontWeight: 900, color: T.text, margin: 0 }}>
                 🎯 {lang === "ta" ? "நிபுணர் பேக்குகள்" : "Expert Packs"}
-              </div>
+              </h2>
               <button
                 onClick={() => router.push("/experts")}
                 style={{ fontSize: 12, fontWeight: 700, color: T.indigo, background: T.indigoLight, border: "none", borderRadius: 8, padding: "5px 10px", cursor: "pointer", fontFamily: "inherit" }}

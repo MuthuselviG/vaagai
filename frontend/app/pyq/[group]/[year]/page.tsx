@@ -79,33 +79,39 @@ export default function PYQYearPage() {
           </div>
         </button>
 
-        {/* General Studies — Coming Soon */}
-        <div style={{
-          width: "100%",
-          background: T.surface,
-          border: `1.5px solid ${T.border}`,
-          borderRadius: 20,
-          padding: 20,
-          marginBottom: 16,
-          display: "flex",
-          alignItems: "center",
-          gap: 14,
-          opacity: 0.5,
-        }}>
-          <div style={{ width: 52, height: 52, borderRadius: 16, background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, flexShrink: 0 }}>
+        {/* General Studies */}
+        <button
+          onClick={() => router.push(`/practice/pyq/${group}?year=${year}&paper=general`)}
+          style={{
+            width: "100%",
+            background: T.indigoLight,
+            border: `1.5px solid ${T.indigoMid}`,
+            borderRadius: 20,
+            padding: 20,
+            marginBottom: 16,
+            display: "flex",
+            alignItems: "center",
+            gap: 14,
+            cursor: "pointer",
+            textAlign: "left",
+            boxShadow: shadow.sm,
+            transition: "transform 0.1s",
+          }}
+          onTouchStart={e => (e.currentTarget.style.transform = "scale(0.98)")}
+          onTouchEnd={e => (e.currentTarget.style.transform = "scale(1)")}
+        >
+          <div style={{ width: 52, height: 52, borderRadius: 16, background: T.indigo, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>
             📚
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 18, fontWeight: 900, color: T.textSec, letterSpacing: -0.3 }}>பொது அறிவு</div>
-            <div style={{ fontSize: 12, color: T.textSec, marginTop: 3 }}>100 வினாக்கள்</div>
-            <div style={{ background: T.bg, border: `1.5px solid ${T.border}`, borderRadius: 8, padding: "3px 10px", fontSize: 11, fontWeight: 700, color: T.textTer, marginTop: 6, display: "inline-block" }}>
-              விரைவில் வருகிறது
-            </div>
+            <div style={{ fontSize: 18, fontWeight: 900, color: T.text, letterSpacing: -0.3 }}>பொது அறிவு</div>
+            <div style={{ fontSize: 12, color: T.textSec, marginTop: 3 }}>100 வினாக்கள் · ~40 நிமிடங்கள்</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: T.indigo, marginTop: 6 }}>பயிற்சி தொடங்கு →</div>
           </div>
-          <div style={{ width: 36, height: 36, borderRadius: "50%", background: T.bg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke={T.textTer} strokeWidth="2" strokeLinecap="round" /></svg>
+          <div style={{ width: 36, height: 36, borderRadius: "50%", background: T.indigo, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="#fff" strokeWidth="2" strokeLinecap="round" /></svg>
           </div>
-        </div>
+        </button>
 
         {/* Info card */}
         <div style={{ fontSize: 11, fontWeight: 800, color: T.textTer, letterSpacing: 0.8, marginBottom: 10 }}>

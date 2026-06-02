@@ -61,8 +61,57 @@ export type Pack = {
   rating_count: number;
   is_published: boolean;
   is_free: boolean;
+  is_archived: boolean;
+  was_published: boolean;
   created_at: string;
 };
+
+export type CAQuestion = {
+  id: string;
+  question: string;
+  lang: "en" | "ta";
+  options: string[];
+  correct_option: string;
+  explanation: string | null;
+  topic: string | null;
+  subject: string | null;
+  published_date: string;
+  source_url: string | null;
+};
+
+export type CAUnitMeta = {
+  subject: string;
+  count: number;
+};
+
+// ─── CURRENT AFFAIRS CONSTANTS ────────────────────────────
+
+export const CA_UNIT_SUBJECTS: Record<string, string[]> = {
+  "general-science":     ["General Science"],
+  "geography":           ["Geography"],
+  "indian-history":      ["History", "Indian National Movement"],
+  "indian-polity":       ["Indian Polity"],
+  "welfare-schemes":     ["Economy"],
+  "archaeology-updates": ["Tamil Nadu History"],
+};
+
+export const CA_UNIT_LABELS: Record<string, { en: string; ta: string; icon: string }> = {
+  "general-science":     { en: "General Science",          ta: "பொது அறிவியல்",                      icon: "🔬" },
+  "geography":           { en: "Geography",                ta: "நிலவியல்",                           icon: "🌍" },
+  "indian-history":      { en: "Indian History",           ta: "இந்திய வரலாறு",                      icon: "🏛️" },
+  "indian-polity":       { en: "Indian Polity",            ta: "இந்திய அரசியல்",                     icon: "⚖️" },
+  "welfare-schemes":     { en: "Welfare Schemes",          ta: "நலத்திட்டங்கள்",                     icon: "💰" },
+  "archaeology-updates": { en: "TN History & Archaeology", ta: "தமிழ்நாடு வரலாறு & அகழ்வாராய்ச்சி", icon: "🏺" },
+};
+
+export const CA_UNIT_ORDER = [
+  "general-science",
+  "geography",
+  "indian-history",
+  "indian-polity",
+  "welfare-schemes",
+  "archaeology-updates",
+];
 
 // ─── QUESTION FETCHES ─────────────────────────────────────
 
@@ -98,16 +147,24 @@ export async function fetchQuestionsForLevel(
 export async function fetchQuestionsForPYQ(
   year: number,
   group: string,
-  paper: "tamil" | "general"
+  paper: "tamil" | "general",
+  lang: "en" | "ta" = "en"
 ): Promise<Question[]> {
-  const lang = paper === "tamil" ? "ta" : "en";
-  const { data, error } = await supabase
+  let query = supabase
     .from("questions")
     .select("id, question, lang, options, correct_option, explanation, class, subject, chapter, topic, difficulty, source_type")
     .contains("pyq_years", [year])
-    .eq("lang", lang)
+    .contains("pyq_groups", [group])
     .eq("source_type", "pyq")
     .limit(100);
+
+  if (paper === "tamil") {
+    query = query.eq("lang", "ta").eq("subject", "General Tamil");
+  } else {
+    query = query.eq("lang", lang).neq("subject", "General Tamil");
+  }
+
+  const { data, error } = await query;
   if (error) throw error;
   return (data as Question[]) ?? [];
 }
@@ -122,7 +179,6 @@ export async function fetchQuestionsForPack(packId: string): Promise<Question[]>
   return (data as Question[]) ?? [];
 }
 
-// Fetch current affairs for a specific date (daily practice)
 export async function fetchQuestionsForCADaily(date: string, lang: "en" | "ta"): Promise<Question[]> {
   const { data, error } = await supabase
     .from("current_affairs")
@@ -131,7 +187,6 @@ export async function fetchQuestionsForCADaily(date: string, lang: "en" | "ta"):
     .eq("lang", lang)
     .order("created_at", { ascending: true });
   if (error) throw error;
-  // Map to Question type
   return (data ?? []).map((r: any) => ({
     id: r.id,
     question: r.question,
@@ -148,7 +203,6 @@ export async function fetchQuestionsForCADaily(date: string, lang: "en" | "ta"):
   }));
 }
 
-// Fetch current affairs for a full month (monthly practice)
 export async function fetchQuestionsForCAMonthly(month: string, lang: "en" | "ta"): Promise<Question[]> {
   const start = month + "-01";
   const end = month + "-31";
@@ -175,6 +229,92 @@ export async function fetchQuestionsForCAMonthly(month: string, lang: "en" | "ta
     difficulty: null,
     source_type: "current_affairs",
   }));
+}
+
+export async function fetchQuestionsForMock(year: number): Promise<Question[]> {
+  const { data, error } = await supabase
+    .from("questions")
+    .select("id, question, lang, options, correct_option, explanation, class, subject, chapter, topic, difficulty, source_type")
+    .contains("pyq_years", [year])
+    .contains("pyq_groups", ["group4"])
+    .eq("lang", "ta")
+    .eq("source_type", "pyq")
+    .limit(200);
+  if (error) throw error;
+  return (data as Question[]) ?? [];
+}
+
+// ─── CURRENT AFFAIRS SEO FETCHES ─────────────────────────
+
+export async function fetchCAForUnit(
+  month: string,
+  unitSlug: string,
+  lang: "en" | "ta"
+): Promise<CAQuestion[]> {
+  const subjects = CA_UNIT_SUBJECTS[unitSlug];
+  if (!subjects) return [];
+  const start = `${month}-01`;
+  const end = `${month}-31`;
+  const { data, error } = await supabase
+    .from("current_affairs")
+    .select("id, question, lang, options, correct_option, explanation, topic, subject, published_date, source_url")
+    .gte("published_date", start)
+    .lte("published_date", end)
+    .eq("lang", lang)
+    .in("subject", subjects)
+    .order("published_date", { ascending: true });
+  if (error) {
+    console.error(`[fetchCAForUnit] error:`, error);
+    throw error;
+  }
+  console.log(`[fetchCAForUnit] month=${month} unit=${unitSlug} lang=${lang} count=${data?.length ?? 0}`);
+  return (data ?? []) as CAQuestion[];
+}
+
+export async function fetchCAMonthlyUnitCounts(
+  month: string,
+  lang: "en" | "ta"
+): Promise<CAUnitMeta[]> {
+  const start = `${month}-01`;
+  const end = `${month}-31`;
+  const { data, error } = await supabase
+    .from("current_affairs")
+    .select("subject")
+    .gte("published_date", start)
+    .lte("published_date", end)
+    .eq("lang", lang);
+  if (error) {
+    console.error(`[fetchCAMonthlyUnitCounts] error:`, error);
+    throw error;
+  }
+  const counts: Record<string, number> = {};
+  (data ?? []).forEach((r: any) => {
+    if (r.subject) counts[r.subject] = (counts[r.subject] || 0) + 1;
+  });
+  console.log(`[fetchCAMonthlyUnitCounts] month=${month} counts=${JSON.stringify(counts)}`);
+  return Object.entries(counts).map(([subject, count]) => ({ subject, count }));
+}
+
+export async function fetchCAMonthlyPreview(
+  month: string,
+  unitSlug: string,
+  lang: "en" | "ta"
+): Promise<CAQuestion[]> {
+  const subjects = CA_UNIT_SUBJECTS[unitSlug];
+  if (!subjects) return [];
+  const start = `${month}-01`;
+  const end = `${month}-31`;
+  const { data, error } = await supabase
+    .from("current_affairs")
+    .select("id, question, lang, options, correct_option, explanation, topic, subject, published_date, source_url")
+    .gte("published_date", start)
+    .lte("published_date", end)
+    .eq("lang", lang)
+    .in("subject", subjects)
+    .order("published_date", { ascending: true })
+    .limit(2);
+  if (error) throw error;
+  return (data ?? []) as CAQuestion[];
 }
 
 // ─── CREATOR FUNCTIONS ────────────────────────────────────
@@ -217,6 +357,18 @@ export async function fetchMyPacks(creatorId: string): Promise<Pack[]> {
     .from("packs")
     .select("*")
     .eq("creator_id", creatorId)
+    .eq("is_archived", false)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data as Pack[]) ?? [];
+}
+
+export async function fetchMyArchivedPacks(creatorId: string): Promise<Pack[]> {
+  const { data, error } = await supabase
+    .from("packs")
+    .select("*")
+    .eq("creator_id", creatorId)
+    .eq("is_archived", true)
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data as Pack[]) ?? [];
@@ -241,6 +393,22 @@ export async function createPack(pack: {
 
 export async function unpublishPack(packId: string): Promise<void> {
   const { error } = await supabase.from("packs").update({ is_published: false }).eq("id", packId);
+  if (error) throw error;
+}
+
+export async function archivePack(packId: string, wasPublished: boolean): Promise<void> {
+  const { error } = await supabase
+    .from("packs")
+    .update({ is_archived: true, is_published: false })
+    .eq("id", packId);
+  if (error) throw error;
+}
+
+export async function unarchivePack(packId: string): Promise<void> {
+  const { error } = await supabase
+    .from("packs")
+    .update({ is_archived: false })
+    .eq("id", packId);
   if (error) throw error;
 }
 

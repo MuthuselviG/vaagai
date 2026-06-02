@@ -47,12 +47,12 @@ export default function PracticePage() {
 
   const urlLang = searchParams.get("lang") as "en" | "ta" | null;
   const [lang, setLang] = useState<"en" | "ta">(
-    isCA && urlLang ? urlLang : isPYQ ? (pyqPaper === "tamil" ? "ta" : "en") : subject === "Tamil" ? "ta" : "en"
+    isCA && urlLang ? urlLang : isPYQ && pyqPaper === "tamil" ? "ta" : subject === "Tamil" ? "ta" : "en"
   );
 
   useEffect(() => {
     async function loadLang() {
-      if (isCA || isPYQ || isPack || subject === "Tamil") return;
+      if (isCA || isPack || subject === "Tamil") return;
       // Try DB first
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
@@ -130,7 +130,7 @@ export default function PracticePage() {
         .then(qs => { setQuestions(qs); setLoading(false); })
         .catch(() => { setError("Could not load pack questions."); setLoading(false); });
     } else if (isPYQ) {
-      fetchQuestionsForPYQ(pyqYear, pyqGroup, pyqPaper)
+      fetchQuestionsForPYQ(pyqYear, pyqGroup, pyqPaper, lang)
         .then(qs => { setQuestions(qs); setLoading(false); })
         .catch(() => { setError("வினாக்களை ஏற்ற முடியவில்லை."); setLoading(false); });
     } else {
