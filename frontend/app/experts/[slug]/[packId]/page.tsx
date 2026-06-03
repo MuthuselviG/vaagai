@@ -1,191 +1,66 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { T, shadow } from "../../../../lib/tokens";
 import { createClient } from "@supabase/supabase-js";
+import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+import PackDetailClient, { type PackDetailData } from "./PackDetailClient";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
-type Creator = {
-  id: string;
-  name: string;
-  slug: string;
-  type: "individual" | "academy";
-  verified: boolean;
-  accent_color: string;
-};
-
-type Pack = {
-  id: string;
-  name: string;
-  description: string | null;
-  subject: string | null;
-  exams: string[] | null;
-  question_count: number;
-  is_free: boolean;
-  creators: Creator | Creator[];
-};
-
-const ACCENT_GRADIENTS: Record<string, string> = {
-  yellow: "linear-gradient(135deg, #FFD93D, #FF9500)",
-  coral:  "linear-gradient(135deg, #FF6B6B, #C2185B)",
-  purple: "linear-gradient(135deg, #9B5DE5, #5E35B1)",
-  blue:   "linear-gradient(135deg, #4D96FF, #1565C0)",
-  teal:   "linear-gradient(135deg, #00C9A7, #00897B)",
-  navy:   "linear-gradient(135deg, #3D52A0, #2D3E7A)",
-};
-
-const EXAM_LABELS: Record<string, string> = {
-  group4: "Group 4", group2: "Group 2", tet: "TET", tnusrb: "TNUSRB",
-};
-
-export default function PackDetailPage() {
-  const params = useParams();
-  const router = useRouter();
-  const packId = params.packId as string;
-
-  const [pack, setPack] = useState<Pack | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const { data, error } = await supabase
-          .from("packs")
-          .select(`id, name, description, subject, exams, question_count, is_free, creators (id, name, slug, type, verified, accent_color)`)
-          .eq("id", packId)
-          .eq("is_published", true)
-          .single();
-        if (error || !data) { setError(true); setLoading(false); return; }
-        setPack(data as Pack);
-      } catch { setError(true); }
-      finally { setLoading(false); }
-    }
-    load();
-  }, [packId]);
-
-  function handleStart() {
-    if (!pack) return;
-    router.push(`/practice/pack/${encodeURIComponent(pack.id)}?pack_id=${pack.id}&label=${encodeURIComponent(pack.name)}&level=1&offset=0&limit=${pack.question_count}`);
-  }
-
-  if (loading) return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", background: T.bg, flexDirection: "column", gap: 12, paddingTop: "40vh" }}>
-      <div style={{ fontSize: 32 }}>📦</div>
-      <div style={{ color: T.text, fontSize: 15, fontWeight: 700 }}>Loading pack…</div>
-    </div>
+function makeSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
+}
 
-  if (error || !pack) return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", background: T.bg, flexDirection: "column", gap: 16, padding: 24, paddingTop: "40vh" }}>
-      <div style={{ color: T.text, fontSize: 15, fontWeight: 600, textAlign: "center" }}>Pack not found.</div>
-      <button onClick={() => router.back()} style={{ background: T.indigo, border: "none", borderRadius: 12, padding: "12px 24px", color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Go Back</button>
-    </div>
-  );
+export async function generateMetadata({ params }: { params: Promise<{ slug: string; packId: string }> }): Promise<Metadata> {
+  const { packId } = await params;
+  const supabase = makeSupabase();
+  const { data } = await supabase
+    .from("packs")
+    .select("name, description, creators(name, slug)")
+    .eq("id", packId)
+    .eq("is_published", true)
+    .single();
 
-  const creator = Array.isArray(pack.creators) ? pack.creators[0] : pack.creators;
-  const gradient = ACCENT_GRADIENTS[creator.accent_color] ?? ACCENT_GRADIENTS.navy;
-  const initials = creator.name.charAt(0).toUpperCase();
-  const estimatedMins = Math.round((pack.question_count * 30) / 60);
+  if (!data) return { title: "Pack | MCQ Palagu" };
 
-  return (
-    <div style={{ background: T.bg, maxWidth: 600, margin: "0 auto", width: "100%" }}>
+  const creator = Array.isArray(data.creators) ? data.creators[0] : data.creators;
+  const description = data.description ?? `Practice ${data.name} MCQ questions on MCQ Palagu.`;
+  return {
+    title: `${data.name} | MCQ Palagu`,
+    description,
+    alternates: { canonical: `https://mcqpalagu.in/experts/${creator?.slug}/${packId}` },
+    openGraph: {
+      title: `${data.name} | MCQ Palagu`,
+      description,
+      url: `https://mcqpalagu.in/experts/${creator?.slug}/${packId}`,
+    },
+  };
+}
 
-      {/* Top nav */}
-      <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "14px 16px", display: "flex", alignItems: "center", gap: 10 }}>
-        <button onClick={() => router.back()} style={{ width: 38, height: 38, borderRadius: 11, background: T.bg, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }}>
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path d="M11 13.5L6.5 9 11 4.5" stroke={T.text} strokeWidth="2" strokeLinecap="round" />
-          </svg>
-        </button>
-        <span style={{ fontSize: 14, fontWeight: 700, color: T.textSec }}>Pack Detail</span>
-      </div>
+export default async function PackDetailPage({ params }: { params: Promise<{ slug: string; packId: string }> }) {
+  const { packId } = await params;
+  const supabase = makeSupabase();
 
-      {/* Content */}
-      <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 14, paddingBottom: 0 }}>
+  const { data, error } = await supabase
+    .from("packs")
+    .select("id, name, description, subject, exams, question_count, is_free, creators(id, name, slug, type, verified, accent_color)")
+    .eq("id", packId)
+    .eq("is_published", true)
+    .single();
 
-        {/* Hero */}
-        <div style={{ background: T.indigo, borderRadius: 20, padding: "20px 18px", position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", width: 160, height: 160, borderRadius: "50%", background: "rgba(255,255,255,0.05)", top: -50, right: -40 }} />
-          <div style={{ position: "absolute", width: 90, height: 90, borderRadius: "50%", background: "rgba(255,255,255,0.04)", bottom: -20, left: 30 }} />
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.85)", fontSize: 10, fontWeight: 900, padding: "4px 10px", borderRadius: 20, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 12, position: "relative", zIndex: 1 }}>
-            <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#FFD93D" }} />
-            {pack.subject ?? "General"}{pack.exams && pack.exams.length > 0 ? ` · ${EXAM_LABELS[pack.exams[0]] ?? pack.exams[0]}` : ""}
-          </div>
-          <div style={{ fontSize: 20, fontWeight: 900, color: "#fff", lineHeight: 1.3, marginBottom: 14, position: "relative", zIndex: 1 }}>{pack.name}</div>
-          <div style={{ display: "flex", gap: 10, position: "relative", zIndex: 1 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 5, background: "rgba(255,255,255,0.1)", borderRadius: 10, padding: "6px 12px", fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.85)" }}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="2.5" strokeLinecap="round"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
-              {pack.question_count} Questions
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 5, background: "rgba(255,255,255,0.1)", borderRadius: 10, padding: "6px 12px", fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.85)" }}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="2.5" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
-              ~{estimatedMins} mins
-            </div>
-          </div>
-        </div>
+  if (error || !data) notFound();
 
-        {/* Creator */}
-        <div onClick={() => router.push(`/experts/${creator.slug}`)} style={{ background: T.surface, borderRadius: 16, padding: "13px 14px", display: "flex", alignItems: "center", gap: 12, border: `1.5px solid ${T.border}`, cursor: "pointer", boxShadow: shadow.sm }}>
-          <div style={{ position: "relative", flexShrink: 0 }}>
-            <div style={{ width: 42, height: 42, borderRadius: 13, background: gradient, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, fontWeight: 900, color: "#fff" }}>{initials}</div>
-            {creator.verified && <div style={{ position: "absolute", bottom: -3, right: -3, width: 15, height: 15, background: "#6BCB77", borderRadius: "50%", border: "2px solid #fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 7, color: "#fff", fontWeight: 900 }}>✓</div>}
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 10, fontWeight: 800, color: T.textTer, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 2 }}>Created by</div>
-            <div style={{ fontSize: 14, fontWeight: 900, color: T.text }}>{creator.name}</div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: T.textSec }}>{creator.type === "academy" ? "Academy" : "வழிகாட்டி"}</div>
-          </div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.textTer} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
-        </div>
+  const creatorRaw = Array.isArray(data.creators) ? data.creators[0] : data.creators;
 
-        {/* About */}
-        {pack.description && (
-          <>
-            <div style={{ fontSize: 11, fontWeight: 800, color: T.textTer, textTransform: "uppercase", letterSpacing: 0.8 }}>About</div>
-            <div style={{ background: T.surface, borderRadius: 16, padding: "14px 16px", border: `1.5px solid ${T.border}`, fontSize: 13, color: "#374151", fontWeight: 600, lineHeight: 1.65 }}>{pack.description}</div>
-          </>
-        )}
+  const pack: PackDetailData = {
+    id: data.id,
+    name: data.name,
+    description: data.description,
+    subject: data.subject,
+    exams: data.exams,
+    question_count: data.question_count,
+    is_free: data.is_free,
+    creator: creatorRaw as PackDetailData["creator"],
+  };
 
-        {/* Pills */}
-        {((pack.exams && pack.exams.length > 0) || pack.subject) && (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-            {(pack.exams ?? []).map(e => <span key={e} style={{ fontSize: 10, fontWeight: 800, padding: "4px 10px", borderRadius: 20, textTransform: "uppercase", letterSpacing: 0.3, background: T.indigoLight, color: T.indigo }}>{EXAM_LABELS[e] ?? e}</span>)}
-            {pack.subject && <span style={{ fontSize: 10, fontWeight: 800, padding: "4px 10px", borderRadius: 20, textTransform: "uppercase", letterSpacing: 0.3, background: "#FFF9C4", color: "#B8860B" }}>{pack.subject}</span>}
-          </div>
-        )}
-
-        {/* What's inside */}
-        <div style={{ fontSize: 11, fontWeight: 800, color: T.textTer, textTransform: "uppercase", letterSpacing: 0.8 }}>What's inside</div>
-        <div style={{ background: T.surface, borderRadius: 16, padding: "4px 16px", border: `1.5px solid ${T.border}` }}>
-          {[
-            { icon: "❓", bg: T.indigoLight, title: `${pack.question_count} MCQ Questions`, sub: "" },
-
-
-          ].map((item, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 0", borderBottom: "none" }}>
-              <div style={{ width: 34, height: 34, borderRadius: 10, background: item.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>{item.icon}</div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: T.text }}>{item.title}</div>
-                {item.sub && <div style={{ fontSize: 11, fontWeight: 600, color: T.textSec, marginTop: 1 }}>{item.sub}</div>}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Start button */}
-        <div style={{ padding: "4px 0 48px" }}>
-          <button onClick={handleStart} style={{ width: "100%", background: `linear-gradient(135deg, ${T.indigo}, #5062B8)`, border: "none", borderRadius: 16, padding: "17px", color: "#fff", fontSize: 16, fontWeight: 700, cursor: "pointer", boxShadow: shadow.indigo, fontFamily: "inherit" }}>
-            Start Pack →
-          </button>
-        </div>
-
-      </div>
-    </div>
-  );
+  return <PackDetailClient pack={pack} />;
 }
