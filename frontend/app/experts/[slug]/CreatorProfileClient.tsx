@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { T, shadow } from "../../../lib/tokens";
+import { slugify } from "../../../lib/slugify";
 
 const ACCENT_GRADIENTS: Record<string, string> = {
   yellow: "linear-gradient(135deg, #FFD93D, #FF9500)",
@@ -155,7 +156,7 @@ export default function CreatorProfileClient({ creator, packs }: { creator: Crea
           packs.map((pack) => {
             const estimatedMins = Math.round((pack.question_count * 30) / 60);
             return (
-              <div key={pack.id} onClick={() => router.push(`/experts/${creator.slug}/${pack.id}`)}
+              <div key={pack.id} onClick={() => router.push(`/experts/${creator.slug}/${slugify(pack.name)}`)}
                 style={{ background: T.surface, borderRadius: 16, padding: 14, border: `1px solid ${T.border}`, cursor: "pointer", boxShadow: shadow.sm, display: "flex", flexDirection: "column", gap: 8 }}>
                 <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>

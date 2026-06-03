@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { T, shadow } from "../lib/tokens";
 import LangToggle from "../components/LangToggle";
+import { slugify } from "../lib/slugify";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -225,7 +226,7 @@ export default function HomePage() {
               return (
                 <div
                   key={pack.id}
-                  onClick={() => router.push(`/experts/${c.slug}/${pack.id}`)}
+                  onClick={() => router.push(`/experts/${c.slug}/${slugify(pack.name)}`)}
                   style={{ width: "100%", background: T.surface, borderRadius: 16, padding: 14, marginBottom: 10, border: `1.5px solid ${T.border}`, cursor: "pointer", boxShadow: shadow.sm, textAlign: "left", position: "relative", overflow: "hidden" }}
                 >
                   <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: gradient, borderRadius: "16px 16px 0 0" }} />
@@ -262,7 +263,7 @@ export default function HomePage() {
                       <b style={{ color: T.indigo, fontWeight: 900 }}>{pack.question_count}</b> {lang === "ta" ? "வினாக்கள்" : "questions"} · ~{estimatedMins} mins
                     </div>
                     <button
-                      onClick={(e) => { e.stopPropagation(); router.push(`/experts/${c.slug}/${pack.id}`); }}
+                      onClick={(e) => { e.stopPropagation(); router.push(`/experts/${c.slug}/${slugify(pack.name)}`); }}
                       style={{ background: T.indigo, color: "#fff", border: "none", borderRadius: 9, padding: "6px 14px", fontSize: 11, fontWeight: 800, cursor: "pointer", fontFamily: "inherit" }}
                     >
                       {lang === "ta" ? "தொடங்கு →" : "Start →"}

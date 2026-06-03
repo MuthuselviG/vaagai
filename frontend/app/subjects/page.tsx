@@ -6,6 +6,7 @@ import LangToggle from "../../components/LangToggle";
 import { T, shadow } from "../../lib/tokens";
 import { fetchChapterCounts, supabase, type ChapterCount } from "../../lib/supabase";
 import { getUnlockedLevel } from "../../lib/session";
+import { slugify } from "../../lib/slugify";
 
 const LEVEL_SIZE = 10;
 const MIN_LEVEL_SIZE = 6;
@@ -440,7 +441,7 @@ export default function SubjectsPage() {
               return (
                 <div
                   key={pack.id}
-                  onClick={() => router.push(`/experts/${c.slug}/${pack.id}`)}
+                  onClick={() => router.push(`/experts/${c.slug}/${slugify(pack.name)}`)}
                   style={{ background: T.surface, borderRadius: 16, padding: 14, marginBottom: 10, border: `1.5px solid ${T.border}`, cursor: "pointer", boxShadow: shadow.sm, position: "relative", overflow: "hidden" }}
                 >
                   {/* Accent top bar */}
@@ -479,7 +480,7 @@ export default function SubjectsPage() {
                       <b style={{ color: T.indigo, fontWeight: 900 }}>{pack.question_count}</b> {lang === "ta" ? "வினாக்கள்" : "questions"} · ~{estimatedMins} mins
                     </div>
                     <button
-                      onClick={(e) => { e.stopPropagation(); router.push(`/experts/${c.slug}/${pack.id}`); }}
+                      onClick={(e) => { e.stopPropagation(); router.push(`/experts/${c.slug}/${slugify(pack.name)}`); }}
                       style={{ background: T.indigo, color: "#fff", border: "none", borderRadius: 9, padding: "6px 14px", fontSize: 11, fontWeight: 800, cursor: "pointer", fontFamily: "inherit" }}
                     >
                       {lang === "ta" ? "தொடங்கு →" : "Start →"}

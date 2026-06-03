@@ -1,7 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import PackDetailClient, { type PackDetailData } from "./PackDetailClient";
+import { slugify } from "../../../../lib/slugify";
 
 function makeSupabase() {
   return createClient(
@@ -10,46 +12,60 @@ function makeSupabase() {
   );
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string; packId: string }> }): Promise<Metadata> {
-  const { packId } = await params;
+const findPack = cache(async function findPack(creatorSlug: string, packNameSlug: string) {
   const supabase = makeSupabase();
-  const { data } = await supabase
-    .from("packs")
-    .select("name, description, creators(name, slug)")
-    .eq("id", packId)
-    .eq("is_published", true)
+
+  const { data: creator } = await supabase
+    .from("creators")
+    .select("id, name, slug, type, verified, accent_color")
+    .eq("slug", creatorSlug)
     .single();
+  if (!creator) return null;
 
-  if (!data) return { title: "Pack | MCQ Palagu" };
+  const { data: packs } = await supabase
+    .from("packs")
+    .select("id, name, description, subject, exams, question_count, is_free")
+    .eq("creator_id", creator.id)
+    .eq("is_published", true);
+  if (!packs) return null;
 
-  const creator = Array.isArray(data.creators) ? data.creators[0] : data.creators;
-  const description = data.description ?? `Practice ${data.name} MCQ questions on MCQ Palagu.`;
+  let decodedSlug = packNameSlug;
+  try { decodedSlug = decodeURIComponent(packNameSlug); } catch { /* use raw */ }
+
+  console.log("[findPack] slug param:", packNameSlug, "→ decoded:", decodedSlug);
+  console.log("[findPack] pack slugs:", packs.map(p => slugify(p.name)));
+
+  const pack = packs.find(p => slugify(p.name) === decodedSlug);
+  if (!pack) return null;
+
+  return { ...pack, creator };
+});
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; packId: string }>;
+}): Promise<Metadata> {
+  const { slug, packId } = await params;
+  const pack = await findPack(slug, packId);
+  if (!pack) return { title: "Pack | MCQ Palagu" };
+  const description = pack.description ?? `Practice ${pack.name} MCQ questions on MCQ Palagu.`;
   return {
-    title: `${data.name} | MCQ Palagu`,
+    title: `${pack.name} | MCQ Palagu`,
     description,
-    alternates: { canonical: `https://mcqpalagu.in/experts/${creator?.slug}/${packId}` },
-    openGraph: {
-      title: `${data.name} | MCQ Palagu`,
-      description,
-      url: `https://mcqpalagu.in/experts/${creator?.slug}/${packId}`,
-    },
+    alternates: { canonical: `https://mcqpalagu.in/experts/${slug}/${packId}` },
+    openGraph: { title: `${pack.name} | MCQ Palagu`, description, url: `https://mcqpalagu.in/experts/${slug}/${packId}` },
   };
 }
 
-export default async function PackDetailPage({ params }: { params: Promise<{ slug: string; packId: string }> }) {
-  const { packId } = await params;
-  const supabase = makeSupabase();
-
-  const { data, error } = await supabase
-    .from("packs")
-    .select("id, name, description, subject, exams, question_count, is_free, creators(id, name, slug, type, verified, accent_color)")
-    .eq("id", packId)
-    .eq("is_published", true)
-    .single();
-
-  if (error || !data) notFound();
-
-  const creatorRaw = Array.isArray(data.creators) ? data.creators[0] : data.creators;
+export default async function PackDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string; packId: string }>;
+}) {
+  const { slug, packId } = await params;
+  const data = await findPack(slug, packId);
+  if (!data) notFound();
 
   const pack: PackDetailData = {
     id: data.id,
@@ -59,7 +75,7 @@ export default async function PackDetailPage({ params }: { params: Promise<{ slu
     exams: data.exams,
     question_count: data.question_count,
     is_free: data.is_free,
-    creator: creatorRaw as PackDetailData["creator"],
+    creator: data.creator as PackDetailData["creator"],
   };
 
   return <PackDetailClient pack={pack} />;
