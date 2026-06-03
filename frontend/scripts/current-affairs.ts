@@ -12,9 +12,23 @@ const supabase = createClient(
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY_CRON });
 
+// Exactly 6 allowed subject values — no exceptions
+const VALID_SUBJECTS = [
+  "General Science",
+  "Geography",
+  "History",
+  "Indian Polity",
+  "Economy",
+  "General Tamil",
+] as const;
+
+type ValidSubject = typeof VALID_SUBJECTS[number];
+
 interface GeminiBilingualQuestion {
-  subject: string;
+  subject: ValidSubject;
   topic: string;
+  slug_en: string;
+  slug_ta: string;
   source_ministry: string | null;
   question_en: string;
   question_ta: string;
@@ -24,6 +38,67 @@ interface GeminiBilingualQuestion {
   correct_option_ta: string;
   explanation_en: string;
   explanation_ta: string;
+}
+
+// Tamil stop words
+const tamilStopWords = new Set([
+  "என்ன", "எது", "எந்த", "எங்கு", "எவ்வாறு", "யார்", "எவர்",
+  "ஒரு", "இந்த", "அந்த", "இல்", "உள்ள", "மற்றும்", "ஆகும்",
+  "என்று", "கீழ்க்கண்ட", "கீழே", "பற்றி", "தொடர்பான",
+  "கண்டறி", "கண்டு", "பின்வரும்", "சரியான", "தவறான",
+  "கூற்றுகளில்", "கூற்று", "சரியானது", "விடை", "தேர்ந்தெடு",
+]);
+
+// English stop words
+const englishStopWords = new Set([
+  "what", "which", "who", "where", "when", "how", "why",
+  "is", "are", "was", "were", "the", "a", "an", "of", "in",
+  "to", "and", "or", "for", "on", "at", "by", "with", "from",
+  "that", "this", "these", "those", "has", "have", "had",
+  "following", "correct", "incorrect", "statement", "statements",
+  "consider", "given", "below", "above", "about", "regarding",
+  "choose", "select", "option", "options", "answer",
+]);
+
+function generateSlug(text: string, lang: "en" | "ta"): string {
+  if (lang === "en") {
+    return text
+      .toLowerCase()
+      .replace(/[^\w\s]/g, " ")
+      .split(/\s+/)
+      .filter(w => w.length > 2 && !englishStopWords.has(w))
+      .slice(0, 8)
+      .join("-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
+  } else {
+    return text
+      .replace(/[^\u0B80-\u0BFF\s]/g, " ")
+      .split(/\s+/)
+      .filter(w => w.length > 1 && !tamilStopWords.has(w))
+      .slice(0, 6)
+      .join("-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
+  }
+}
+
+function sanitizeSubject(subject: string): ValidSubject {
+  if (VALID_SUBJECTS.includes(subject as ValidSubject)) return subject as ValidSubject;
+  // Fallback mapping for any Gemini drift
+  const map: Record<string, ValidSubject> = {
+    "Science": "General Science",
+    "Polity": "Indian Polity",
+    "History": "History",
+    "Tamil Nadu History": "History",
+    "Current Affairs": "History",
+    "Economy": "Economy",
+    "Geography": "Geography",
+    "General Tamil": "General Tamil",
+  };
+  const fallback = map[subject] ?? "History";
+  console.warn(`[Sanitize] Invalid subject "${subject}" → fallback "${fallback}"`);
+  return fallback;
 }
 
 const tnpscKeywords = [
@@ -168,23 +243,22 @@ async function main() {
   const systemInstruction = `
 You are an expert paper setter for the TNPSC (Tamil Nadu Public Service Commission) Group 1 and Group 4 exams.
 
-SUBJECT CLASSIFICATION RULES (strictly follow):
-- Welfare Schemes & State Admin → subject: "Polity" or subject: "Economy"
-- Keezhadi/Excavations/Cultural Heritage → subject: "History"
-- National Leaders, Freedom Movement → subject: "History"
-- Defence, Space, Health, Environment → subject: "Science"
-- Geography, Rivers, Wildlife → subject: "Geography"
-- Budget, GDP, RBI, Trade → subject: "Economy"
-- Constitution, Elections, Courts → subject: "Polity"
-- Tamil Literature, Classical Tamil → subject: "General Tamil"
-- Anything not fitting above → subject: "Current Affairs"
+SUBJECT CLASSIFICATION — YOU MUST PICK EXACTLY ONE FROM THIS LIST. NO OTHER VALUES ALLOWED:
+- "General Science" → Defence, Space, Health, Environment, Technology
+- "Geography" → Rivers, Wildlife, GI Tags, Coastal, Climate
+- "History" → National Leaders, Freedom Movement, Excavations, Keezhadi, Sports, Awards, Eminent Persons, Current Events
+- "Indian Polity" → Constitution, Elections, Courts, Welfare Schemes, State Admin, Government Policies
+- "Economy" → Budget, GDP, RBI, Trade, Infrastructure, Industrial Policy
+- "General Tamil" → Tamil Literature, Classical Tamil, Tamil Grammar
 
 TOPIC SLUG RULES:
 - Always in English, lowercase, hyphenated
-- Examples: "pudhumai-penn-scheme", "keezhadi-excavation", "space-technology", "welfare-schemes", "appointments"
+- Must be specific to the article/event, not generic
+- Good: "pudhumai-penn-scheme-2026", "keezhadi-phase7-findings", "isro-spadex-docking-mission"
+- Bad: "welfare-schemes", "science", "current-affairs"
 
-TN SAMPLE TOPICS (not restricted to): ${tnpscKeywords.join(", ")}
 ANTI-DUPLICATION: Avoid topics similar to: [${excludedTopics.join(", ")}]
+TN SAMPLE TOPICS (not restricted to): ${tnpscKeywords.join(", ")}
 
 QUESTION RULES:
 - At least 3 of every 5 questions must target Tamil Nadu specifically
@@ -214,8 +288,8 @@ ${batchText}
 
 Return a raw JSON array of exactly 5 objects:
 [{
-  "subject": "one of: History|Polity|Geography|Economy|Science|General Tamil|Current Affairs",
-  "topic": "english-slug-format",
+  "subject": "MUST be one of: General Science|Geography|History|Indian Polity|Economy|General Tamil",
+  "topic": "specific-english-slug-not-generic",
   "source_ministry": "Ministry name from article or null",
   "question_en": "question in English",
   "question_ta": "question in Tamil",
@@ -249,8 +323,8 @@ Avoid topics already covered: [${coveredTopics}].
 
 Return a raw JSON array of exactly 5 objects:
 [{
-  "subject": "one of: History|Polity|Geography|Economy|Science|General Tamil|Current Affairs",
-  "topic": "english-slug-format",
+  "subject": "MUST be one of: General Science|Geography|History|Indian Polity|Economy|General Tamil",
+  "topic": "specific-english-slug-not-generic",
   "source_ministry": null,
   "question_en": "question in English",
   "question_ta": "question in Tamil",
@@ -279,22 +353,59 @@ Return a raw JSON array of exactly 5 objects:
   });
   console.log(`[Dedup] After dedup: ${unique.length} questions`);
 
+  // Track used slugs for uniqueness within this batch
+  const usedSlugs = new Set<string>();
+
+  function makeUniqueSlug(base: string): string {
+    let slug = base;
+    let counter = 2;
+    while (usedSlugs.has(slug)) {
+      slug = `${base}-${counter}`;
+      counter++;
+    }
+    usedSlugs.add(slug);
+    return slug;
+  }
+
   // Build rows
   const compiledRowsToInsert: any[] = [];
   unique.forEach(q => {
+    const sanitizedSubject = sanitizeSubject(q.subject);
+
+    const slugEn = makeUniqueSlug(generateSlug(q.question_en, "en"));
+    const slugTa = makeUniqueSlug(generateSlug(q.question_ta, "ta"));
+
     const base = {
-      subject: q.subject ?? "Current Affairs",
+      subject: sanitizedSubject,
       topic: q.topic,
       source_ministry: q.source_ministry ?? null,
       source_url: (q as any).source_url ?? null,
       source_date: (q as any).source_date ?? null,
       published_date: todayStr,
     };
-    compiledRowsToInsert.push({ ...base, question: q.question_en, options: q.options_en, correct_option: q.correct_option_en, explanation: q.explanation_en, lang: "en" });
-    compiledRowsToInsert.push({ ...base, question: q.question_ta, options: q.options_ta, correct_option: q.correct_option_ta, explanation: q.explanation_ta, lang: "ta" });
+
+    compiledRowsToInsert.push({
+      ...base,
+      question: q.question_en,
+      options: q.options_en,
+      correct_option: q.correct_option_en,
+      explanation: q.explanation_en,
+      lang: "en",
+      slug: slugEn,
+    });
+    compiledRowsToInsert.push({
+      ...base,
+      question: q.question_ta,
+      options: q.options_ta,
+      correct_option: q.correct_option_ta,
+      explanation: q.explanation_ta,
+      lang: "ta",
+      slug: slugTa,
+    });
   });
 
   console.log(`[DB] Total rows to insert: ${compiledRowsToInsert.length}`);
+  console.log(`[DB] Sample slugs — EN: ${compiledRowsToInsert[0]?.slug} | TA: ${compiledRowsToInsert[1]?.slug}`);
 
   if (compiledRowsToInsert.length > 0) {
     const { error } = await supabase
