@@ -203,7 +203,34 @@ async function generateQuestions(
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: userPrompt,
-      config: { systemInstruction, responseMimeType: "application/json", temperature: 0.15 }
+      config: {
+        systemInstruction,
+        responseMimeType: "application/json",
+        temperature: 0.15,
+        responseSchema: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              subject: {
+                type: "string",
+                enum: ["General Science", "Geography", "History", "Indian Polity", "Economy", "General Tamil"]
+              },
+              topic: { type: "string" },
+              source_ministry: { type: "string", nullable: true },
+              question_en: { type: "string" },
+              question_ta: { type: "string" },
+              options_en: { type: "array", items: { type: "string" } },
+              options_ta: { type: "array", items: { type: "string" } },
+              correct_option_en: { type: "string" },
+              correct_option_ta: { type: "string" },
+              explanation_en: { type: "string" },
+              explanation_ta: { type: "string" }
+            },
+            required: ["subject", "topic", "question_en", "question_ta", "options_en", "options_ta", "correct_option_en", "correct_option_ta", "explanation_en", "explanation_ta"]
+          }
+        }
+      }
     });
     if (!response.text) throw new Error("Empty response from Gemini.");
     console.log(`[Gemini] ${batchLabel} response length: ${response.text.length}`);
@@ -218,7 +245,7 @@ async function generateQuestions(
 
 async function main() {
   console.log("Initializing TNPSC current affairs pipeline...");
-  const todayStr = process.argv[2] ?? new Date().toLocaleString("en-CA", { timeZone: "Asia/Kolkata" }).split(",")[0];
+  const todayStr = process.argv[2] ?? new Date().toISOString().split("T")[0];
   const currentMonthYear = new Date().toLocaleDateString("en-IN", { month: "long", year: "numeric" });
   console.log(`[Pipeline] Target date: ${todayStr}`);
 
