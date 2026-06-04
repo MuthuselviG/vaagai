@@ -185,49 +185,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <style>{`
-        @media (min-width: 768px) {
-          .app-shell { display: flex !important; }
-          .sidebar { display: flex !important; }
-          .bottom-nav { display: none !important; }
-          .main-content { border-left: 1px solid ${T.border}; }
-        }
-        @media (max-width: 767px) {
-          .app-shell { display: block !important; }
-          .sidebar { display: none !important; }
-          .bottom-nav { display: flex !important; }
-        }
-        * { box-sizing: border-box; }
-        .settings-menu {
-          position: absolute;
-          bottom: 60px;
-          left: 12px;
-          background: white;
-          border: 1px solid ${T.border};
-          border-radius: 12px;
-          box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-          overflow: hidden;
-          min-width: 200px;
-          z-index: 200;
-        }
-        .settings-menu-item {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          padding: 12px 16px;
-          font-size: 14px;
-          font-weight: 500;
-          cursor: pointer;
-          border: none;
-          background: none;
-          width: 100%;
-          text-align: left;
-          color: #C0392B;
-          font-family: inherit;
-        }
-        .settings-menu-item:hover { background: #F7F8FC; }
-      `}</style>
-
       <div className="app-shell" style={{ display: "flex", background: T.bg, overscrollBehavior: "none" }}>
         {/* SIDEBAR */}
         <div className="sidebar" style={{
