@@ -218,7 +218,7 @@ async function generateQuestions(
 
 async function main() {
   console.log("Initializing TNPSC current affairs pipeline...");
-  const todayStr = process.argv[2] ?? new Date().toISOString().split("T")[0];
+  const todayStr = process.argv[2] ?? new Date().toLocaleString("en-CA", { timeZone: "Asia/Kolkata" }).split(",")[0];
   const currentMonthYear = new Date().toLocaleDateString("en-IN", { month: "long", year: "numeric" });
   console.log(`[Pipeline] Target date: ${todayStr}`);
 
