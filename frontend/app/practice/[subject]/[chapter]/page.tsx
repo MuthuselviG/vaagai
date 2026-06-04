@@ -18,6 +18,7 @@ export default function PracticePage() {
   const isPack = subject === "pack";
   const isCA = subject === "current-affairs";
   const packId = searchParams.get("pack_id") ?? null;
+  const packCreator = searchParams.get("creator") ?? "";
   const caDate = searchParams.get("date") ?? null;
   const caMonth = searchParams.get("month") ?? null;
 
@@ -53,7 +54,6 @@ export default function PracticePage() {
   useEffect(() => {
     async function loadLang() {
       if (isCA || isPack || subject === "Tamil") return;
-      // Try DB first
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { data } = await supabase
@@ -66,7 +66,6 @@ export default function PracticePage() {
           return;
         }
       }
-      // Fall back to localStorage
       const saved = localStorage.getItem("mcqpalagu_lang");
       if (saved === "en" || saved === "ta") setLang(saved as "en" | "ta");
     }
@@ -111,10 +110,12 @@ export default function PracticePage() {
     setSelected(null);
     setRevealed(false);
     setShowExplanation(false);
+    const packLabel = searchParams.get("label") ?? "Expert Pack";
     sessionIdRef.current = startSession(
       isPack ? `pack_${packId}` : isPYQ ? `pyq_${pyqGroup}_${pyqYear}` : subject,
       isPack ? (packId ?? "pack") : isPYQ ? pyqPaper : chapter,
-      level, offset, isPYQ || isPack ? 100 : limit
+      level, offset, isPYQ || isPack ? 100 : limit,
+      isPack ? `${packLabel}${packCreator ? ` · ${packCreator}` : ""}` : undefined
     );
 
     if (isCA && caDate) {

@@ -9,6 +9,7 @@ export type LocalSession = {
   id: string;
   subject: string;
   chapter: string;
+  displayName?: string;
   level: number;
   offset: number;
   limit: number;
@@ -31,10 +32,25 @@ function saveSessions(sessions: LocalSession[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions.slice(-100)));
 }
 
-export function startSession(subject: string, chapter: string, level: number, offset: number, limit: number): string {
+export function startSession(
+  subject: string,
+  chapter: string,
+  level: number,
+  offset: number,
+  limit: number,
+  displayName?: string
+): string {
   const id = crypto.randomUUID();
   const sessions = getSessions();
-  sessions.push({ id, subject, chapter, level, offset, limit, started_at: new Date().toISOString(), completed_at: null, total_questions: 0, correct_count: 0, responses: [] });
+  sessions.push({
+    id, subject, chapter, displayName,
+    level, offset, limit,
+    started_at: new Date().toISOString(),
+    completed_at: null,
+    total_questions: 0,
+    correct_count: 0,
+    responses: [],
+  });
   saveSessions(sessions);
   return id;
 }

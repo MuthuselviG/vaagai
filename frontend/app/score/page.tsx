@@ -14,6 +14,7 @@ type LocalSession = {
   id: string;
   subject: string;
   chapter: string;
+  displayName?: string;
   level: number;
   offset: number;
   limit: number;
@@ -53,6 +54,28 @@ function relativeTime(iso: string, lang: string): string {
   return days + (lang === "ta" ? " நாட்களுக்கு முன்பு" : " days ago");
 }
 
+// For a session, return the human-readable label used everywhere in the UI
+function sessionLabel(s: LocalSession): string {
+  if (s.displayName) return s.displayName;
+  return s.chapter;
+}
+
+// For filter chips + subject breakdown grouping key
+function sessionGroupKey(s: LocalSession): string {
+  if (s.displayName) return s.displayName.split(" · ")[0];
+  return s.subject;
+}
+
+// For the small tag shown on a recent session row
+function sessionTag(s: LocalSession): { label: string; bg: string; color: string } {
+  if (s.displayName) {
+    const creator = s.displayName.split(" · ")[1] ?? "";
+    return { label: creator || "Expert Pack", bg: "#EEF1FA", color: "#3D52A0" };
+  }
+  const meta = SUBJECT_ICONS[s.subject] ?? { bg: "#F3F4F6", color: "#374151" };
+  return { label: s.subject, ...meta };
+}
+
 const T = {
   en: {
     title: "My Progress",
@@ -78,6 +101,7 @@ const T = {
     strongIn: "Strong in ",
     keepGoing: " -- keep going",
     sessionsCompleted: " sessions completed -- great consistency!",
+    by: "by ",
   },
   ta: {
     title: "என் முன்னேற்றம்",
@@ -103,6 +127,7 @@ const T = {
     strongIn: "வலிமையானது: ",
     keepGoing: " -- தொடர்ந்து செல்லுங்கள்",
     sessionsCompleted: " பதிவுகள் முடிந்தன -- சிறந்த தொடர்ச்சி!",
+    by: "by ",
   },
 };
 
@@ -152,13 +177,14 @@ export default function ScorePage() {
     [sessions]
   );
 
-  const subjects = useMemo(() => {
-    const set = new Set(completed.map((s) => s.subject));
+  // Filter chips use the group key (pack name or subject)
+  const filterKeys = useMemo(() => {
+    const set = new Set(completed.map(sessionGroupKey));
     return ["All", ...Array.from(set)];
   }, [completed]);
 
   const filtered = useMemo(
-    () => filter === "All" ? completed : completed.filter((s) => s.subject === filter),
+    () => filter === "All" ? completed : completed.filter((s) => sessionGroupKey(s) === filter),
     [completed, filter]
   );
 
@@ -168,25 +194,31 @@ export default function ScorePage() {
     ? Math.round(completed.reduce((a, s) => a + pct(s.correct_count, s.total_questions), 0) / totalSessions)
     : 0;
 
+  // Subject breakdown grouped by sessionGroupKey
   const subjectStats = useMemo(() => {
-    const map: Record<string, { correct: number; total: number; chapters: Record<string, { correct: number; total: number }> }> = {};
+    const map: Record<string, {
+      correct: number; total: number; isPack: boolean; creator: string;
+      chapters: Record<string, { correct: number; total: number }>;
+    }> = {};
     completed.forEach((s) => {
-      if (!map[s.subject]) map[s.subject] = { correct: 0, total: 0, chapters: {} };
-      map[s.subject].correct += s.correct_count;
-      map[s.subject].total += s.total_questions;
-      if (!map[s.subject].chapters[s.chapter])
-        map[s.subject].chapters[s.chapter] = { correct: 0, total: 0 };
-      map[s.subject].chapters[s.chapter].correct += s.correct_count;
-      map[s.subject].chapters[s.chapter].total += s.total_questions;
+      const key = sessionGroupKey(s);
+      const isPack = !!s.displayName;
+      const creator = isPack ? (s.displayName!.split(" · ")[1] ?? "") : "";
+      if (!map[key]) map[key] = { correct: 0, total: 0, isPack, creator, chapters: {} };
+      map[key].correct += s.correct_count;
+      map[key].total += s.total_questions;
+      if (!map[key].chapters[s.chapter])
+        map[key].chapters[s.chapter] = { correct: 0, total: 0 };
+      map[key].chapters[s.chapter].correct += s.correct_count;
+      map[key].chapters[s.chapter].total += s.total_questions;
     });
-    return Object.entries(map).map(([subject, data]) => {
+    return Object.entries(map).map(([key, data]) => {
       const accuracy = pct(data.correct, data.total);
       const chapters = Object.entries(data.chapters).map(([ch, d]) => ({
-        chapter: ch,
-        accuracy: pct(d.correct, d.total),
+        chapter: ch, accuracy: pct(d.correct, d.total),
       }));
       chapters.sort((a, b) => a.accuracy - b.accuracy);
-      return { subject, accuracy, weakest: chapters[0] };
+      return { key, accuracy, isPack: data.isPack, creator: data.creator, weakest: chapters[0] };
     });
   }, [completed]);
 
@@ -197,9 +229,9 @@ export default function ScorePage() {
     const worst = sorted[0];
     const best = sorted[sorted.length - 1];
     if (worst && worst.accuracy < 70)
-      out.push({ highlight: worst.subject, text: t.needsAttention });
+      out.push({ highlight: worst.key, text: t.needsAttention });
     if (best && best.accuracy >= 70)
-      out.push({ highlight: "", text: t.strongIn + best.subject + t.keepGoing });
+      out.push({ highlight: "", text: t.strongIn + best.key + t.keepGoing });
     if (totalSessions >= 3)
       out.push({ highlight: "", text: totalSessions + t.sessionsCompleted });
     return out.slice(0, 3);
@@ -244,13 +276,13 @@ export default function ScorePage() {
           </div>
         </div>
         <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 14, scrollbarWidth: "none" }}>
-          {subjects.map((s) => (
-            <button key={s} onClick={() => setFilter(s)} style={{
+          {filterKeys.map((k) => (
+            <button key={k} onClick={() => setFilter(k)} style={{
               flexShrink: 0, padding: "8px 16px", borderRadius: 20, fontSize: 13, fontWeight: 700,
-              border: "2px solid", borderColor: filter === s ? "#3D3B8E" : "#D0D3E0",
-              background: filter === s ? "#3D3B8E" : "#fff", color: filter === s ? "#fff" : "#444", cursor: "pointer",
+              border: "2px solid", borderColor: filter === k ? "#3D3B8E" : "#D0D3E0",
+              background: filter === k ? "#3D3B8E" : "#fff", color: filter === k ? "#fff" : "#444", cursor: "pointer",
             }}>
-              {s}
+              {k}
             </button>
           ))}
         </div>
@@ -307,26 +339,32 @@ export default function ScorePage() {
                 <div style={{ fontSize: 12, fontWeight: 700, color: "#444", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>{t.subjectBreakdown}</div>
                 <div style={{ background: "#fff", borderRadius: 18, overflow: "hidden", border: "2px solid #E0E2ED" }}>
                   {subjectStats.map((s, i) => {
-                    const meta = SUBJECT_ICONS[s.subject] ?? { bg: "#F3F4F6", color: "#374151" };
+                    const meta = s.isPack
+                      ? { bg: "#EEF1FA", color: "#3D52A0" }
+                      : (SUBJECT_ICONS[s.key] ?? { bg: "#F3F4F6", color: "#374151" });
                     return (
-                      <div key={s.subject} style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderBottom: i < subjectStats.length - 1 ? "1px solid #EDEEF4" : "none" }}>
+                      <div key={s.key} style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderBottom: i < subjectStats.length - 1 ? "1px solid #EDEEF4" : "none" }}>
                         <div style={{ width: 42, height: 42, borderRadius: 12, background: meta.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: meta.color, flexShrink: 0 }}>
-                          {s.subject === "Tamil" ? "அ" : s.subject.slice(0, 2).toUpperCase()}
+                          {s.isPack ? "🎯" : s.key === "Tamil" ? "அ" : s.key.slice(0, 2).toUpperCase()}
                         </div>
                         <div style={{ flex: 1 }}>
                           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 7 }}>
-                            <div style={{ fontSize: 15, fontWeight: 700, color: "#0A0A14" }}>{s.subject}</div>
+                            <div style={{ fontSize: 15, fontWeight: 700, color: "#0A0A14" }}>{s.key}</div>
                             <div style={{ fontSize: 16, fontWeight: 800, color: scoreColor(s.accuracy) }}>{s.accuracy}%</div>
                           </div>
                           <div style={{ height: 7, background: "#EDEEF4", borderRadius: 10, overflow: "hidden", marginBottom: 5 }}>
                             <div style={{ height: "100%", width: s.accuracy + "%", background: barColor(s.accuracy), borderRadius: 10 }} />
                           </div>
-                          {s.weakest && s.accuracy < 100 ? (
+                          {s.isPack ? (
+                            <div style={{ fontSize: 12, fontWeight: 600, color: "#555" }}>
+                              {t.by}<span style={{ color: "#3D52A0", fontWeight: 800 }}>{s.creator}</span>
+                            </div>
+                          ) : s.weakest && s.accuracy < 100 ? (
                             <div style={{ fontSize: 12, fontWeight: 600, color: "#555" }}>
                               {t.weak}: <span style={{ color: "#DC2626", fontWeight: 800 }}>{s.weakest.chapter}</span>
                             </div>
                           ) : (
-                            <div style={{ fontSize: 12, fontWeight: 700, color: "#059669" }}>{t.allAbove}</div>
+                            <div style={{ fontSize: 12, fontWeight: 700, color: "#059669" }}>All topics above average</div>
                           )}
                         </div>
                       </div>
@@ -343,7 +381,7 @@ export default function ScorePage() {
                   {recent.map((s, i) => {
                     const score = pct(s.correct_count, s.total_questions);
                     const dashOffset = CIRC - (CIRC * score) / 100;
-                    const subjectMeta = SUBJECT_ICONS[s.subject] ?? { bg: "#F3F4F6", color: "#374151" };
+                    const tag = sessionTag(s);
                     const wrongCount = s.total_questions - s.correct_count;
                     const mistakeLabel = wrongCount === 0 ? t.perfect : wrongCount <= 2 ? wrongCount + " " + t.easyMistakes : wrongCount + " " + t.conceptGaps;
                     const mistakeStyle = wrongCount === 0
@@ -365,11 +403,11 @@ export default function ScorePage() {
                           </div>
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{ fontSize: 15, fontWeight: 700, color: "#0A0A14", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginBottom: 5 }}>
-                              {s.chapter}
+                              {sessionLabel(s)}
                             </div>
                             <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-                              <div style={{ fontSize: 11, fontWeight: 700, padding: "3px 8px", borderRadius: 6, background: subjectMeta.bg, color: subjectMeta.color }}>
-                                {s.subject}
+                              <div style={{ fontSize: 11, fontWeight: 700, padding: "3px 8px", borderRadius: 6, background: tag.bg, color: tag.color }}>
+                                {tag.label}
                               </div>
                               <div style={{ fontSize: 11, color: "#666", fontWeight: 600 }}>
                                 {s.completed_at ? relativeTime(s.completed_at, lang) : relativeTime(s.started_at, lang)}
@@ -417,7 +455,7 @@ export default function ScorePage() {
               {lastIncomplete ? t.continueOff : t.practiceAgain}
             </div>
             <div style={{ fontSize: 16, fontWeight: 800, color: "#fff" }}>
-              {ctaSession.chapter} {t.level} {ctaSession.level}
+              {sessionLabel(ctaSession)} {t.level} {ctaSession.level}
             </div>
           </div>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>

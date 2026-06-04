@@ -42,7 +42,7 @@ export default function PackDetailClient({ pack }: { pack: PackDetailData }) {
   const estimatedMins = Math.round((pack.question_count * 30) / 60);
 
   function handleStart() {
-    router.push(`/practice/pack/${encodeURIComponent(pack.id)}?pack_id=${pack.id}&label=${encodeURIComponent(pack.name)}&level=1&offset=0&limit=${pack.question_count}`);
+    router.push(`/practice/pack/${encodeURIComponent(pack.id)}?pack_id=${pack.id}&label=${encodeURIComponent(pack.name)}&creator=${encodeURIComponent(creator.name)}&level=1&offset=0&limit=${pack.question_count}`);
   }
 
   return (
