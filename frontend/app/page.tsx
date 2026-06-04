@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
 import { T, shadow } from "../lib/tokens";
 import { slugify } from "../lib/slugify";
@@ -101,7 +102,7 @@ export default async function HomePage() {
           <HomeLangToggle initialLang={lang} />
         </div>
 
-        <img src="/logo.png" alt="MCQ பழகு" style={{ height: 80, width: "auto", marginBottom: 8 }} />
+        <Image src="/logo.png" alt="MCQ பழகு" height={80} width={300} priority style={{ height: 80, width: "auto", marginBottom: 8 }} />
         <p style={{ color: T.textSec, fontSize: 16, fontWeight: 500, marginBottom: 20, lineHeight: 1.6 }}>
           Crack TNPSC with AI-powered practice in Tamil
         </p>
