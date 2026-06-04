@@ -113,6 +113,18 @@ export const CA_UNIT_ORDER = [
   "archaeology-updates",
 ];
 
+// ─── HELPERS ──────────────────────────────────────────────
+
+// Returns [firstDayOfMonth, firstDayOfNextMonth] for a "YYYY-MM" string.
+// Used for date-range filtering (published_date is a DATE column, so LIKE won't work).
+function monthRange(month: string): { start: string; endExclusive: string } {
+  const [y, m] = month.split("-").map(Number);
+  const start = `${month}-01`;
+  const nextMonth = m === 12 ? `${y + 1}-01` : `${y}-${String(m + 1).padStart(2, "0")}`;
+  const endExclusive = `${nextMonth}-01`;
+  return { start, endExclusive };
+}
+
 // ─── QUESTION FETCHES ─────────────────────────────────────
 
 export async function fetchChapterCounts(subject: string, lang: "en" | "ta"): Promise<ChapterCount[]> {
@@ -204,13 +216,12 @@ export async function fetchQuestionsForCADaily(date: string, lang: "en" | "ta"):
 }
 
 export async function fetchQuestionsForCAMonthly(month: string, lang: "en" | "ta"): Promise<Question[]> {
-  const start = month + "-01";
-  const end = month + "-31";
+  const { start, endExclusive } = monthRange(month);
   const { data, error } = await supabase
     .from("current_affairs")
     .select("id, question, options, correct_option, explanation, topic, published_date")
     .gte("published_date", start)
-    .lte("published_date", end)
+    .lt("published_date", endExclusive)
     .eq("lang", lang)
     .order("published_date", { ascending: true })
     .order("created_at", { ascending: true });
@@ -253,13 +264,12 @@ export async function fetchCAForUnit(
 ): Promise<CAQuestion[]> {
   const subjects = CA_UNIT_SUBJECTS[unitSlug];
   if (!subjects) return [];
-  const start = `${month}-01`;
-  const end = `${month}-31`;
+  const { start, endExclusive } = monthRange(month);
   const { data, error } = await supabase
     .from("current_affairs")
     .select("id, question, lang, options, correct_option, explanation, topic, subject, published_date, source_url")
     .gte("published_date", start)
-    .lte("published_date", end)
+    .lt("published_date", endExclusive)
     .eq("lang", lang)
     .in("subject", subjects)
     .order("published_date", { ascending: true });
@@ -275,13 +285,12 @@ export async function fetchCAMonthlyUnitCounts(
   month: string,
   lang: "en" | "ta"
 ): Promise<CAUnitMeta[]> {
-  const start = `${month}-01`;
-  const end = `${month}-31`;
+  const { start, endExclusive } = monthRange(month);
   const { data, error } = await supabase
     .from("current_affairs")
     .select("subject")
     .gte("published_date", start)
-    .lte("published_date", end)
+    .lt("published_date", endExclusive)
     .eq("lang", lang);
   if (error) {
     console.error(`[fetchCAMonthlyUnitCounts] error:`, error);
@@ -302,13 +311,12 @@ export async function fetchCAMonthlyPreview(
 ): Promise<CAQuestion[]> {
   const subjects = CA_UNIT_SUBJECTS[unitSlug];
   if (!subjects) return [];
-  const start = `${month}-01`;
-  const end = `${month}-31`;
+  const { start, endExclusive } = monthRange(month);
   const { data, error } = await supabase
     .from("current_affairs")
     .select("id, question, lang, options, correct_option, explanation, topic, subject, published_date, source_url")
     .gte("published_date", start)
-    .lte("published_date", end)
+    .lt("published_date", endExclusive)
     .eq("lang", lang)
     .in("subject", subjects)
     .order("published_date", { ascending: true })

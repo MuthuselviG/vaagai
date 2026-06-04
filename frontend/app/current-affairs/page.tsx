@@ -70,14 +70,11 @@ export default function CurrentAffairsPage() {
 
   useEffect(() => {
     async function fetchDates() {
-      const start = calMonth + "-01";
-      const end = calMonth + "-31";
       const { data } = await supabase
         .from("current_affairs")
         .select("published_date")
         .eq("lang", "ta")
-        .gte("published_date", start)
-        .lte("published_date", end);
+        .like("published_date", `${calMonth}%`);
       if (data) setDatesWithContent(new Set(data.map((r: any) => r.published_date)));
     }
     fetchDates();
