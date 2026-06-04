@@ -1,471 +1,498 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import LangToggle from "../../components/LangToggle";
+import { T, shadow } from "../../lib/tokens";
+import { fetchChapterCounts, supabase, type ChapterCount } from "../../lib/supabase";
+import { getUnlockedLevel } from "../../lib/session";
+import { slugify } from "../../lib/slugify";
 
-type LocalResponse = {
-  question_id: string;
-  selected_option: string;
-  is_correct: boolean;
-  time_spent_seconds: number;
+const LEVEL_SIZE = 10;
+const MIN_LEVEL_SIZE = 6;
+
+const TAMIL_CHAPTER_NAMES: Record<string, string> = {
+  "General": "பொது",
+  "Grammar": "இலக்கணம்",
+  "Literature": "இலக்கியம்",
+  "Vocabulary": "சொல்லகராதி",
+  "Usage": "பயன்பாடு",
+  "Comprehension": "புரிதல்",
 };
 
-type LocalSession = {
+const ALL_SUBJECTS = [
+  { key: "Polity",    ta: "அரசியல்",      icon: "⚖️" },
+  { key: "History",   ta: "வரலாறு",       icon: "📜" },
+  { key: "Geography", ta: "புவியியல்",     icon: "🗺️" },
+  { key: "Economy",   ta: "பொருளாதாரம்",  icon: "💹" },
+  { key: "Science",   ta: "அறிவியல்",     icon: "🔬" },
+  { key: "Tamil",     ta: "தமிழ்",        icon: "📖" },
+];
+
+const SUBJECT_COLORS: Record<string, { bg: string; border: string; iconBg: string }> = {
+  Polity:    { bg: "#FFF8E1", border: "#FFE082", iconBg: "#FFF3CD" },
+  History:   { bg: "#E8F5E9", border: "#A5D6A7", iconBg: "#D1FAE5" },
+  Tamil:     { bg: "#EDE9FE", border: "#C4B5FD", iconBg: "#DDD6FE" },
+  Geography: { bg: "#E3F2FD", border: "#90CAF9", iconBg: "#DBEAFE" },
+  Science:   { bg: "#FCE4EC", border: "#F48FB1", iconBg: "#FCE7F3" },
+  Economy:   { bg: "#E0F2F1", border: "#80CBC4", iconBg: "#CCFBF1" },
+};
+
+const ACTIVE_SUBJECTS = ["Polity", "History", "Tamil"];
+
+const PYQ_YEARS = [
+  { year: 2025, bg: "#EEF1FA", border: "#C5CEF0", color: "#3D52A0" },
+  { year: 2024, bg: "#E8F8F0", border: "#A8DBBE", color: "#057A55" },
+  { year: 2022, bg: "#FFF5EE", border: "#FFD8B8", color: "#C2410C" },
+  { year: 2019, bg: "#FEFCE8", border: "#FDE68A", color: "#A16207" },
+  { year: 2018, bg: "#EFF6FF", border: "#93C5FD", color: "#1D4ED8" },
+  { year: 2016, bg: "#FDECEC", border: "#F5BFBB", color: "#C0392B" },
+  { year: 2014, bg: "#E8F8F0", border: "#A8DBBE", color: "#057A55" },
+  { year: 2013, bg: "#F5F3FF", border: "#C4B5FD", color: "#6D28D9" },
+  { year: 2012, bg: "#F7F8FC", border: "#E4E7F0", color: "#6B7280" },
+];
+
+const ACCENT_GRADIENTS: Record<string, string> = {
+  yellow: "linear-gradient(135deg, #FFD93D, #FF9500)",
+  coral:  "linear-gradient(135deg, #FF6B6B, #C2185B)",
+  purple: "linear-gradient(135deg, #9B5DE5, #5E35B1)",
+  blue:   "linear-gradient(135deg, #4D96FF, #1565C0)",
+  teal:   "linear-gradient(135deg, #00C9A7, #00897B)",
+  navy:   "linear-gradient(135deg, #3D52A0, #2D3E7A)",
+};
+
+const ACCENT_PILL: Record<string, { bg: string; border: string }> = {
+  yellow: { bg: "#FFF9C4", border: "#FFE082" },
+  coral:  { bg: "#FFE4E4", border: "#FFAB91" },
+  purple: { bg: "#F3E5F5", border: "#CE93D8" },
+  blue:   { bg: "#E3F2FD", border: "#90CAF9" },
+  teal:   { bg: "#E0F2F1", border: "#80CBC4" },
+  navy:   { bg: T.indigoLight, border: T.indigoMid },
+};
+
+const EXAM_LABELS: Record<string, string> = {
+  group4: "Group 4", group2: "Group 2", tet: "TET", tnusrb: "TNUSRB",
+};
+
+type FeaturedPack = {
   id: string;
-  subject: string;
-  chapter: string;
-  displayName?: string;
-  level: number;
-  offset: number;
-  limit: number;
-  started_at: string;
-  completed_at: string | null;
-  total_questions: number;
-  correct_count: number;
-  responses: LocalResponse[];
+  name: string;
+  subject: string | null;
+  exams: string[] | null;
+  question_count: number;
+  is_free: boolean;
+  creators: {
+    name: string;
+    slug: string;
+    verified: boolean;
+    accent_color: string;
+  section: string;
+  };
 };
 
-const STORAGE_KEY = "mcqpalagu_sessions";
-const LANG_KEY = "mcqpalagu_lang";
+type PyqChapterCount = { chapter: string; count: number; pyq_years: number[] };
 
-function getSessions(): LocalSession[] {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "[]");
-  } catch {
-    return [];
+function generateLevels(total: number): { levelNum: number; questions: number; offset: number }[] {
+  const levels = [];
+  let remaining = total;
+  let n = 1;
+  let offset = 0;
+  while (remaining > 0) {
+    const next = remaining - LEVEL_SIZE;
+    if (next > 0 && next < MIN_LEVEL_SIZE) {
+      levels.push({ levelNum: n++, questions: remaining, offset });
+      remaining = 0;
+    } else {
+      const qs = Math.min(LEVEL_SIZE, remaining);
+      levels.push({ levelNum: n++, questions: qs, offset });
+      offset += qs;
+      remaining -= qs;
+    }
   }
+  return levels;
 }
 
-function pct(correct: number, total: number) {
-  if (!total) return 0;
-  return Math.round((correct / total) * 100);
-}
-
-function relativeTime(iso: string, lang: string): string {
-  const diff = Date.now() - new Date(iso).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 60) return mins <= 1
-    ? (lang === "ta" ? "இப்பொழுதுதான்" : "Just now")
-    : mins + (lang === "ta" ? " நிமிடம் முன்பு" : "m ago");
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return hrs + (lang === "ta" ? " மணி முன்பு" : "h ago");
-  const days = Math.floor(hrs / 24);
-  if (days === 1) return lang === "ta" ? "நேற்று" : "Yesterday";
-  return days + (lang === "ta" ? " நாட்களுக்கு முன்பு" : " days ago");
-}
-
-// For a session, return the human-readable label used everywhere in the UI
-function sessionLabel(s: LocalSession): string {
-  if (s.displayName) return s.displayName;
-  return s.chapter;
-}
-
-// For filter chips + subject breakdown grouping key
-function sessionGroupKey(s: LocalSession): string {
-  if (s.displayName) return s.displayName.split(" · ")[0];
-  return s.subject;
-}
-
-// For the small tag shown on a recent session row
-function sessionTag(s: LocalSession): { label: string; bg: string; color: string } {
-  if (s.displayName) {
-    const creator = s.displayName.split(" · ")[1] ?? "";
-    return { label: creator || "Expert Pack", bg: "#EEF1FA", color: "#3D52A0" };
-  }
-  const meta = SUBJECT_ICONS[s.subject] ?? { bg: "#F3F4F6", color: "#374151" };
-  return { label: s.subject, ...meta };
-}
-
-const T = {
-  en: {
-    title: "My Progress",
-    sessions: "Sessions",
-    avgScore: "Avg Score",
-    questions: "Questions",
-    insights: "Your insights",
-    subjectBreakdown: "Subject breakdown",
-    recentSessions: "Recent sessions",
-    continueOff: "Continue where you left off",
-    practiceAgain: "Practice again",
-    noSessions: "No sessions yet",
-    noSessionsSub: "Complete a practice session to see your progress here.",
-    startPracticing: "Start Practicing",
-    weak: "Weak",
-    allAbove: "All topics above average",
-    perfect: "Perfect score!",
-    easyMistakes: "easy mistakes",
-    conceptGaps: "concept gaps",
-    review: "Review",
-    level: "Level",
-    needsAttention: " needs attention -- scoring below average",
-    strongIn: "Strong in ",
-    keepGoing: " -- keep going",
-    sessionsCompleted: " sessions completed -- great consistency!",
-    by: "by ",
-  },
-  ta: {
-    title: "என் முன்னேற்றம்",
-    sessions: "பதிவுகள்",
-    avgScore: "சராசரி மதிப்பெண்",
-    questions: "கேள்விகள்",
-    insights: "உங்கள் பகுப்பாய்வு",
-    subjectBreakdown: "பாட வாரியான பகுப்பு",
-    recentSessions: "சமீபத்திய பதிவுகள்",
-    continueOff: "நிறுத்திய இடத்திலிருந்து தொடரவும்",
-    practiceAgain: "மீண்டும் பயிற்சி செய்யவும்",
-    noSessions: "இன்னும் பதிவுகள் இல்லை",
-    noSessionsSub: "உங்கள் முன்னேற்றத்தை காண ஒரு பயிற்சியை முடிக்கவும்.",
-    startPracticing: "பயிற்சியை தொடங்கவும்",
-    weak: "பலவீனம்",
-    allAbove: "அனைத்து தலைப்புகளும் சராசரிக்கு மேல்",
-    perfect: "முழு மதிப்பெண்!",
-    easyMistakes: "எளிய தவறுகள்",
-    conceptGaps: "கருத்து குறைபாடுகள்",
-    review: "மீளாய்வு",
-    level: "நிலை",
-    needsAttention: " கவனம் தேவை -- சராசரிக்கு கீழே உள்ளது",
-    strongIn: "வலிமையானது: ",
-    keepGoing: " -- தொடர்ந்து செல்லுங்கள்",
-    sessionsCompleted: " பதிவுகள் முடிந்தன -- சிறந்த தொடர்ச்சி!",
-    by: "by ",
-  },
-};
-
-const SUBJECT_ICONS: Record<string, { bg: string; color: string }> = {
-  History:   { bg: "#D1FAE5", color: "#059669" },
-  Polity:    { bg: "#FEF3C7", color: "#D97706" },
-  Tamil:     { bg: "#EDE9FE", color: "#7C3AED" },
-  Geography: { bg: "#DBEAFE", color: "#2563EB" },
-  Science:   { bg: "#FCE7F3", color: "#DB2777" },
-  Economy:   { bg: "#D1FAE5", color: "#10B981" },
-};
-
-function scoreColor(p: number) {
-  if (p >= 70) return "#059669";
-  if (p >= 50) return "#D97706";
-  return "#DC2626";
-}
-function ringColor(p: number) {
-  if (p >= 70) return "#10B981";
-  if (p >= 50) return "#F59E0B";
-  return "#EF4444";
-}
-function barColor(p: number) {
-  if (p >= 70) return "#10B981";
-  if (p >= 50) return "#F59E0B";
-  return "#EF4444";
-}
-
-const CIRC = 2 * Math.PI * 19;
-
-export default function ScorePage() {
+export default function SubjectsPage() {
   const router = useRouter();
-  const [sessions, setSessions] = useState<LocalSession[]>([]);
-  const [filter, setFilter] = useState("All");
-  const [lang, setLang] = useState("en");
+  const [lang, setLang] = useState<"en" | "ta">("ta");
+  const [chapterData, setChapterData] = useState<Record<string, ChapterCount[]>>({});
+  const [pyqChapterData, setPyqChapterData] = useState<Record<string, PyqChapterCount[]>>({});
+  const [pyqCount, setPyqCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [openSubject, setOpenSubject] = useState<string | null>(null);
+  const [openChapter, setOpenChapter] = useState<string | null>(null);
+  const [featuredPacks, setFeaturedPacks] = useState<FeaturedPack[]>([]);
 
   useEffect(() => {
-    setSessions(getSessions());
-    const saved = localStorage.getItem(LANG_KEY);
-    if (saved === "ta" || saved === "en") setLang(saved);
+    async function loadLang() {
+      // Try DB first (logged in users)
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data } = await supabase
+          .from("users")
+          .select("lang")
+          .eq("id", user.id)
+          .single();
+        if (data?.lang === "en" || data?.lang === "ta") {
+          setLang(data.lang as "en" | "ta");
+          localStorage.setItem("mcqpalagu_lang", data.lang);
+          return;
+        }
+      }
+      // Fall back to localStorage
+      const saved = localStorage.getItem("mcqpalagu_lang");
+      if (saved === "en" || saved === "ta") setLang(saved as "en" | "ta");
+    }
+    loadLang();
   }, []);
 
-  const t = T[lang as "en" | "ta"];
+  useEffect(() => {
+    async function load() {
+      setLoading(true);
 
-  const completed = useMemo(
-    () => sessions.filter((s) => s.completed_at !== null),
-    [sessions]
-  );
+      // Samacheer chapter counts — unchanged
+      const results: Record<string, ChapterCount[]> = {};
+      for (const subject of ACTIVE_SUBJECTS) {
+        try {
+          results[subject] = await fetchChapterCounts(subject, subject === "Tamil" ? "ta" : lang);
+        } catch {
+          results[subject] = [];
+        }
+      }
+      setChapterData(results);
 
-  // Filter chips use the group key (pack name or subject)
-  const filterKeys = useMemo(() => {
-    const set = new Set(completed.map(sessionGroupKey));
-    return ["All", ...Array.from(set)];
-  }, [completed]);
+      // PYQ total count — unchanged
+      try {
+        const { count } = await supabase
+          .from("questions")
+          .select("*", { count: "exact", head: true })
+          .eq("source_type", "pyq")
+          .contains("pyq_groups", ["group4"])
+          .eq("lang", "ta");
+        setPyqCount(count ?? 0);
+      } catch {
+        setPyqCount(0);
+      }
 
-  const filtered = useMemo(
-    () => filter === "All" ? completed : completed.filter((s) => sessionGroupKey(s) === filter),
-    [completed, filter]
-  );
+      // PYQ per subject+chapter — unchanged
+      try {
+        const { data } = await supabase
+          .from("questions")
+          .select("subject, chapter, pyq_years")
+          .eq("source_type", "pyq")
+          .contains("pyq_groups", ["group4"])
+          .eq("lang", "ta");
 
-  const totalSessions = completed.length;
-  const totalQuestions = completed.reduce((a, s) => a + s.total_questions, 0);
-  const avgScore = totalSessions
-    ? Math.round(completed.reduce((a, s) => a + pct(s.correct_count, s.total_questions), 0) / totalSessions)
-    : 0;
+        if (data) {
+          const grouped: Record<string, Record<string, { count: number; years: Set<number> }>> = {};
+          for (const row of data) {
+            if (!row.subject || !row.chapter) continue;
+            if (!grouped[row.subject]) grouped[row.subject] = {};
+            if (!grouped[row.subject][row.chapter]) grouped[row.subject][row.chapter] = { count: 0, years: new Set() };
+            grouped[row.subject][row.chapter].count++;
+            (row.pyq_years ?? []).forEach((y: number) => grouped[row.subject][row.chapter].years.add(y));
+          }
+          const pyqResult: Record<string, PyqChapterCount[]> = {};
+          for (const [subj, chapters] of Object.entries(grouped)) {
+            pyqResult[subj] = Object.entries(chapters).map(([ch, v]) => ({
+              chapter: ch, count: v.count, pyq_years: Array.from(v.years).sort(),
+            }));
+          }
+          setPyqChapterData(pyqResult);
+        }
+      } catch {
+        setPyqChapterData({});
+      }
 
-  // Subject breakdown grouped by sessionGroupKey
-  const subjectStats = useMemo(() => {
-    const map: Record<string, {
-      correct: number; total: number; isPack: boolean; creator: string;
-      chapters: Record<string, { correct: number; total: number }>;
-    }> = {};
-    completed.forEach((s) => {
-      const key = sessionGroupKey(s);
-      const isPack = !!s.displayName;
-      const creator = isPack ? (s.displayName!.split(" · ")[1] ?? "") : "";
-      if (!map[key]) map[key] = { correct: 0, total: 0, isPack, creator, chapters: {} };
-      map[key].correct += s.correct_count;
-      map[key].total += s.total_questions;
-      if (!map[key].chapters[s.chapter])
-        map[key].chapters[s.chapter] = { correct: 0, total: 0 };
-      map[key].chapters[s.chapter].correct += s.correct_count;
-      map[key].chapters[s.chapter].total += s.total_questions;
-    });
-    return Object.entries(map).map(([key, data]) => {
-      const accuracy = pct(data.correct, data.total);
-      const chapters = Object.entries(data.chapters).map(([ch, d]) => ({
-        chapter: ch, accuracy: pct(d.correct, d.total),
-      }));
-      chapters.sort((a, b) => a.accuracy - b.accuracy);
-      return { key, accuracy, isPack: data.isPack, creator: data.creator, weakest: chapters[0] };
-    });
-  }, [completed]);
+      // Featured packs — new
+      try {
+        const { data } = await supabase
+          .from("packs")
+          .select("id, name, subject, exams, question_count, is_free, creators(name, slug, verified, accent_color, section)")
+          .eq("is_published", true)
+          .order("created_at", { ascending: false })
+          .limit(5);
+        if (data) setFeaturedPacks(data as unknown as FeaturedPack[]);
+      } catch {
+        setFeaturedPacks([]);
+      }
 
-  const insights = useMemo(() => {
-    const out: { highlight: string; text: string }[] = [];
-    if (!subjectStats.length) return out;
-    const sorted = [...subjectStats].sort((a, b) => a.accuracy - b.accuracy);
-    const worst = sorted[0];
-    const best = sorted[sorted.length - 1];
-    if (worst && worst.accuracy < 70)
-      out.push({ highlight: worst.key, text: t.needsAttention });
-    if (best && best.accuracy >= 70)
-      out.push({ highlight: "", text: t.strongIn + best.key + t.keepGoing });
-    if (totalSessions >= 3)
-      out.push({ highlight: "", text: totalSessions + t.sessionsCompleted });
-    return out.slice(0, 3);
-  }, [subjectStats, totalSessions, t]);
+      setLoading(false);
+    }
+    load();
+  }, [lang]);
 
-  const lastIncomplete = useMemo(
-    () => sessions.filter((s) => !s.completed_at).pop() ?? null,
-    [sessions]
-  );
-  const lastSession = completed[completed.length - 1] ?? null;
-  const ctaSession = lastIncomplete ?? lastSession;
-  const recent = useMemo(() => [...filtered].reverse().slice(0, 10), [filtered]);
-  const isEmpty = completed.length === 0;
-
-  function toggleLang(l: string) {
-    setLang(l);
-    localStorage.setItem(LANG_KEY, l);
-  }
+  const totalChapters = Object.values(chapterData).reduce((s, v) => s + v.length, 0);
+  const samacheerQ = Object.values(chapterData).reduce((s, v) => s + v.reduce((a, c) => a + c.count, 0), 0);
+  const totalQ = samacheerQ + pyqCount;
+  const activeSubjects = ALL_SUBJECTS.filter(s => ACTIVE_SUBJECTS.includes(s.key));
+  const comingSoonSubjects = ALL_SUBJECTS.filter(s => !ACTIVE_SUBJECTS.includes(s.key));
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100dvh", background: "#EDEEF4", overflow: "hidden" }}>
+    <div style={{ background: T.bg, height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden", maxWidth: 600, margin: "0 auto", width: "100%" }}>
 
-      <div style={{ background: "#fff", padding: "16px 18px 0", flexShrink: 0, borderBottom: "2px solid #E0E2ED" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-          <div style={{ fontSize: 22, fontWeight: 800, color: "#0A0A14", letterSpacing: -0.5 }}>{t.title}</div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: "#444", background: "#EDEEF4", padding: "5px 10px", borderRadius: 10, whiteSpace: "nowrap" }}>
-              {totalSessions} {t.sessions}
-            </div>
-            <div style={{ display: "flex", background: "#EDEEF4", borderRadius: 20, padding: 3, gap: 2, flexShrink: 0 }}>
-              {["en", "ta"].map((l) => (
-                <button key={l} onClick={() => toggleLang(l)} style={{
-                  padding: "5px 10px", borderRadius: 16, fontSize: 11, fontWeight: 700, border: "none", cursor: "pointer",
-                  background: lang === l ? "#3D3B8E" : "transparent",
-                  color: lang === l ? "#fff" : "#444",
-                  whiteSpace: "nowrap",
-                }}>
-                  {l === "en" ? "EN" : "தமிழ்"}
-                </button>
-              ))}
-            </div>
+      {/* Header — unchanged */}
+      <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "16px 18px 14px", flexShrink: 0 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ background: T.indigoLight, border: `1px solid ${T.indigoMid}`, borderRadius: 10, padding: "5px 12px", color: T.indigo, fontSize: 11, fontWeight: 800, letterSpacing: 0.5 }}>
+            TNPSC Exam Prep
           </div>
+          <LangToggle lang={lang} setLang={async (l) => {
+            setLang(l);
+            setOpenChapter(null);
+            localStorage.setItem("mcqpalagu_lang", l);
+            // Save to DB if logged in
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+              await supabase.from("users").update({ lang: l }).eq("id", user.id);
+            }
+          }} />
         </div>
-        <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 14, scrollbarWidth: "none" }}>
-          {filterKeys.map((k) => (
-            <button key={k} onClick={() => setFilter(k)} style={{
-              flexShrink: 0, padding: "8px 16px", borderRadius: 20, fontSize: 13, fontWeight: 700,
-              border: "2px solid", borderColor: filter === k ? "#3D3B8E" : "#D0D3E0",
-              background: filter === k ? "#3D3B8E" : "#fff", color: filter === k ? "#fff" : "#444", cursor: "pointer",
-            }}>
-              {k}
-            </button>
-          ))}
-        </div>
+        <h2 style={{ color: T.text, fontSize: 20, fontWeight: 800, marginTop: 14, letterSpacing: -0.4 }}>
+          {lang === "ta" ? "பாடங்கள்" : "Subjects"}
+        </h2>
+        <p style={{ color: T.textSec, fontSize: 12, marginTop: 3 }}>
+          {loading ? "Loading…" : `${ACTIVE_SUBJECTS.length} subjects · ${totalChapters} chapters · ${totalQ.toLocaleString()} questions`}
+        </p>
       </div>
 
-      <div style={{ flex: 1, overflowY: "auto", overscrollBehavior: "none", padding: "14px 14px 160px", display: "flex", flexDirection: "column", gap: 12 }}>
+      <div style={{ flex: 1, overflowY: "auto", overscrollBehavior: "none", WebkitOverflowScrolling: "touch" as any, padding: "14px 16px 100px" }}>
 
-        {isEmpty ? (
-          <div style={{ textAlign: "center", padding: "60px 20px" }}>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>📊</div>
-            <div style={{ fontSize: 18, fontWeight: 800, color: "#0A0A14", marginBottom: 8 }}>{t.noSessions}</div>
-            <div style={{ fontSize: 14, color: "#666", marginBottom: 24 }}>{t.noSessionsSub}</div>
-            <button onClick={() => router.push("/subjects")} style={{
-              background: "#3D3B8E", color: "#fff", border: "none", borderRadius: 14,
-              padding: "14px 28px", fontSize: 15, fontWeight: 700, cursor: "pointer"
-            }}>
-              {t.startPracticing}
-            </button>
-          </div>
-        ) : (
-          <>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
-              {[
-                { value: String(totalSessions), label: t.sessions, color: "#3D3B8E" },
-                { value: avgScore + "%", label: t.avgScore, color: scoreColor(avgScore) },
-                { value: String(totalQuestions), label: t.questions, color: "#D97706" },
-              ].map((c) => (
-                <div key={c.label} style={{ background: "#fff", borderRadius: 14, padding: "14px 8px", textAlign: "center", border: "2px solid #E0E2ED" }}>
-                  <div style={{ fontSize: 26, fontWeight: 800, letterSpacing: -1, lineHeight: 1, marginBottom: 5, color: c.color }}>{c.value}</div>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: "#555", textTransform: "uppercase", letterSpacing: 0.3 }}>{c.label}</div>
-                </div>
-              ))}
+        {/* PYQ section — unchanged */}
+        <div style={{ fontSize: 11, fontWeight: 800, color: T.textTer, letterSpacing: 0.8, marginBottom: 10 }}>
+          {lang === "ta" ? "கடந்த ஆண்டு வினாத்தாள்கள்" : "PREVIOUS YEAR PAPERS"}
+        </div>
+
+        <div style={{ background: T.surface, borderRadius: 20, padding: 16, marginBottom: 14, border: `1px solid ${T.border}`, boxShadow: shadow.sm }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+            <div style={{ width: 34, height: 34, borderRadius: 10, background: T.indigoLight, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>📋</div>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 800, color: T.text }}>{lang === "ta" ? "குரூப் 4" : "Group 4"}</div>
+              <div style={{ fontSize: 11, color: T.textSec, marginTop: 1 }}>
+                {lang === "ta" ? `9 ஆண்டுகள் · 1,800 வினாக்கள்` : `9 years · 1,800 questions`}
+              </div>
+              <div style={{ fontSize: 11, color: T.indigo, fontWeight: 700, marginTop: 3 }}>
+                {lang === "ta" ? "பயிற்சி செய்ய ஆண்டை தேர்வு செய்யுங்கள்" : "Select a year to start practising"}
+              </div>
             </div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 }}>
+            {PYQ_YEARS.map(({ year, bg, border, color }) => (
+              <button key={year} onClick={() => router.push(`/pyq/group4/${year}`)}
+                style={{ background: bg, border: `1.5px solid ${border}`, borderRadius: 14, padding: "16px 8px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "transform 0.1s" }}
+                onTouchStart={e => (e.currentTarget.style.transform = "scale(0.95)")}
+                onTouchEnd={e => (e.currentTarget.style.transform = "scale(1)")}>
+                <span style={{ fontSize: 19, fontWeight: 900, color, letterSpacing: -0.5 }}>{year}</span>
+              </button>
+            ))}
+          </div>
+        </div>
 
-            {insights.length > 0 && (
-              <div style={{ background: "#3D3B8E", borderRadius: 18, padding: 16, display: "flex", flexDirection: "column", gap: 12 }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.7)", textTransform: "uppercase", letterSpacing: 0.8 }}>{t.insights}</div>
-                {insights.map((ins, i) => (
-                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <div style={{ width: 40, height: 40, background: "rgba(255,255,255,0.15)", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "#FFD97D", fontWeight: 800, fontSize: 18 }}>
-                      !
+        {/* Mock Test CTA */}
+        <div
+          onClick={() => router.push("/mock")}
+          style={{ background: T.surface, border: `1.5px solid ${T.indigoMid}`, borderRadius: 16, padding: "13px 14px", display: "flex", alignItems: "center", gap: 12, cursor: "pointer", marginBottom: 14, boxShadow: shadow.sm }}
+        >
+          <div style={{ width: 44, height: 44, borderRadius: 13, background: T.indigoLight, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>🏆</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 800, color: T.text }}>{lang === "ta" ? "முழு தேர்வு பயிற்சி" : "Mock Test"}</div>
+            <div style={{ fontSize: 11, color: T.textSec, marginTop: 2 }}>200 {lang === "ta" ? "வினாக்கள் · 3 மணி நேரம் · உண்மையான தேர்வு வடிவம்" : "questions · 3 hours · Real exam format"}</div>
+            <div style={{ fontSize: 11, color: T.indigo, fontWeight: 700, marginTop: 3 }}>PYQ · AI Predicted</div>
+          </div>
+          <div style={{ background: T.indigo, color: "#fff", borderRadius: 10, padding: "8px 12px", fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
+            {lang === "ta" ? "தொடங்கு →" : "Start →"}
+          </div>
+        </div>
+
+        {/* Important questions section — unchanged */}
+        <div style={{ fontSize: 11, fontWeight: 800, color: T.textTer, letterSpacing: 0.8, marginBottom: 10, marginTop: 6 }}>
+          {lang === "ta" ? "குரூப் 4 — முக்கிய வினாக்கள்" : "GROUP 4 — IMPORTANT QUESTIONS"}
+        </div>
+
+        <div style={{ background: T.surface, borderRadius: 20, padding: 12, marginBottom: 12, border: `1px solid ${T.border}`, boxShadow: shadow.sm }}>
+          {activeSubjects.map((sub, idx) => {
+            const chapters = chapterData[sub.key] ?? [];
+            const pyqChapters = pyqChapterData[sub.key] ?? [];
+            const mergedMap: Record<string, { count: number; pyq_years: number[] }> = {};
+            for (const ch of chapters) mergedMap[ch.chapter] = { count: ch.count, pyq_years: [] };
+            for (const pc of pyqChapters) {
+              if (mergedMap[pc.chapter]) {
+                mergedMap[pc.chapter].count += pc.count;
+                mergedMap[pc.chapter].pyq_years = pc.pyq_years;
+              } else {
+                mergedMap[pc.chapter] = { count: pc.count, pyq_years: pc.pyq_years };
+              }
+            }
+            const allChapters = Object.entries(mergedMap).map(([chapter, v]) => ({ chapter, ...v }));
+            const isOpen = openSubject === sub.key;
+            const totalQSub = allChapters.reduce((s, c) => s + c.count, 0) + (sub.key === "Tamil" && pyqChapters.length === 0 ? pyqCount : 0);
+            const colors = SUBJECT_COLORS[sub.key] ?? { bg: T.indigoLight, border: T.indigoMid, iconBg: T.indigoLight };
+
+            return (
+              <div key={sub.key}>
+                {idx > 0 && <div style={{ height: 8 }} />}
+                <button
+                  onClick={() => { setOpenSubject(isOpen ? null : sub.key); setOpenChapter(null); }}
+                  style={{ width: "100%", background: colors.bg, border: `1.5px solid ${colors.border}`, borderRadius: isOpen ? "14px 14px 0 0" : 14, padding: "13px 14px", cursor: "pointer", display: "flex", alignItems: "center", gap: 10, transition: "all 0.2s" }}>
+                  <div style={{ width: 42, height: 42, borderRadius: 12, background: colors.iconBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>{sub.icon}</div>
+                  <div style={{ flex: 1, textAlign: "left" }}>
+                    <div style={{ color: T.text, fontWeight: 800, fontSize: 16 }}>
+                      {sub.key === "Tamil" ? sub.ta : (lang === "ta" ? sub.ta : sub.key)}
                     </div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: "#fff", lineHeight: 1.4 }}>
-                      {ins.highlight && <span style={{ color: "#FFD97D", fontWeight: 800 }}>{ins.highlight}</span>}
-                      {ins.text}
+                    <div style={{ color: T.textSec, fontSize: 12, marginTop: 2 }}>
+                      {loading ? "Loading…" : (lang === "ta" ? `${allChapters.length} அத்தியாயங்கள் · ${totalQSub.toLocaleString()} வினாக்கள்` : `${allChapters.length} chapters · ${totalQSub.toLocaleString()} questions`)}
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
+                  <div style={{ background: isOpen ? T.indigo : "rgba(0,0,0,0.06)", color: isOpen ? "#fff" : T.textSec, borderRadius: 8, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>{allChapters.length}</div>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ transition: "transform 0.2s", transform: isOpen ? "rotate(180deg)" : "none", flexShrink: 0 }}>
+                    <path d="M4 6l4 4 4-4" stroke={isOpen ? T.indigo : T.textSec} strokeWidth="2" strokeLinecap="round" />
+                  </svg>
+                </button>
 
-            {subjectStats.length > 0 && (
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "#444", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>{t.subjectBreakdown}</div>
-                <div style={{ background: "#fff", borderRadius: 18, overflow: "hidden", border: "2px solid #E0E2ED" }}>
-                  {subjectStats.map((s, i) => {
-                    const meta = s.isPack
-                      ? { bg: "#EEF1FA", color: "#3D52A0" }
-                      : (SUBJECT_ICONS[s.key] ?? { bg: "#F3F4F6", color: "#374151" });
-                    return (
-                      <div key={s.key} style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderBottom: i < subjectStats.length - 1 ? "1px solid #EDEEF4" : "none" }}>
-                        <div style={{ width: 42, height: 42, borderRadius: 12, background: meta.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: meta.color, flexShrink: 0 }}>
-                          {s.isPack ? "🎯" : s.key === "Tamil" ? "அ" : s.key.slice(0, 2).toUpperCase()}
-                        </div>
-                        <div style={{ flex: 1 }}>
-                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 7 }}>
-                            <div style={{ fontSize: 15, fontWeight: 700, color: "#0A0A14" }}>{s.key}</div>
-                            <div style={{ fontSize: 16, fontWeight: 800, color: scoreColor(s.accuracy) }}>{s.accuracy}%</div>
-                          </div>
-                          <div style={{ height: 7, background: "#EDEEF4", borderRadius: 10, overflow: "hidden", marginBottom: 5 }}>
-                            <div style={{ height: "100%", width: s.accuracy + "%", background: barColor(s.accuracy), borderRadius: 10 }} />
-                          </div>
-                          {s.isPack ? (
-                            <div style={{ fontSize: 12, fontWeight: 600, color: "#555" }}>
-                              {t.by}<span style={{ color: "#3D52A0", fontWeight: 800 }}>{s.creator}</span>
+                {isOpen && (
+                  <div style={{ background: T.surface, border: `1.5px solid ${T.indigoMid}`, borderTop: "none", borderRadius: "0 0 14px 14px", overflow: "hidden" }}>
+                    {allChapters.map((ch, i) => {
+                      const isChOpen = openChapter === ch.chapter;
+                      const samacheerCount = chapters.find(c => c.chapter === ch.chapter)?.count ?? 0;
+                      const levels = generateLevels(samacheerCount > 0 ? samacheerCount : ch.count);
+                      const unlockedLevel = getUnlockedLevel(sub.key, ch.chapter);
+
+                      return (
+                        <div key={ch.chapter} style={{ borderTop: i > 0 ? `1px solid ${T.border}` : "none" }}>
+                          <div onClick={() => setOpenChapter(isChOpen ? null : ch.chapter)} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", cursor: "pointer" }}>
+                            <div style={{ flex: 1 }}>
+                              <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                                <span style={{ color: T.text, fontSize: 15, fontWeight: 600 }}>
+                                  {sub.key === "Tamil" ? (TAMIL_CHAPTER_NAMES[ch.chapter] ?? ch.chapter) : ch.chapter}
+                                </span>
+                                {ch.pyq_years.slice(0, 3).map(y => (
+                                  <span key={y} style={{ background: "#FFF3E0", border: "1px solid #FFD180", borderRadius: 6, padding: "1px 6px", fontSize: 10, fontWeight: 800, color: "#E65100" }}>{y}</span>
+                                ))}
+                                {ch.pyq_years.length > 3 && (
+                                  <span style={{ background: "#FFF3E0", border: "1px solid #FFD180", borderRadius: 6, padding: "1px 6px", fontSize: 10, fontWeight: 800, color: "#E65100" }}>+{ch.pyq_years.length - 3}</span>
+                                )}
+                              </div>
+                              <div style={{ display: "flex", gap: 8, marginTop: 5, alignItems: "center" }}>
+                                <span style={{ color: T.textTer, fontSize: 12, fontWeight: 600 }}>{lang === "ta" ? `${ch.count} வினாக்கள்` : `${ch.count} questions`}</span>
+                                {samacheerCount > 0 && (
+                                  <span style={{ background: T.indigoLight, borderRadius: 6, padding: "2px 7px", color: T.indigo, fontSize: 12, fontWeight: 700 }}>
+                                    {lang === "ta" ? `${levels.length} நிலைகள்` : `${levels.length} levels`}
+                                  </span>
+                                )}
+                              </div>
                             </div>
-                          ) : s.weakest && s.accuracy < 100 ? (
-                            <div style={{ fontSize: 12, fontWeight: 600, color: "#555" }}>
-                              {t.weak}: <span style={{ color: "#DC2626", fontWeight: 800 }}>{s.weakest.chapter}</span>
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ transition: "transform 0.2s", transform: isChOpen ? "rotate(180deg)" : "none", flexShrink: 0 }}>
+                              <path d="M3 5l4 4 4-4" stroke={isChOpen ? T.indigo : T.textTer} strokeWidth="1.8" strokeLinecap="round" />
+                            </svg>
+                          </div>
+
+                          {isChOpen && samacheerCount > 0 && (
+                            <div style={{ background: T.bg, padding: "10px 14px 12px", borderTop: `1px solid ${T.border}` }}>
+                              <div style={{ fontSize: 10, fontWeight: 800, color: T.textTer, letterSpacing: 0.7, marginBottom: 8 }}>
+                                {lang === "ta" ? "நிலையை தேர்வு செய்யுங்கள்" : "SELECT LEVEL"}
+                              </div>
+                              <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+                                {levels.map(l => {
+                                  const locked = l.levelNum > unlockedLevel;
+                                  return (
+                                    <button key={l.levelNum} onClick={() => { if (locked) return; router.push(`/practice/${encodeURIComponent(sub.key)}/${encodeURIComponent(ch.chapter)}?level=${l.levelNum}&offset=${l.offset}&limit=${l.questions}&label=${encodeURIComponent(ch.chapter)}`); }}
+                                      style={{ display: "flex", flexDirection: "column", alignItems: "center", background: locked ? T.bg : T.surface, border: `1.5px solid ${locked ? T.border : T.indigoMid}`, borderRadius: 12, padding: "9px 12px", cursor: locked ? "not-allowed" : "pointer", minWidth: 58, opacity: locked ? 0.4 : 1, transition: "all 0.15s" }}>
+                                      <span style={{ fontSize: 14, fontWeight: 900, color: locked ? T.textTer : T.indigo }}>L{l.levelNum}</span>
+                                      <span style={{ fontSize: 10, color: T.textTer, fontWeight: 600, marginTop: 2 }}>{l.questions}q</span>
+                                      {locked && <span style={{ fontSize: 10, marginTop: 1 }}>🔒</span>}
+                                    </button>
+                                  );
+                                })}
+                              </div>
                             </div>
-                          ) : (
-                            <div style={{ fontSize: 12, fontWeight: 700, color: "#059669" }}>All topics above average</div>
                           )}
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
-            )}
-
-            {recent.length > 0 && (
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "#444", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>{t.recentSessions}</div>
-                <div style={{ background: "#fff", borderRadius: 18, overflow: "hidden", border: "2px solid #E0E2ED" }}>
-                  {recent.map((s, i) => {
-                    const score = pct(s.correct_count, s.total_questions);
-                    const dashOffset = CIRC - (CIRC * score) / 100;
-                    const tag = sessionTag(s);
-                    const wrongCount = s.total_questions - s.correct_count;
-                    const mistakeLabel = wrongCount === 0 ? t.perfect : wrongCount <= 2 ? wrongCount + " " + t.easyMistakes : wrongCount + " " + t.conceptGaps;
-                    const mistakeStyle = wrongCount === 0
-                      ? { background: "#D1FAE5", color: "#064E3B" }
-                      : wrongCount <= 2
-                      ? { background: "#FEF3C7", color: "#78350F" }
-                      : { background: "#FEE2E2", color: "#7F1D1D" };
-                    return (
-                      <div key={s.id} style={{ padding: "14px 16px", borderBottom: i < recent.length - 1 ? "1px solid #EDEEF4" : "none" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
-                          <div style={{ width: 48, height: 48, flexShrink: 0, position: "relative" }}>
-                            <svg viewBox="0 0 48 48" width={48} height={48} style={{ transform: "rotate(-90deg)" }}>
-                              <circle cx="24" cy="24" r="19" fill="none" stroke="#EDEEF4" strokeWidth={5} />
-                              <circle cx="24" cy="24" r="19" fill="none" stroke={ringColor(score)} strokeWidth={5} strokeLinecap="round" strokeDasharray={CIRC} strokeDashoffset={dashOffset} />
-                            </svg>
-                            <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: "#0A0A14" }}>
-                              {score}%
-                            </div>
-                          </div>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: 15, fontWeight: 700, color: "#0A0A14", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginBottom: 5 }}>
-                              {sessionLabel(s)}
-                            </div>
-                            <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-                              <div style={{ fontSize: 11, fontWeight: 700, padding: "3px 8px", borderRadius: 6, background: tag.bg, color: tag.color }}>
-                                {tag.label}
-                              </div>
-                              <div style={{ fontSize: 11, color: "#666", fontWeight: 600 }}>
-                                {s.completed_at ? relativeTime(s.completed_at, lang) : relativeTime(s.started_at, lang)}
-                              </div>
-                            </div>
-                          </div>
-                          <div style={{ textAlign: "right", flexShrink: 0 }}>
-                            <div style={{ fontSize: 15, fontWeight: 800, color: "#0A0A14" }}>{s.correct_count}/{s.total_questions}</div>
-                            <div style={{ fontSize: 11, color: "#666", fontWeight: 600 }}>{t.level} {s.level}</div>
-                          </div>
-                        </div>
-                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                          <div style={{ fontSize: 12, fontWeight: 700, padding: "5px 10px", borderRadius: 8, ...mistakeStyle }}>
-                            {mistakeLabel}
-                          </div>
-                          <button
-                            onClick={() => router.push("/practice/" + encodeURIComponent(s.subject) + "/" + encodeURIComponent(s.chapter) + "?level=" + s.level + "&offset=" + s.offset + "&limit=" + s.limit)}
-                            style={{ fontSize: 13, fontWeight: 700, color: "#3D3B8E", background: "#EDEEFF", padding: "7px 14px", borderRadius: 10, border: "none", cursor: "pointer", minHeight: 36, display: "flex", alignItems: "center" }}
-                          >
-                            {t.review}
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-
-      {ctaSession && !isEmpty && (
-        <div
-          onClick={() => router.push("/practice/" + encodeURIComponent(ctaSession.subject) + "/" + encodeURIComponent(ctaSession.chapter) + "?level=" + ctaSession.level + "&offset=" + ctaSession.offset + "&limit=" + ctaSession.limit)}
-          style={{
-            position: "fixed", bottom: 68, left: 14, right: 14, background: "#3D3B8E",
-            borderRadius: 16, padding: "14px 18px", display: "flex", alignItems: "center",
-            justifyContent: "space-between", boxShadow: "0 8px 28px rgba(61,59,142,0.4)", cursor: "pointer", zIndex: 10,
-            border: "1.5px solid rgba(255,255,255,0.15)",
-          }}
-        >
-          <div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.55)", marginBottom: 3, textTransform: "uppercase", letterSpacing: 0.5 }}>
-              {lastIncomplete ? t.continueOff : t.practiceAgain}
-            </div>
-            <div style={{ fontSize: 16, fontWeight: 800, color: "#fff" }}>
-              {sessionLabel(ctaSession)} {t.level} {ctaSession.level}
-            </div>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-            <div style={{ width: 40, height: 40, background: "rgba(255,255,255,0.18)", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, color: "#fff", flexShrink: 0, fontWeight: 800 }}>
-              &gt;
-            </div>
-            <div style={{ fontSize: 9, color: "rgba(255,255,255,0.5)", fontWeight: 600, letterSpacing: 0.3 }}>TAP</div>
-          </div>
+            );
+          })}
         </div>
-      )}
+        {/* ── EXPERT PACKS SECTION — after important questions ── */}
+        {featuredPacks.length > 0 && (
+          <div style={{ marginTop: 20 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: T.textTer, letterSpacing: 0.8, textTransform: "uppercase" }}>
+                🎯 {lang === "ta" ? "நிபுணர் பேக்குகள்" : "EXPERT PACKS"}
+              </div>
+              <button
+                onClick={() => router.push("/experts")}
+                style={{ fontSize: 12, fontWeight: 700, color: T.indigo, background: T.indigoLight, border: "none", borderRadius: 8, padding: "4px 10px", cursor: "pointer", fontFamily: "inherit" }}
+              >
+                {lang === "ta" ? "அனைத்தும் →" : "See all →"}
+              </button>
+            </div>
+
+            {featuredPacks.map((pack) => {
+              const c = Array.isArray(pack.creators) ? pack.creators[0] : pack.creators;
+              const accent = c.accent_color ?? "navy";
+              const gradient = ACCENT_GRADIENTS[accent] ?? ACCENT_GRADIENTS.navy;
+              const pill = ACCENT_PILL[accent] ?? ACCENT_PILL.navy;
+              const initials = c.name.charAt(0).toUpperCase();
+              const estimatedMins = Math.round((pack.question_count * 30) / 60);
+
+              return (
+                <div
+                  key={pack.id}
+                  onClick={() => router.push(`/experts/${c.slug}/${slugify(pack.name)}`)}
+                  style={{ background: T.surface, borderRadius: 16, padding: 14, marginBottom: 10, border: `1.5px solid ${T.border}`, cursor: "pointer", boxShadow: shadow.sm, position: "relative", overflow: "hidden" }}
+                >
+                  {/* Accent top bar */}
+                  <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: gradient, borderRadius: "16px 16px 0 0" }} />
+
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                    <div style={{ position: "relative", flexShrink: 0 }}>
+                      <div style={{ width: 36, height: 36, borderRadius: 10, background: gradient, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 900, color: "#fff" }}>
+                        {initials}
+                      </div>
+                      {c.verified && (
+                        <div style={{ position: "absolute", bottom: -2, right: -2, width: 13, height: 13, background: "#6BCB77", borderRadius: "50%", border: "2px solid #fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 6, color: "#fff", fontWeight: 900 }}>✓</div>
+                      )}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 13, fontWeight: 900, color: T.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{pack.name}</div>
+                      <div style={{ fontSize: 11, fontWeight: 600, color: T.textSec }}>{c.name} · {c.section === 'buddies' ? 'Study Buddy' : (lang === 'ta' ? 'வழிகாட்டி' : 'Expert')}</div>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 10 }}>
+                    {(pack.exams ?? []).slice(0, 2).map(e => (
+                      <span key={e} style={{ fontSize: 9, fontWeight: 800, padding: "2px 7px", borderRadius: 20, textTransform: "uppercase", letterSpacing: 0.3, background: T.indigoLight, color: T.indigo }}>
+                        {EXAM_LABELS[e] ?? e}
+                      </span>
+                    ))}
+                    {pack.subject && (
+                      <span style={{ fontSize: 9, fontWeight: 800, padding: "2px 7px", borderRadius: 20, textTransform: "uppercase", letterSpacing: 0.3, background: pill.bg, color: T.text, border: `1px solid ${pill.border}` }}>
+                        {pack.subject}
+                      </span>
+                    )}
+                  </div>
+
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 8, borderTop: `1px solid ${T.border}` }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: T.textSec }}>
+                      <b style={{ color: T.indigo, fontWeight: 900 }}>{pack.question_count}</b> {lang === "ta" ? "வினாக்கள்" : "questions"} · ~{estimatedMins} mins
+                    </div>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); router.push(`/experts/${c.slug}/${slugify(pack.name)}`); }}
+                      style={{ background: T.indigo, color: "#fff", border: "none", borderRadius: 9, padding: "6px 14px", fontSize: 11, fontWeight: 800, cursor: "pointer", fontFamily: "inherit" }}
+                    >
+                      {lang === "ta" ? "தொடங்கு →" : "Start →"}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+      </div>
     </div>
   );
 }
