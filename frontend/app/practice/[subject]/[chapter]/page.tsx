@@ -5,6 +5,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { T, shadow } from "../../../../lib/tokens";
 import { fetchQuestionsForLevel, fetchQuestionsForPYQ, fetchQuestionsForPack, fetchQuestionsForCADaily, fetchQuestionsForCAMonthly, supabase, type Question } from "../../../../lib/supabase";
 import { startSession, recordResponse, completeSession } from "../../../../lib/session";
+import QuestionText from "./../../../../components/QuestionText";
 
 export default function PracticePage() {
   const params = useParams();
@@ -283,7 +284,7 @@ export default function PracticePage() {
               <span style={{ fontSize: 9, fontWeight: 800, color: "#E65100", letterSpacing: 0.3 }}>{lang === "ta" ? "புகார்" : "Report"}</span>
             </button>
           </div>
-          <p style={{ color: T.text, fontSize: 20, fontWeight: 700, lineHeight: 1.55, letterSpacing: -0.3 }}>{q.question}</p>
+          <QuestionText text={q.question} lang={lang} />
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
