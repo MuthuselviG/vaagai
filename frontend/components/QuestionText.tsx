@@ -13,6 +13,9 @@ const C = {
   teal: "#0E7C86",
   tealBg: "#E6F6F7",
   tealBorder: "#9FD9DD",
+  rose: "#BE185D",
+  roseBg: "#FDF2F8",
+  roseBorder: "#F9A8D4",
 };
 
 // ── detection ────────────────────────────────────────────────────────────────
@@ -35,6 +38,10 @@ function isStatement(t: string): boolean {
   const paren = (t.match(/\((?:1|2|3|4)\)/g) || []).length;
   const roman = (t.match(/\b(?:I|II|III|IV)\.\s/g) || []).length;
   return paren >= 2 || roman >= 2;
+}
+
+function isStatementPair(t: string): boolean {
+  return /கூற்று\s*I[^I]/i.test(t) && /கூற்று\s*II/i.test(t);
 }
 
 // ── shared ───────────────────────────────────────────────────────────────────
@@ -267,11 +274,59 @@ function Statement({ text, lang, fontSize }: Props & { fontSize: number }) {
   );
 }
 
+// ── statement pair (கூற்று I / கூற்று II) ────────────────────────────────────
+
+function StatementPair({ text, lang, fontSize }: Props & { fontSize: number }) {
+  // Split on கூற்று II to get intro + stmt I + stmt II
+  const splitII = text.split(/கூற்று\s*II\s*[：:]\s*/i);
+  if (splitII.length < 2) return <Regular text={text} fontSize={fontSize} />;
+
+  const beforeII = splitII[0];
+  const stmtII = splitII.slice(1).join("").trim()
+    .replace(/\n*மேலே கொடுக்கப்பட்ட[^]*/i, "")
+    .replace(/\n*எது\/எவை[^]*/i, "")
+    .trim();
+
+  const splitI = beforeII.split(/கூற்று\s*I\s*[：:]\s*/i);
+  if (splitI.length < 2) return <Regular text={text} fontSize={fontSize} />;
+
+  const intro = splitI[0].trim().replace(/[:：\s]+$/, "");
+  const stmtI = splitI.slice(1).join("").trim();
+
+  if (!stmtI || !stmtII) return <Regular text={text} fontSize={fontSize} />;
+
+  const tagLabel = lang === "ta" ? "கூற்றுகள் I & II" : "Statements I & II";
+  const bodySize = fontSize - 1;
+  const introSize = fontSize - 3;
+
+  return (
+    <div style={{ background: C.roseBg, border: `1.5px solid ${C.roseBorder}`, borderRadius: 14, padding: "18px 16px", position: "relative" }}>
+      <TypeTag label={tagLabel} color={C.rose} />
+      {intro && (
+        <p style={{ fontSize: introSize, fontWeight: 600, color: T.textSec, lineHeight: 1.5, marginBottom: 14 }}>
+          {intro}
+        </p>
+      )}
+      <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
+        <div style={{ background: T.surface, borderRadius: 11, padding: "13px 14px" }}>
+          <SegLabel label="கூற்று I" color={C.rose} bg={C.roseBg} border={C.roseBorder} />
+          <p style={{ fontSize: bodySize, fontWeight: 700, lineHeight: 1.55, letterSpacing: -0.3, color: T.text }}>{stmtI}</p>
+        </div>
+        <div style={{ background: T.surface, borderRadius: 11, padding: "13px 14px" }}>
+          <SegLabel label="கூற்று II" color={C.rose} bg={C.roseBg} border={C.roseBorder} />
+          <p style={{ fontSize: bodySize, fontWeight: 700, lineHeight: 1.55, letterSpacing: -0.3, color: T.text }}>{stmtII}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── main ─────────────────────────────────────────────────────────────────────
 
 export default function QuestionText({ text, lang, fontSize = 20 }: Props) {
   if (!text) return null;
   try {
+    if (isStatementPair(text))   return <StatementPair text={text} lang={lang} fontSize={fontSize} />;
     if (isAssertionReason(text)) return <AssertionReason text={text} lang={lang} fontSize={fontSize} />;
     if (isMatchList(text))       return <MatchList text={text} lang={lang} fontSize={fontSize} />;
     if (isStatement(text))       return <Statement text={text} lang={lang} fontSize={fontSize} />;
