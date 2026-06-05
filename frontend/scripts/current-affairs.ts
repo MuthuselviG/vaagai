@@ -85,7 +85,6 @@ function generateSlug(text: string, lang: "en" | "ta"): string {
 
 function sanitizeSubject(subject: string): ValidSubject {
   if (VALID_SUBJECTS.includes(subject as ValidSubject)) return subject as ValidSubject;
-  // Fallback mapping for any Gemini drift
   const map: Record<string, ValidSubject> = {
     "Science": "General Science",
     "Polity": "Indian Polity",
@@ -245,8 +244,8 @@ async function generateQuestions(
 
 async function main() {
   console.log("Initializing TNPSC current affairs pipeline...");
-  const todayStr = process.argv[2] ?? new Date().toISOString().split("T")[0];
-  const currentMonthYear = new Date().toLocaleDateString("en-IN", { month: "long", year: "numeric" });
+  const todayStr = process.argv[2] ?? new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
+  const currentMonthYear = new Date().toLocaleDateString("en-IN", { month: "long", year: "numeric", timeZone: "Asia/Kolkata" });
   console.log(`[Pipeline] Target date: ${todayStr}`);
 
   const fiveDaysAgo = new Date();
@@ -398,7 +397,6 @@ Return a raw JSON array of exactly 5 objects:
   const compiledRowsToInsert: any[] = [];
   unique.forEach(q => {
     const sanitizedSubject = sanitizeSubject(q.subject);
-
     const slugEn = makeUniqueSlug(generateSlug(q.question_en, "en"));
     const slugTa = makeUniqueSlug(generateSlug(q.question_ta, "ta"));
 
