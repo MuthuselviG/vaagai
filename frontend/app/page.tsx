@@ -98,14 +98,14 @@ export default async function HomePage() {
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "12px 16px 100px", textAlign: "center" }}>
 
         {/* Header row */}
-        <div style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+        <div style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
           <Image src="/logo.png" alt="MCQ பழகு" height={48} width={180} priority style={{ height: 48, width: "auto" }} />
           <HomeLangToggle initialLang={lang} />
         </div>
 
         {/* Tagline + stats — always English, no box */}
         <div style={{ width: "100%", marginBottom: 14 }}>
-          <p style={{ fontSize: 20, fontWeight: 800, fontStyle: "italic", color: T.text, marginBottom: 4, lineHeight: 1.3 }}>
+          <p style={{ fontSize: 20, fontWeight: 600, fontStyle: "italic", color: T.text, marginBottom: 4, lineHeight: 1.3 }}>
             Crack TNPSC with AI-powered practice in Tamil
           </p>
           <p style={{ fontSize: 12, fontWeight: 600, color: T.textSec, margin: "0 0 2px" }}>
