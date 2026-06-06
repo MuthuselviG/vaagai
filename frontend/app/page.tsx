@@ -108,8 +108,11 @@ export default async function HomePage() {
           <p style={{ fontSize: 20, fontWeight: 800, fontStyle: "italic", color: T.text, marginBottom: 4, lineHeight: 1.3 }}>
             Crack TNPSC with AI-powered practice in Tamil
           </p>
-          <p style={{ fontSize: 12, fontWeight: 600, color: T.textSec, margin: 0 }}>
+          <p style={{ fontSize: 12, fontWeight: 600, color: T.textSec, margin: "0 0 2px" }}>
             2000+ Aspirants ✨ 14,000+ Questions Solved
+          </p>
+          <p style={{ fontSize: 12, fontWeight: 600, color: T.textSec, margin: 0 }}>
+            தினசரி Current Affairs ✨ தமிழ் விளக்கங்கள்
           </p>
         </div>
 
