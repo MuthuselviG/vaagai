@@ -97,16 +97,16 @@ export default async function HomePage() {
     <main style={{ width: "100%", background: T.bg }}>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "12px 16px 100px", textAlign: "center" }}>
 
-        {/* Compact header: logo + tagline left, lang toggle right */}
-        <div style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-            <Image src="/logo.png" alt="MCQ பழகு" height={48} width={180} priority style={{ height: 48, width: "auto" }} />
-            <p style={{ color: T.textTer, fontSize: 11, fontWeight: 400, lineHeight: 1.4, textAlign: "left", margin: 0 }}>
-              Crack TNPSC with AI-powered practice in Tamil
-            </p>
-          </div>
+        {/* Header row */}
+        <div style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+          <Image src="/logo.png" alt="MCQ பழகு" height={48} width={180} priority style={{ height: 48, width: "auto" }} />
           <HomeLangToggle initialLang={lang} />
         </div>
+
+        {/* Tagline — small, left-aligned, under logo */}
+        <p style={{ width: "100%", color: T.textTer, fontSize: 11, fontWeight: 400, lineHeight: 1.4, textAlign: "left", margin: "0 0 20px" }}>
+          Crack TNPSC with AI-powered practice in Tamil
+        </p>
 
         {/* Main CTA */}
         <Link
