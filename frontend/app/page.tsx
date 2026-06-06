@@ -105,7 +105,7 @@ export default async function HomePage() {
 
         {/* Tagline + stats — always English, no box */}
         <div style={{ width: "100%", marginBottom: 14 }}>
-          <p style={{ fontSize: 12, fontStyle: "italic", color: T.textSec, marginBottom: 4, lineHeight: 1.4 }}>
+          <p style={{ fontSize: 15, fontWeight: 700, fontStyle: "italic", color: T.textSec, marginBottom: 4, lineHeight: 1.4 }}>
             Crack TNPSC with AI-powered practice in Tamil
           </p>
           <p style={{ fontSize: 12, fontWeight: 600, color: T.textSec, margin: 0 }}>
