@@ -103,9 +103,9 @@ export default async function HomePage() {
           <HomeLangToggle initialLang={lang} />
         </div>
 
-        {/* Tagline — small, left-aligned, under logo */}
-        <p style={{ width: "100%", color: T.textTer, fontSize: 11, fontWeight: 400, lineHeight: 1.4, textAlign: "left", margin: "0 0 20px" }}>
-          Crack TNPSC with AI-powered practice in Tamil
+        {/* Tagline — small, italic, two lines, left-aligned, under logo */}
+        <p style={{ width: "100%", color: T.textTer, fontSize: 11, fontWeight: 400, fontStyle: "italic", lineHeight: 1.5, textAlign: "left", margin: "0 0 20px" }}>
+          Crack TNPSC with AI-powered<br />practice in Tamil
         </p>
 
         {/* Main CTA */}
