@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@google/genai": "^2.6.0",
@@ -21,6 +24,9 @@
     "@types/node": "^24.0.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
-    "typescript": "^5.9.0"
+    "@vitest/coverage-v8": "^4.1.8",
+    "happy-dom": "^20.10.1",
+    "typescript": "^5.9.0",
+    "vitest": "^4.1.8"
   }
 }
