@@ -77,6 +77,7 @@ export type CAQuestion = {
   subject: string | null;
   published_date: string;
   source_url: string | null;
+  slug: string | null;
 };
 
 export type CAUnitMeta = {
@@ -267,7 +268,7 @@ export async function fetchCAForUnit(
   const { start, endExclusive } = monthRange(month);
   const { data, error } = await supabase
     .from("current_affairs")
-    .select("id, question, lang, options, correct_option, explanation, topic, subject, published_date, source_url")
+    .select("id, question, lang, options, correct_option, explanation, topic, subject, published_date, source_url, slug")
     .gte("published_date", start)
     .lt("published_date", endExclusive)
     .eq("lang", lang)
