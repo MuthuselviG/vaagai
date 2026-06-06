@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import Link from "next/link";
 import Image from "next/image";
+import { Suspense } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { T, shadow } from "../lib/tokens";
 import { slugify } from "../lib/slugify";
@@ -63,12 +64,7 @@ function InstagramIcon() {
   );
 }
 
-export default async function HomePage() {
-  const cookieStore = await cookies();
-  const lang = (cookieStore.get("mcqpalagu_lang")?.value === "en" ? "en" : "ta") as "en" | "ta";
-
-  const todayISO = new Date().toISOString().split("T")[0];
-
+async function FeaturedPacksSection({ lang }: { lang: "en" | "ta" }) {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -92,6 +88,138 @@ export default async function HomePage() {
     { n: "2", text: "Get verified by our team" },
     { n: "3", text: "Upload your MCQs — we handle the rest" },
   ];
+
+  return (
+    <>
+      {/* Featured packs */}
+      {featuredPacks.length > 0 && (
+        <div style={{ width: "100%", marginTop: 24 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+            <h2 style={{ fontSize: 15, fontWeight: 900, color: T.text, margin: 0 }}>
+              🎯 {lang === "ta" ? "நிபுணர் பேக்குகள்" : "Expert Packs"}
+            </h2>
+            <Link
+              href="/experts"
+              style={{ fontSize: 12, fontWeight: 700, color: T.indigo, background: T.indigoLight, borderRadius: 8, padding: "5px 10px", textDecoration: "none" }}
+            >
+              {lang === "ta" ? "அனைத்தும் →" : "See all →"}
+            </Link>
+          </div>
+
+          {featuredPacks.map((pack) => {
+            const c = Array.isArray(pack.creators) ? pack.creators[0] : pack.creators;
+            const accent = c.accent_color ?? "navy";
+            const gradient = ACCENT_GRADIENTS[accent] ?? ACCENT_GRADIENTS.navy;
+            const pill = ACCENT_PILL[accent] ?? ACCENT_PILL.navy;
+            const initials = c.name.charAt(0).toUpperCase();
+            const estimatedMins = Math.round((pack.question_count * 30) / 60);
+            const packHref = `/experts/${c.slug}/${slugify(pack.name)}`;
+
+            return (
+              <Link
+                key={pack.id}
+                href={packHref}
+                style={{ width: "100%", background: T.surface, borderRadius: 16, padding: 14, marginBottom: 10, border: `1.5px solid ${T.border}`, display: "block", textDecoration: "none", boxShadow: shadow.sm, textAlign: "left", position: "relative", overflow: "hidden", boxSizing: "border-box" }}
+              >
+                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: gradient, borderRadius: "16px 16px 0 0" }} />
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                  <div style={{ position: "relative", flexShrink: 0 }}>
+                    <div style={{ width: 36, height: 36, borderRadius: 10, background: gradient, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 900, color: "#fff" }}>
+                      {initials}
+                    </div>
+                    {c.verified && (
+                      <div style={{ position: "absolute", bottom: -2, right: -2, width: 13, height: 13, background: "#6BCB77", borderRadius: "50%", border: "2px solid #fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 6, color: "#fff", fontWeight: 900 }}>✓</div>
+                    )}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 13, fontWeight: 900, color: T.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{pack.name}</div>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: T.textSec }}>
+                      {c.name} · {c.section === "buddies" ? (lang === "ta" ? "சேர்ந்து படிப்போம்" : "Study Buddy") : (lang === "ta" ? "வழிகாட்டி" : "Expert")}
+                    </div>
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 10 }}>
+                  {(pack.exams ?? []).slice(0, 2).map(e => (
+                    <span key={e} style={{ fontSize: 9, fontWeight: 800, padding: "2px 7px", borderRadius: 20, textTransform: "uppercase", letterSpacing: 0.3, background: T.indigoLight, color: T.indigo }}>
+                      {EXAM_LABELS[e] ?? e}
+                    </span>
+                  ))}
+                  {pack.subject && (
+                    <span style={{ fontSize: 9, fontWeight: 800, padding: "2px 7px", borderRadius: 20, textTransform: "uppercase", letterSpacing: 0.3, background: pill.bg, color: T.text, border: `1px solid ${pill.border}` }}>
+                      {pack.subject}
+                    </span>
+                  )}
+                </div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 8, borderTop: `1px solid ${T.border}` }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: T.textSec }}>
+                    <b style={{ color: T.indigo, fontWeight: 900 }}>{pack.question_count}</b> {lang === "ta" ? "வினாக்கள்" : "questions"} · ~{estimatedMins} mins
+                  </div>
+                  <span style={{ background: T.indigo, color: "#fff", borderRadius: 9, padding: "6px 14px", fontSize: 11, fontWeight: 800 }}>
+                    {lang === "ta" ? "தொடங்கு →" : "Start →"}
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Creator CTA */}
+      <div style={{ width: "100%", marginTop: 24, background: `linear-gradient(135deg, ${T.indigoDark} 0%, #1a2a6c 100%)`, borderRadius: 20, padding: "20px 18px", textAlign: "left", position: "relative", overflow: "hidden", boxShadow: shadow.indigo }}>
+        <div style={{ position: "absolute", top: -20, right: -20, width: 100, height: 100, borderRadius: "50%", background: "rgba(255,255,255,0.04)" }} />
+        <div style={{ position: "absolute", bottom: -30, right: 20, width: 80, height: 80, borderRadius: "50%", background: "rgba(255,255,255,0.03)" }} />
+
+        <div style={{ fontSize: 22, marginBottom: 6 }}>🎓</div>
+        <div style={{ fontSize: 16, fontWeight: 900, color: "#fff", marginBottom: 4, lineHeight: 1.3 }}>
+          {lang === "ta" ? "நீங்கள் ஒரு ஆசிரியரா அல்லது நிபுணரா?" : "Are you a Teacher or Expert?"}
+        </div>
+        <div style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", marginBottom: 16, lineHeight: 1.6 }}>
+          {lang === "ta"
+            ? "உங்கள் வினாத் தொகுப்புகளை ஆயிரக்கணக்கான TNPSC தேர்வர்களுடன் பகிர்ந்துகொள்ளுங்கள்."
+            : "Share your question packs with thousands of TNPSC aspirants."}
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 18 }}>
+          {creatorSteps.map(step => (
+            <div key={step.n} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 22, height: 22, borderRadius: "50%", background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, color: "#fff", flexShrink: 0 }}>{step.n}</div>
+              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.8)", lineHeight: 1.4 }}>{step.text}</div>
+            </div>
+          ))}
+        </div>
+
+        <Link
+          href="/login"
+          style={{ width: "100%", padding: "13px", background: "#fff", color: T.indigoDark, borderRadius: 12, fontSize: 14, fontWeight: 800, marginBottom: 14, display: "block", textDecoration: "none", textAlign: "center", boxSizing: "border-box" }}
+        >
+          {lang === "ta" ? "படைப்பாளராக சேரு →" : "Join as Creator →"}
+        </Link>
+
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.12)", paddingTop: 14 }}>
+          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", marginBottom: 10, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+            {lang === "ta" ? "தொடர்பு கொள்ளுங்கள்" : "Contact us"}
+          </div>
+          <div style={{ display: "flex", gap: 10 }}>
+            <a href="https://t.me/MCQPalagu" target="_blank" rel="noopener noreferrer" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "10px", background: "rgba(255,255,255,0.1)", borderRadius: 10, border: "1px solid rgba(255,255,255,0.15)", color: "#fff", textDecoration: "none", fontSize: 13, fontWeight: 700 }}>
+              <TelegramIcon />Telegram
+            </a>
+            <a href="https://www.instagram.com/mcqpalagu" target="_blank" rel="noopener noreferrer" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "10px", background: "rgba(255,255,255,0.1)", borderRadius: 10, border: "1px solid rgba(255,255,255,0.15)", color: "#fff", textDecoration: "none", fontSize: 13, fontWeight: 700 }}>
+              <InstagramIcon />Instagram
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ height: 24 }} />
+    </>
+  );
+}
+
+export default async function HomePage() {
+  const cookieStore = await cookies();
+  const lang = (cookieStore.get("mcqpalagu_lang")?.value === "en" ? "en" : "ta") as "en" | "ta";
+
+  const todayISO = new Date().toISOString().split("T")[0];
 
   return (
     <main style={{ width: "100%", background: T.bg }}>
@@ -168,126 +296,10 @@ export default async function HomePage() {
           </div>
         </Link>
 
-        {/* Featured packs */}
-        {featuredPacks.length > 0 && (
-          <div style={{ width: "100%", marginTop: 24 }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-              <h2 style={{ fontSize: 15, fontWeight: 900, color: T.text, margin: 0 }}>
-                🎯 {lang === "ta" ? "நிபுணர் பேக்குகள்" : "Expert Packs"}
-              </h2>
-              <Link
-                href="/experts"
-                style={{ fontSize: 12, fontWeight: 700, color: T.indigo, background: T.indigoLight, borderRadius: 8, padding: "5px 10px", textDecoration: "none" }}
-              >
-                {lang === "ta" ? "அனைத்தும் →" : "See all →"}
-              </Link>
-            </div>
+        <Suspense fallback={null}>
+          <FeaturedPacksSection lang={lang} />
+        </Suspense>
 
-            {featuredPacks.map((pack) => {
-              const c = Array.isArray(pack.creators) ? pack.creators[0] : pack.creators;
-              const accent = c.accent_color ?? "navy";
-              const gradient = ACCENT_GRADIENTS[accent] ?? ACCENT_GRADIENTS.navy;
-              const pill = ACCENT_PILL[accent] ?? ACCENT_PILL.navy;
-              const initials = c.name.charAt(0).toUpperCase();
-              const estimatedMins = Math.round((pack.question_count * 30) / 60);
-              const packHref = `/experts/${c.slug}/${slugify(pack.name)}`;
-
-              return (
-                <Link
-                  key={pack.id}
-                  href={packHref}
-                  style={{ width: "100%", background: T.surface, borderRadius: 16, padding: 14, marginBottom: 10, border: `1.5px solid ${T.border}`, display: "block", textDecoration: "none", boxShadow: shadow.sm, textAlign: "left", position: "relative", overflow: "hidden", boxSizing: "border-box" }}
-                >
-                  <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: gradient, borderRadius: "16px 16px 0 0" }} />
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-                    <div style={{ position: "relative", flexShrink: 0 }}>
-                      <div style={{ width: 36, height: 36, borderRadius: 10, background: gradient, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 900, color: "#fff" }}>
-                        {initials}
-                      </div>
-                      {c.verified && (
-                        <div style={{ position: "absolute", bottom: -2, right: -2, width: 13, height: 13, background: "#6BCB77", borderRadius: "50%", border: "2px solid #fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 6, color: "#fff", fontWeight: 900 }}>✓</div>
-                      )}
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 13, fontWeight: 900, color: T.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{pack.name}</div>
-                      <div style={{ fontSize: 11, fontWeight: 600, color: T.textSec }}>
-                        {c.name} · {c.section === "buddies" ? (lang === "ta" ? "சேர்ந்து படிப்போம்" : "Study Buddy") : (lang === "ta" ? "வழிகாட்டி" : "Expert")}
-                      </div>
-                    </div>
-                  </div>
-                  <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 10 }}>
-                    {(pack.exams ?? []).slice(0, 2).map(e => (
-                      <span key={e} style={{ fontSize: 9, fontWeight: 800, padding: "2px 7px", borderRadius: 20, textTransform: "uppercase", letterSpacing: 0.3, background: T.indigoLight, color: T.indigo }}>
-                        {EXAM_LABELS[e] ?? e}
-                      </span>
-                    ))}
-                    {pack.subject && (
-                      <span style={{ fontSize: 9, fontWeight: 800, padding: "2px 7px", borderRadius: 20, textTransform: "uppercase", letterSpacing: 0.3, background: pill.bg, color: T.text, border: `1px solid ${pill.border}` }}>
-                        {pack.subject}
-                      </span>
-                    )}
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 8, borderTop: `1px solid ${T.border}` }}>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: T.textSec }}>
-                      <b style={{ color: T.indigo, fontWeight: 900 }}>{pack.question_count}</b> {lang === "ta" ? "வினாக்கள்" : "questions"} · ~{estimatedMins} mins
-                    </div>
-                    <span style={{ background: T.indigo, color: "#fff", borderRadius: 9, padding: "6px 14px", fontSize: 11, fontWeight: 800 }}>
-                      {lang === "ta" ? "தொடங்கு →" : "Start →"}
-                    </span>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Creator CTA */}
-        <div style={{ width: "100%", marginTop: 24, background: `linear-gradient(135deg, ${T.indigoDark} 0%, #1a2a6c 100%)`, borderRadius: 20, padding: "20px 18px", textAlign: "left", position: "relative", overflow: "hidden", boxShadow: shadow.indigo }}>
-          <div style={{ position: "absolute", top: -20, right: -20, width: 100, height: 100, borderRadius: "50%", background: "rgba(255,255,255,0.04)" }} />
-          <div style={{ position: "absolute", bottom: -30, right: 20, width: 80, height: 80, borderRadius: "50%", background: "rgba(255,255,255,0.03)" }} />
-
-          <div style={{ fontSize: 22, marginBottom: 6 }}>🎓</div>
-          <div style={{ fontSize: 16, fontWeight: 900, color: "#fff", marginBottom: 4, lineHeight: 1.3 }}>
-            {lang === "ta" ? "நீங்கள் ஒரு ஆசிரியரா அல்லது நிபுணரா?" : "Are you a Teacher or Expert?"}
-          </div>
-          <div style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", marginBottom: 16, lineHeight: 1.6 }}>
-            {lang === "ta"
-              ? "உங்கள் வினாத் தொகுப்புகளை ஆயிரக்கணக்கான TNPSC தேர்வர்களுடன் பகிர்ந்துகொள்ளுங்கள்."
-              : "Share your question packs with thousands of TNPSC aspirants."}
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 18 }}>
-            {creatorSteps.map(step => (
-              <div key={step.n} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div style={{ width: 22, height: 22, borderRadius: "50%", background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, color: "#fff", flexShrink: 0 }}>{step.n}</div>
-                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.8)", lineHeight: 1.4 }}>{step.text}</div>
-              </div>
-            ))}
-          </div>
-
-          <Link
-            href="/login"
-            style={{ width: "100%", padding: "13px", background: "#fff", color: T.indigoDark, borderRadius: 12, fontSize: 14, fontWeight: 800, marginBottom: 14, display: "block", textDecoration: "none", textAlign: "center", boxSizing: "border-box" }}
-          >
-            {lang === "ta" ? "படைப்பாளராக சேரு →" : "Join as Creator →"}
-          </Link>
-
-          <div style={{ borderTop: "1px solid rgba(255,255,255,0.12)", paddingTop: 14 }}>
-            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", marginBottom: 10, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>
-              {lang === "ta" ? "தொடர்பு கொள்ளுங்கள்" : "Contact us"}
-            </div>
-            <div style={{ display: "flex", gap: 10 }}>
-              <a href="https://t.me/MCQPalagu" target="_blank" rel="noopener noreferrer" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "10px", background: "rgba(255,255,255,0.1)", borderRadius: 10, border: "1px solid rgba(255,255,255,0.15)", color: "#fff", textDecoration: "none", fontSize: 13, fontWeight: 700 }}>
-                <TelegramIcon />Telegram
-              </a>
-              <a href="https://www.instagram.com/mcqpalagu" target="_blank" rel="noopener noreferrer" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "10px", background: "rgba(255,255,255,0.1)", borderRadius: 10, border: "1px solid rgba(255,255,255,0.15)", color: "#fff", textDecoration: "none", fontSize: 13, fontWeight: 700 }}>
-                <InstagramIcon />Instagram
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div style={{ height: 24 }} />
       </div>
     </main>
   );
