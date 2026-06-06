@@ -1,3 +1,4 @@
+import "@testing-library/jest-dom";
 import { beforeEach } from "vitest";
 
 // Set env vars before any test module is loaded
