@@ -116,9 +116,17 @@ export default async function HomePage() {
         {/* Main CTA */}
         <Link
           href="/subjects"
-          style={{ width: "100%", background: `linear-gradient(135deg, ${T.indigo}, #5062B8)`, borderRadius: 16, padding: "17px", color: "#fff", fontSize: 16, fontWeight: 700, letterSpacing: -0.2, boxShadow: shadow.indigo, marginBottom: 12, display: "block", textDecoration: "none", textAlign: "center", boxSizing: "border-box" }}
+          style={{ width: "100%", background: `linear-gradient(135deg, ${T.indigo}, #5062B8)`, borderRadius: 14, padding: "15px", color: "#fff", fontSize: 15, fontWeight: 700, letterSpacing: -0.2, boxShadow: shadow.indigo, marginBottom: 10, display: "block", textDecoration: "none", textAlign: "center", boxSizing: "border-box" }}
         >
           {lang === "ta" ? "இலவசமாக பயிற்சி தொடங்கு →" : "Start Practicing Free →"}
+        </Link>
+
+        {/* Mock test CTA */}
+        <Link
+          href="/mock"
+          style={{ width: "100%", background: T.surface, border: `1.5px solid ${T.indigo}`, borderRadius: 14, padding: "14px", color: T.indigo, fontSize: 15, fontWeight: 700, letterSpacing: -0.2, marginBottom: 12, display: "block", textDecoration: "none", textAlign: "center", boxSizing: "border-box" }}
+        >
+          {lang === "ta" ? "Mock Test பொடு →" : "Take a Mock Test →"}
         </Link>
 
         {/* Login button — client island, only when logged out */}
