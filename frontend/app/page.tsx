@@ -124,31 +124,31 @@ export default async function HomePage() {
 
   return (
     <main style={{ width: "100%", background: T.bg }}>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "14px 16px 100px", textAlign: "center" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "10px 16px 100px", textAlign: "center" }}>
 
         {/* ── Compact header ── */}
-        <div style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18 }}>
+        <div style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
           <Image src="/logo.png" alt="MCQ பழகு" height={48} width={180} priority style={{ height: 48, width: "auto" }} />
           <HomeLangToggle initialLang={lang} />
         </div>
 
         {/* ── Tagline ── */}
-        <p style={{ color: T.textSec, fontSize: 14, fontWeight: 500, fontStyle: "italic", marginBottom: 16, lineHeight: 1.6, textAlign: "center" }}>
+        <p style={{ color: T.text, fontSize: 15, fontWeight: 600, fontStyle: "italic", marginBottom: 10, lineHeight: 1.5, textAlign: "center" }}>
           Crack TNPSC with AI-powered practice in Tamil
         </p>
 
-        {/* ── Stats card ── */}
-        <div style={{ width: "100%", background: T.surface, borderRadius: 22, padding: "18px 24px", display: "flex", alignItems: "center", justifyContent: "space-around", marginBottom: 24, boxShadow: shadow.md }}>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
-            <span style={{ fontSize: 24, fontWeight: 900, color: T.text, letterSpacing: -0.6 }}>2000+</span>
-            <span style={{ fontSize: 11, fontWeight: 500, color: T.textTer, textAlign: "center" }}>
+        {/* ── Stats — inline, no box ── */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16, marginBottom: 22 }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
+            <span style={{ fontSize: 18, fontWeight: 900, color: T.text, letterSpacing: -0.4 }}>2000+</span>
+            <span style={{ fontSize: 11, fontWeight: 500, color: T.textTer }}>
               {lang === "ta" ? "தேர்வர்கள்" : "Students"}
             </span>
           </div>
-          <span style={{ fontSize: 22, color: "#E4E7F0" }}>✨</span>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
-            <span style={{ fontSize: 24, fontWeight: 900, color: T.text, letterSpacing: -0.6 }}>14K+</span>
-            <span style={{ fontSize: 11, fontWeight: 500, color: T.textTer, textAlign: "center", maxWidth: 110, lineHeight: 1.3 }}>
+          <span style={{ fontSize: 16, lineHeight: 1 }}>✨</span>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
+            <span style={{ fontSize: 18, fontWeight: 900, color: T.text, letterSpacing: -0.4 }}>14K+</span>
+            <span style={{ fontSize: 11, fontWeight: 500, color: T.textTer, textAlign: "center", maxWidth: 100, lineHeight: 1.3 }}>
               {lang === "ta" ? "வினாக்கள் பதிலளிக்கப்பட்டது" : "Questions Solved"}
             </span>
           </div>
