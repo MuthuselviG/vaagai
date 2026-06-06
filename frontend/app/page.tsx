@@ -118,6 +118,16 @@ export default async function HomePage() {
         {/* Login button — client island, only when logged out */}
         <HomeLoginButton />
 
+        {/* Social proof strip */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: T.indigoLight, border: `1px solid ${T.indigoMid}`, borderRadius: 20, padding: "5px 12px", fontSize: 12, fontWeight: 700, color: T.indigo }}>
+            👥 {lang === "ta" ? "2000+ தேர்வர்கள்" : "2000+ aspirants"}
+          </span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: T.greenBg, border: `1px solid ${T.greenBorder}`, borderRadius: 20, padding: "5px 12px", fontSize: 12, fontWeight: 700, color: T.green }}>
+            ✅ {lang === "ta" ? "14,000+ வினாக்கள் பதிலளிக்கப்பட்டது" : "14,000+ questions solved"}
+          </span>
+        </div>
+
         {/* Current Affairs Card */}
         <Link
           href="/current-affairs"
