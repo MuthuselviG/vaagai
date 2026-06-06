@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { T, shadow } from "../../lib/tokens";
+import QuestionText from "../../components/QuestionText";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -276,8 +277,8 @@ export default function CurrentAffairsPage() {
               <span style={{ fontSize: 11, fontWeight: 700, color: T.textTer }}>#{i + 1}</span>
             </div>
 
-            <div style={{ fontSize: 13, fontWeight: 600, color: T.text, lineHeight: 1.45, marginBottom: 10 }}>
-              {q.question}
+            <div style={{ marginBottom: 10 }}>
+              <QuestionText text={q.question} lang={lang} fontSize={15} />
             </div>
 
             <div style={{ display: "flex", alignItems: "flex-start", gap: 8, background: T.greenBg, border: `1.5px solid ${T.greenBorder}`, borderRadius: 10, padding: "10px 12px" }}>
