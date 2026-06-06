@@ -98,15 +98,10 @@ export default async function HomePage() {
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "12px 16px 100px", textAlign: "center" }}>
 
         {/* Header row */}
-        <div style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+        <div style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
           <Image src="/logo.png" alt="MCQ பழகு" height={48} width={180} priority style={{ height: 48, width: "auto" }} />
           <HomeLangToggle initialLang={lang} />
         </div>
-
-        {/* Tagline — small, italic, two lines, left-aligned, under logo */}
-        <p style={{ width: "100%", color: T.textTer, fontSize: 11, fontWeight: 400, fontStyle: "italic", lineHeight: 1.5, textAlign: "left", margin: "0 0 20px" }}>
-          Crack TNPSC with AI-powered<br />practice in Tamil
-        </p>
 
         {/* Main CTA */}
         <Link
@@ -118,6 +113,26 @@ export default async function HomePage() {
 
         {/* Login button — client island, only when logged out */}
         <HomeLoginButton />
+
+        {/* Compact social proof box */}
+        <div style={{ width: "100%", marginTop: 14, background: T.surface, border: `1px solid ${T.border}`, borderRadius: 14, padding: "12px 14px", boxShadow: shadow.sm }}>
+          <p style={{ fontSize: 12, fontStyle: "italic", color: T.textSec, marginBottom: 10, lineHeight: 1.4 }}>
+            {lang === "ta"
+              ? "தமிழில் AI-powered பயிற்சி மூலம் TNPSC வெற்றி பெறு"
+              : "Crack TNPSC with AI-powered practice in Tamil"}
+          </p>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flex: 1 }}>
+              <span style={{ fontSize: 16, fontWeight: 900, color: T.text, letterSpacing: -0.3 }}>2000+</span>
+              <span style={{ fontSize: 10, fontWeight: 500, color: T.textTer }}>{lang === "ta" ? "தேர்வர்கள்" : "Aspirants"}</span>
+            </div>
+            <span style={{ fontSize: 14, color: T.textTer }}>✨</span>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flex: 1 }}>
+              <span style={{ fontSize: 16, fontWeight: 900, color: T.text, letterSpacing: -0.3 }}>14K+</span>
+              <span style={{ fontSize: 10, fontWeight: 500, color: T.textTer, textAlign: "center", lineHeight: 1.3 }}>{lang === "ta" ? "வினாக்கள் பதிலளிக்கப்பட்டது" : "Questions Solved"}</span>
+            </div>
+          </div>
+        </div>
 
         {/* Current Affairs Card */}
         <Link
