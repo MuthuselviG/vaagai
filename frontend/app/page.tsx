@@ -103,13 +103,13 @@ export default async function HomePage() {
           <HomeLangToggle initialLang={lang} />
         </div>
 
-        {/* Tagline + stats — no box, plain text */}
+        {/* Tagline + stats — always English, no box */}
         <div style={{ width: "100%", marginBottom: 14 }}>
           <p style={{ fontSize: 12, fontStyle: "italic", color: T.textSec, marginBottom: 4, lineHeight: 1.4 }}>
-            {lang === "ta" ? "தமிழில் AI-powered பயிற்சி மூலம் TNPSC வெற்றி பெறு" : "Crack TNPSC with AI-powered practice in Tamil"}
+            Crack TNPSC with AI-powered practice in Tamil
           </p>
           <p style={{ fontSize: 12, fontWeight: 600, color: T.textSec, margin: 0 }}>
-            {lang === "ta" ? "2000+ தேர்வர்கள்" : "2000+ Aspirants"} ✨ {lang === "ta" ? "14K+ வினாக்கள் பதிலளிக்கப்பட்டது" : "14K+ Questions Solved"}
+            2000+ Aspirants ✨ 14,000+ Questions Solved
           </p>
         </div>
 
