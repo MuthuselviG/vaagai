@@ -129,7 +129,7 @@ export default async function HomePage() {
           href="/mock"
           style={{ width: "100%", background: T.surface, border: `1.5px solid ${T.indigo}`, borderRadius: 14, padding: "14px", color: T.indigo, fontSize: 15, fontWeight: 700, letterSpacing: -0.2, marginBottom: 12, display: "block", textDecoration: "none", textAlign: "center", boxSizing: "border-box" }}
         >
-          {lang === "ta" ? "Mock Test பொடு →" : "Take a Mock Test →"}
+          {lang === "ta" ? "Mock Test போடு →" : "Take a Mock Test →"}
         </Link>
 
         {/* Login button — client island, only when logged out */}
