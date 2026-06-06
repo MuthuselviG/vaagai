@@ -56,7 +56,7 @@ export async function generateMetadata({ params }: { params: Promise<{ unit: str
 
 function QCard({ q, num }: { q: CAQuestion; num: number }) {
   return (
-    <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: 18, marginBottom: 14, boxShadow: shadow.sm }}>
+    <div id={q.slug ? q.slug.replace(/\s+/g, "-") : q.id} style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: 18, marginBottom: 14, boxShadow: shadow.sm }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
         <span style={{ fontSize: 11, fontWeight: 700, color: T.textTer, textTransform: "uppercase" as const, letterSpacing: "0.5px" }}>Question {num}</span>
         {q.topic && <span style={{ fontSize: 11, fontWeight: 600, color: T.indigo, background: T.indigoLight, padding: "3px 8px", borderRadius: 8 }}>{q.topic}</span>}
@@ -95,7 +95,7 @@ export default async function CAUnitPage({ params }: { params: Promise<{ unit: s
   const col = UNIT_COLORS[unit];
   const unitIndex = CA_UNIT_ORDER.indexOf(unit);
   const numeral = UNIT_NUMERALS[unitIndex];
-  const questions = await fetchCAForUnit(MONTH, unit, "en");
+  const questions = await fetchCAForUnit(MONTH, unit, "en").catch((): CAQuestion[] => []);
   const otherUnits = CA_UNIT_ORDER.filter((s) => s !== unit);
 
   console.log(`[CAUnitPage] unit=${unit} questions=${questions.length}`);

@@ -77,12 +77,16 @@ export type CAQuestion = {
   subject: string | null;
   published_date: string;
   source_url: string | null;
+  slug: string | null;
 };
 
 export type CAUnitMeta = {
   subject: string;
   count: number;
 };
+
+const CA_QUESTION_SELECT =
+  "id, question, lang, options, correct_option, explanation, topic, subject, published_date, source_url, slug";
 
 // ─── CURRENT AFFAIRS CONSTANTS ────────────────────────────
 
@@ -117,7 +121,7 @@ export const CA_UNIT_ORDER = [
 
 // Returns [firstDayOfMonth, firstDayOfNextMonth] for a "YYYY-MM" string.
 // Used for date-range filtering (published_date is a DATE column, so LIKE won't work).
-function monthRange(month: string): { start: string; endExclusive: string } {
+export function monthRange(month: string): { start: string; endExclusive: string } {
   const [y, m] = month.split("-").map(Number);
   const start = `${month}-01`;
   const nextMonth = m === 12 ? `${y + 1}-01` : `${y}-${String(m + 1).padStart(2, "0")}`;
@@ -267,7 +271,7 @@ export async function fetchCAForUnit(
   const { start, endExclusive } = monthRange(month);
   const { data, error } = await supabase
     .from("current_affairs")
-    .select("id, question, lang, options, correct_option, explanation, topic, subject, published_date, source_url")
+    .select(CA_QUESTION_SELECT)
     .gte("published_date", start)
     .lt("published_date", endExclusive)
     .eq("lang", lang)
@@ -314,7 +318,7 @@ export async function fetchCAMonthlyPreview(
   const { start, endExclusive } = monthRange(month);
   const { data, error } = await supabase
     .from("current_affairs")
-    .select("id, question, lang, options, correct_option, explanation, topic, subject, published_date, source_url")
+    .select(CA_QUESTION_SELECT)
     .gte("published_date", start)
     .lt("published_date", endExclusive)
     .eq("lang", lang)

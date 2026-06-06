@@ -95,24 +95,41 @@ export default async function HomePage() {
 
   return (
     <main style={{ width: "100%", background: T.bg }}>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "24px 24px 100px", textAlign: "center" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "12px 16px 100px", textAlign: "center" }}>
 
-        {/* lang toggle — client island */}
-        <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
+        {/* Header row */}
+        <div style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+          <Image src="/logo.png" alt="MCQ பழகு" height={48} width={180} priority style={{ height: 48, width: "auto" }} />
           <HomeLangToggle initialLang={lang} />
         </div>
 
-        <Image src="/logo.png" alt="MCQ பழகு" height={80} width={300} priority style={{ height: 80, width: "auto", marginBottom: 8 }} />
-        <p style={{ color: T.textSec, fontSize: 16, fontWeight: 500, marginBottom: 20, lineHeight: 1.6 }}>
-          Crack TNPSC with AI-powered practice in Tamil
-        </p>
+        {/* Tagline + stats — always English, no box */}
+        <div style={{ width: "100%", marginBottom: 14 }}>
+          <p style={{ fontSize: 20, fontWeight: 600, fontStyle: "italic", color: T.text, marginBottom: 4, lineHeight: 1.3 }}>
+            Crack TNPSC with AI-powered practice in Tamil
+          </p>
+          <p style={{ fontSize: 12, fontWeight: 600, color: T.textSec, margin: "0 0 2px" }}>
+            2000+ Aspirants ✨ 14,000+ Questions Solved
+          </p>
+          <p style={{ fontSize: 12, fontWeight: 600, color: T.textSec, margin: 0 }}>
+            தினசரி Current Affairs ✨ தமிழ் விளக்கங்கள்
+          </p>
+        </div>
 
         {/* Main CTA */}
         <Link
           href="/subjects"
-          style={{ width: "100%", background: `linear-gradient(135deg, ${T.indigo}, #5062B8)`, borderRadius: 16, padding: "17px", color: "#fff", fontSize: 16, fontWeight: 700, letterSpacing: -0.2, boxShadow: shadow.indigo, marginBottom: 12, display: "block", textDecoration: "none", textAlign: "center", boxSizing: "border-box" }}
+          style={{ width: "100%", background: `linear-gradient(135deg, ${T.indigo}, #5062B8)`, borderRadius: 14, padding: "15px", color: "#fff", fontSize: 15, fontWeight: 700, letterSpacing: -0.2, boxShadow: shadow.indigo, marginBottom: 10, display: "block", textDecoration: "none", textAlign: "center", boxSizing: "border-box" }}
         >
           {lang === "ta" ? "இலவசமாக பயிற்சி தொடங்கு →" : "Start Practicing Free →"}
+        </Link>
+
+        {/* Mock test CTA */}
+        <Link
+          href="/mock"
+          style={{ width: "100%", background: T.surface, border: `1.5px solid ${T.indigo}`, borderRadius: 14, padding: "14px", color: T.indigo, fontSize: 15, fontWeight: 700, letterSpacing: -0.2, marginBottom: 12, display: "block", textDecoration: "none", textAlign: "center", boxSizing: "border-box" }}
+        >
+          {lang === "ta" ? "Mock Test போடு →" : "Take a Mock Test →"}
         </Link>
 
         {/* Login button — client island, only when logged out */}
@@ -151,7 +168,7 @@ export default async function HomePage() {
           </div>
         </Link>
 
-        {/* Featured packs — server-rendered, no layout shift */}
+        {/* Featured packs */}
         {featuredPacks.length > 0 && (
           <div style={{ width: "100%", marginTop: 24 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>

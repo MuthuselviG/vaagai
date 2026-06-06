@@ -55,7 +55,7 @@ export async function generateMetadata({ params }: { params: Promise<{ unit: str
 
 function QCard({ q, num }: { q: CAQuestion; num: number }) {
   return (
-    <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: 18, marginBottom: 14, boxShadow: shadow.sm }}>
+    <div id={q.slug ? q.slug.replace(/\s+/g, "-") : q.id} style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: 18, marginBottom: 14, boxShadow: shadow.sm }}>
       <div style={{ fontSize: 11, fontWeight: 700, color: T.textTer, textTransform: "uppercase" as const, letterSpacing: "0.5px", marginBottom: 10 }}>வினா {num}</div>
       <p style={{ fontSize: 15, fontWeight: 600, color: T.text, lineHeight: 1.6, marginBottom: 14 }}>{q.question}</p>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 7, marginBottom: 14 }}>
@@ -91,7 +91,7 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
   const col = UNIT_COLORS[unit];
   const unitIndex = CA_UNIT_ORDER.indexOf(unit);
   const numeral = UNIT_NUMERALS[unitIndex];
-  const questions = await fetchCAForUnit(MONTH, unit, "ta");
+  const questions = await fetchCAForUnit(MONTH, unit, "ta").catch((): CAQuestion[] => []);
   const otherUnits = CA_UNIT_ORDER.filter((s) => s !== unit);
 
   console.log(`[CAUnitTamilPage] unit=${unit} questions=${questions.length}`);
