@@ -9,6 +9,7 @@ import {
   CA_UNIT_LABELS,
   CA_UNIT_SUBJECTS,
   CAQuestion,
+  CAUnitMeta,
 } from "../../../../lib/supabase";
 import { T, shadow } from "../../../../lib/tokens";
 
@@ -73,8 +74,8 @@ function QCard({ q, num }: { q: CAQuestion; num: number }) {
 
 export default async function CAMonthlyPage() {
   const [enCounts, ...previews] = await Promise.all([
-    fetchCAMonthlyUnitCounts(MONTH, "en"),
-    ...CA_UNIT_ORDER.map((slug) => fetchCAMonthlyPreview(MONTH, slug, "en")),
+    fetchCAMonthlyUnitCounts(MONTH, "en").catch((): CAUnitMeta[] => []),
+    ...CA_UNIT_ORDER.map((slug) => fetchCAMonthlyPreview(MONTH, slug, "en").catch((): CAQuestion[] => [])),
   ]);
 
   const totalCount = enCounts.reduce((sum, c) => sum + c.count, 0);

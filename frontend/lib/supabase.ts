@@ -121,7 +121,7 @@ export const CA_UNIT_ORDER = [
 
 // Returns [firstDayOfMonth, firstDayOfNextMonth] for a "YYYY-MM" string.
 // Used for date-range filtering (published_date is a DATE column, so LIKE won't work).
-function monthRange(month: string): { start: string; endExclusive: string } {
+export function monthRange(month: string): { start: string; endExclusive: string } {
   const [y, m] = month.split("-").map(Number);
   const start = `${month}-01`;
   const nextMonth = m === 12 ? `${y + 1}-01` : `${y}-${String(m + 1).padStart(2, "0")}`;

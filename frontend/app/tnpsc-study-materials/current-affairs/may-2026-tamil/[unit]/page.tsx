@@ -91,7 +91,7 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
   const col = UNIT_COLORS[unit];
   const unitIndex = CA_UNIT_ORDER.indexOf(unit);
   const numeral = UNIT_NUMERALS[unitIndex];
-  const questions = await fetchCAForUnit(MONTH, unit, "ta");
+  const questions = await fetchCAForUnit(MONTH, unit, "ta").catch((): CAQuestion[] => []);
   const otherUnits = CA_UNIT_ORDER.filter((s) => s !== unit);
 
   console.log(`[CAUnitTamilPage] unit=${unit} questions=${questions.length}`);

@@ -95,7 +95,7 @@ export default async function CAUnitPage({ params }: { params: Promise<{ unit: s
   const col = UNIT_COLORS[unit];
   const unitIndex = CA_UNIT_ORDER.indexOf(unit);
   const numeral = UNIT_NUMERALS[unitIndex];
-  const questions = await fetchCAForUnit(MONTH, unit, "en");
+  const questions = await fetchCAForUnit(MONTH, unit, "en").catch((): CAQuestion[] => []);
   const otherUnits = CA_UNIT_ORDER.filter((s) => s !== unit);
 
   console.log(`[CAUnitPage] unit=${unit} questions=${questions.length}`);
