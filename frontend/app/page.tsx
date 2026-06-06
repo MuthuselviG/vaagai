@@ -103,30 +103,46 @@ export default async function HomePage() {
           <HomeLangToggle initialLang={lang} />
         </div>
 
-        <p style={{ color: T.textSec, fontSize: 15, fontWeight: 500, marginBottom: 16, lineHeight: 1.5, textAlign: "center" }}>
-          Crack TNPSC with AI-powered practice in Tamil
+        {/* Hero headline */}
+        <p style={{ color: T.text, fontSize: 22, fontWeight: 900, marginBottom: 8, lineHeight: 1.3, textAlign: "center", letterSpacing: -0.3 }}>
+          {lang === "ta"
+            ? <span>TNPSC-ல் வெற்றி பெற <span style={{ color: T.indigo }}>தினமும் பயிற்சி</span> செய்</span>
+            : <span>Crack TNPSC with <span style={{ color: T.indigo }}>AI-powered</span> Tamil Practice</span>}
         </p>
+
+        {/* Progress path — testbook style */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, marginBottom: 14, flexWrap: "wrap" }}>
+          {(lang === "ta"
+            ? ["படி", "பயிற்சி செய்", "மேம்படு", "தேர்ச்சி பெறு"]
+            : ["Learn", "Practice", "Improve", "Succeed"]
+          ).map((step, i, arr) => (
+            <span key={step} style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: T.indigo }}>{step}</span>
+              {i < arr.length - 1 && <span style={{ color: T.textTer, fontSize: 11 }}>▶</span>}
+            </span>
+          ))}
+        </div>
+
+        {/* Social proof pills — directly under headline */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 18, flexWrap: "wrap" }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: T.indigoLight, border: `1px solid ${T.indigoMid}`, borderRadius: 20, padding: "6px 14px", fontSize: 13, fontWeight: 700, color: T.indigo }}>
+            👥 {lang === "ta" ? "2000+ தேர்வர்கள்" : "2000+ Students"}
+          </span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: T.greenBg, border: `1px solid ${T.greenBorder}`, borderRadius: 20, padding: "6px 14px", fontSize: 13, fontWeight: 700, color: T.green }}>
+            ✅ {lang === "ta" ? "14,000+ வினாக்கள் பதிலளிக்கப்பட்டது" : "14,000+ Questions Solved"}
+          </span>
+        </div>
 
         {/* Main CTA */}
         <Link
           href="/subjects"
-          style={{ width: "100%", background: `linear-gradient(135deg, ${T.indigo}, #5062B8)`, borderRadius: 16, padding: "17px", color: "#fff", fontSize: 16, fontWeight: 700, letterSpacing: -0.2, boxShadow: shadow.indigo, marginBottom: 12, display: "block", textDecoration: "none", textAlign: "center", boxSizing: "border-box" }}
+          style={{ width: "100%", background: `linear-gradient(135deg, ${T.indigo}, #5062B8)`, borderRadius: 16, padding: "17px", color: "#fff", fontSize: 16, fontWeight: 700, letterSpacing: -0.2, boxShadow: shadow.indigo, marginBottom: 10, display: "block", textDecoration: "none", textAlign: "center", boxSizing: "border-box" }}
         >
           {lang === "ta" ? "இலவசமாக பயிற்சி தொடங்கு →" : "Start Practicing Free →"}
         </Link>
 
         {/* Login button — client island, only when logged out */}
         <HomeLoginButton />
-
-        {/* Social proof strip */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: T.indigoLight, border: `1px solid ${T.indigoMid}`, borderRadius: 20, padding: "5px 12px", fontSize: 12, fontWeight: 700, color: T.indigo }}>
-            👥 {lang === "ta" ? "2000+ தேர்வர்கள்" : "2000+ aspirants"}
-          </span>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: T.greenBg, border: `1px solid ${T.greenBorder}`, borderRadius: 20, padding: "5px 12px", fontSize: 12, fontWeight: 700, color: T.green }}>
-            ✅ {lang === "ta" ? "14,000+ வினாக்கள் பதிலளிக்கப்பட்டது" : "14,000+ questions solved"}
-          </span>
-        </div>
 
         {/* Current Affairs Card */}
         <Link
