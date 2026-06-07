@@ -101,7 +101,7 @@ export default async function CAUnitPage({ params }: { params: Promise<{ unit: s
   return (
     <>
       <nav style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: shadow.sm }}>
-        <Link href="/tnpsc-study-materials/current-affairs/june-2026" style={{ height: 34, borderRadius: 10, background: T.bg, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 6, padding: "0 12px", textDecoration: "none", color: T.text, fontSize: 13, fontWeight: 600 }}>← படிப்பகம்</Link>
+        <Link href="/tnpsc-study-materials/current-affairs/june-2026" style={{ height: 34, borderRadius: 10, background: T.bg, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 6, padding: "0 12px", textDecoration: "none", color: T.text, fontSize: 13, fontWeight: 600 }}>← June 2026</Link>
         <Link href={`/tnpsc-study-materials/current-affairs/june-2026-tamil/${unit}`} style={{ background: col.bg, color: col.text, border: `1px solid ${col.border}`, borderRadius: 20, padding: "5px 12px", fontSize: 12, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" as const }}>
           தமிழில் படிக்க →
         </Link>
@@ -166,8 +166,8 @@ export default async function CAUnitPage({ params }: { params: Promise<{ unit: s
           {[
             { href: "/tnpsc-study-materials/current-affairs/june-2026", icon: "📅", bg: T.indigoLight, title: "June 2026 — All Units", sub: "All current affairs for June 2026" },
             { href: "/current-affairs", icon: "📰", bg: T.greenBg, title: "Today's Current Affairs", sub: "Daily updated questions" },
-            { href: "/pyq/group4", icon: "📋", bg: "#FEF3C7", title: "Group 4 PYQ Practice", sub: "Previous Year Question Papers" },
-            { href: "/tnpsc-study-materials/syllabus/group-4", icon: "📚", bg: T.indigoLight, title: "TNPSC Group 4 Syllabus", sub: "Full unit-wise syllabus breakdown" },
+            { href: "/pyq", icon: "📋", bg: "#FEF3C7", title: "Group 4 PYQ Practice", sub: "Previous Year Question Papers" },
+            { href: "/mock", icon: "📝", bg: "#F5F3FF", title: "Mock Test", sub: "Full 200-question timed test" },
           ].map((link) => (
             <Link key={link.href} href={link.href} style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 12, padding: "14px 16px", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: shadow.sm }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -180,6 +180,16 @@ export default async function CAUnitPage({ params }: { params: Promise<{ unit: s
               <span style={{ color: T.textTer, fontSize: 18 }}>›</span>
             </Link>
           ))}
+          <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 12, padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", opacity: 0.55 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: T.indigoLight, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>📚</div>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: T.text }}>TNPSC Group 4 Syllabus</div>
+                <div style={{ fontSize: 12, color: T.textSec, marginTop: 1 }}>Unit-wise syllabus breakdown</div>
+              </div>
+            </div>
+            <span style={{ fontSize: 10, fontWeight: 700, color: T.textTer, background: T.bg, border: `1px solid ${T.border}`, borderRadius: 20, padding: "3px 10px", letterSpacing: "0.4px", textTransform: "uppercase" as const }}>Coming Soon</span>
+          </div>
         </div>
       </div>
 

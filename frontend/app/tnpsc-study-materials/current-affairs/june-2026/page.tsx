@@ -219,9 +219,9 @@ export default async function CAMonthlyPage() {
         <div style={{ display: "flex", flexDirection: "column" as const, gap: 10, marginBottom: 24 }}>
           {[
             { href: "/current-affairs", icon: "📰", bg: T.greenBg, title: "Today's Current Affairs", sub: "Daily updated questions" },
-            { href: "/pyq/group4", icon: "📋", bg: "#FEF3C7", title: "Group 4 PYQ Practice", sub: "Previous Year Question Papers" },
-            { href: "/tnpsc-study-materials/syllabus/group-4", icon: "📚", bg: T.indigoLight, title: "TNPSC Group 4 Syllabus", sub: "Full unit-wise syllabus breakdown" },
-            { href: "/tnpsc-study-materials/current-affairs/june-2026-tamil", icon: "🔤", bg: "#F5F3FF", title: "தமிழில் படிக்க", sub: "Read June 2026 in Tamil" },
+            { href: "/pyq", icon: "📋", bg: "#FEF3C7", title: "Group 4 PYQ Practice", sub: "Previous Year Question Papers" },
+            { href: "/mock", icon: "📝", bg: "#F5F3FF", title: "Mock Test", sub: "Full 200-question timed test" },
+            { href: "/tnpsc-study-materials/current-affairs/june-2026-tamil", icon: "🔤", bg: T.indigoLight, title: "தமிழில் படிக்க", sub: "Read June 2026 in Tamil" },
           ].map((link) => (
             <Link key={link.href} href={link.href} style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 12, padding: "14px 16px", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: shadow.sm }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -234,6 +234,16 @@ export default async function CAMonthlyPage() {
               <span style={{ color: T.textTer, fontSize: 18 }}>›</span>
             </Link>
           ))}
+          <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 12, padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", opacity: 0.55 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: T.indigoLight, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>📚</div>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: T.text }}>TNPSC Group 4 Syllabus</div>
+                <div style={{ fontSize: 12, color: T.textSec, marginTop: 1 }}>Unit-wise syllabus breakdown</div>
+              </div>
+            </div>
+            <span style={{ fontSize: 10, fontWeight: 700, color: T.textTer, background: T.bg, border: `1px solid ${T.border}`, borderRadius: 20, padding: "3px 10px", letterSpacing: "0.4px", textTransform: "uppercase" as const }}>Coming Soon</span>
+          </div>
         </div>
       </div>
 

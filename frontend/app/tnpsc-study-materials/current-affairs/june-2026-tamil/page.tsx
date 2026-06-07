@@ -193,9 +193,9 @@ export default async function CAMonthlyTamilPage() {
         <div style={{ display: "flex", flexDirection: "column" as const, gap: 10, marginBottom: 24 }}>
           {[
             { href: "/current-affairs", icon: "📰", bg: T.greenBg, title: "இன்றைய நடப்பு நிகழ்வுகள்", sub: "தினமும் புதுப்பிக்கப்படும் வினாக்கள்" },
-            { href: "/pyq/group4", icon: "📋", bg: "#FEF3C7", title: "குரூப் 4 PYQ பயிற்சி", sub: "முந்தைய ஆண்டு வினாத்தாள்கள்" },
-            { href: "/tnpsc-study-materials/syllabus/group-4", icon: "📚", bg: T.indigoLight, title: "TNPSC குரூப் 4 பாடத்திட்டம்", sub: "அலகு வாரியான பாடத்திட்ட விவரம்" },
-            { href: "/tnpsc-study-materials/current-affairs/june-2026", icon: "🔤", bg: "#F5F3FF", title: "ஆங்கிலத்தில் படிக்க →", sub: "June 2026 in English" },
+            { href: "/pyq", icon: "📋", bg: "#FEF3C7", title: "குரூப் 4 PYQ பயிற்சி", sub: "முந்தைய ஆண்டு வினாத்தாள்கள்" },
+            { href: "/mock", icon: "📝", bg: "#F5F3FF", title: "மாக் டெஸ்ட்", sub: "200 வினாக்கள் — 3 மணி நேர தேர்வு" },
+            { href: "/tnpsc-study-materials/current-affairs/june-2026", icon: "🔤", bg: T.indigoLight, title: "ஆங்கிலத்தில் படிக்க →", sub: "June 2026 in English" },
           ].map((link) => (
             <Link key={link.href} href={link.href} style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 12, padding: "14px 16px", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: shadow.sm }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -208,6 +208,16 @@ export default async function CAMonthlyTamilPage() {
               <span style={{ color: T.textTer, fontSize: 18 }}>›</span>
             </Link>
           ))}
+          <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 12, padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", opacity: 0.55 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: T.indigoLight, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>📚</div>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: T.text }}>TNPSC குரூப் 4 பாடத்திட்டம்</div>
+                <div style={{ fontSize: 12, color: T.textSec, marginTop: 1 }}>அலகு வாரியான பாடத்திட்ட விவரம்</div>
+              </div>
+            </div>
+            <span style={{ fontSize: 10, fontWeight: 700, color: T.textTer, background: T.bg, border: `1px solid ${T.border}`, borderRadius: 20, padding: "3px 10px", letterSpacing: "0.4px", textTransform: "uppercase" as const }}>விரைவில்</span>
+          </div>
         </div>
       </div>
 
