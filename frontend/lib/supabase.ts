@@ -470,3 +470,24 @@ export async function verifyCreator(creatorId: string): Promise<void> {
   const { error } = await supabase.from("creators").update({ verified: true }).eq("id", creatorId);
   if (error) throw error;
 }
+
+export async function fetchCAAvailableMonths(): Promise<string[]> {
+  const { data, error } = await supabase
+    .from("current_affairs")
+    .select("published_date")
+    .order("published_date", { ascending: false });
+  if (error) throw error;
+  const months = [...new Set((data ?? []).map((r: any) =>
+    r.published_date.slice(0, 7)
+  ))];
+  const MONTH_NAMES: Record<string, string> = {
+    "01": "january", "02": "february", "03": "march",
+    "04": "april", "05": "may", "06": "june",
+    "07": "july", "08": "august", "09": "september",
+    "10": "october", "11": "november", "12": "december",
+  };
+  return months.map((m) => {
+    const [year, month] = m.split("-");
+    return `${MONTH_NAMES[month]}-${year}`;
+  });
+}
