@@ -193,8 +193,8 @@ export default async function CAMonthlyTamilPage() {
         <div style={{ display: "flex", flexDirection: "column" as const, gap: 10, marginBottom: 24 }}>
           {[
             { href: "/current-affairs", icon: "📰", bg: T.greenBg, title: "இன்றைய நடப்பு நிகழ்வுகள்", sub: "தினமும் புதுப்பிக்கப்படும் வினாக்கள்" },
-            { href: "/pyq", icon: "📋", bg: "#FEF3C7", title: "குரூப் 4 PYQ பயிற்சி", sub: "முந்தைய ஆண்டு வினாத்தாள்கள்" },
-            { href: "/mock", icon: "📝", bg: "#F5F3FF", title: "மாக் டெஸ்ட்", sub: "200 வினாக்கள் — 3 மணி நேர தேர்வு" },
+            { href: "/subjects", icon: "📋", bg: "#FEF3C7", title: "குரூப் 4 PYQ பயிற்சி", sub: "முந்தைய ஆண்டு வினாத்தாள்கள்" },
+            { href: "/mock", icon: "📝", bg: "#F5F3FF", title: "Full Mock Test / மாக் தேர்வு", sub: "200 வினாக்கள் · 3 மணி நேரம் · இலவசம்" },
             { href: "/tnpsc-study-materials/current-affairs/june-2026", icon: "🔤", bg: T.indigoLight, title: "ஆங்கிலத்தில் படிக்க →", sub: "June 2026 in English" },
           ].map((link) => (
             <Link key={link.href} href={link.href} style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 12, padding: "14px 16px", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: shadow.sm }}>

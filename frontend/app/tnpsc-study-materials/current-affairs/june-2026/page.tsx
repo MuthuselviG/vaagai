@@ -219,8 +219,8 @@ export default async function CAMonthlyPage() {
         <div style={{ display: "flex", flexDirection: "column" as const, gap: 10, marginBottom: 24 }}>
           {[
             { href: "/current-affairs", icon: "📰", bg: T.greenBg, title: "Today's Current Affairs", sub: "Daily updated questions" },
-            { href: "/pyq", icon: "📋", bg: "#FEF3C7", title: "Group 4 PYQ Practice", sub: "Previous Year Question Papers" },
-            { href: "/mock", icon: "📝", bg: "#F5F3FF", title: "Mock Test", sub: "Full 200-question timed test" },
+            { href: "/subjects", icon: "📋", bg: "#FEF3C7", title: "Group 4 PYQ Practice", sub: "Previous Year Question Papers" },
+            { href: "/mock", icon: "📝", bg: "#F5F3FF", title: "Full Mock Test / மாக் தேர்வு", sub: "200 questions · 3 hours · Free" },
             { href: "/tnpsc-study-materials/current-affairs/june-2026-tamil", icon: "🔤", bg: T.indigoLight, title: "தமிழில் படிக்க", sub: "Read June 2026 in Tamil" },
           ].map((link) => (
             <Link key={link.href} href={link.href} style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 12, padding: "14px 16px", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: shadow.sm }}>

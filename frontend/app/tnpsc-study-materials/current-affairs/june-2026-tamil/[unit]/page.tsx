@@ -161,8 +161,8 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
           {[
             { href: "/tnpsc-study-materials/current-affairs/june-2026-tamil", icon: "📅", bg: T.indigoLight, title: "ஜூன் 2026 — அனைத்து அலகுகள்", sub: "6 அலகுகளில் அனைத்து வினாக்கள்" },
             { href: "/current-affairs", icon: "📰", bg: T.greenBg, title: "இன்றைய நடப்பு நிகழ்வுகள்", sub: "தினமும் புதுப்பிக்கப்படும் வினாக்கள்" },
-            { href: "/pyq", icon: "📋", bg: "#FEF3C7", title: "குரூப் 4 PYQ பயிற்சி", sub: "முந்தைய ஆண்டு வினாத்தாள்கள்" },
-            { href: "/mock", icon: "📝", bg: "#F5F3FF", title: "மாக் டெஸ்ட்", sub: "200 வினாக்கள் — 3 மணி நேர தேர்வு" },
+            { href: "/subjects", icon: "📋", bg: "#FEF3C7", title: "குரூப் 4 PYQ பயிற்சி", sub: "முந்தைய ஆண்டு வினாத்தாள்கள்" },
+            { href: "/mock", icon: "📝", bg: "#F5F3FF", title: "Full Mock Test / மாக் தேர்வு", sub: "200 வினாக்கள் · 3 மணி நேரம் · இலவசம்" },
           ].map((link) => (
             <Link key={link.href} href={link.href} style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 12, padding: "14px 16px", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: shadow.sm }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
