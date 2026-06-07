@@ -44,9 +44,24 @@ const UNIT_PILLS = [
   { en: "🏺 TN History", ta: "🏺 TN வரலாறு",  bg: "#E0F7FA",     border: "#A5D8E3",     color: "#0E7490" },
 ];
 
-function formatMonthSlug(slug: string): string {
+const MONTH_NAMES_EN: Record<string, string> = {
+  january: "January", february: "February", march: "March",
+  april: "April", may: "May", june: "June",
+  july: "July", august: "August", september: "September",
+  october: "October", november: "November", december: "December",
+};
+
+const MONTH_NAMES_TA: Record<string, string> = {
+  january: "ஜனவரி", february: "பிப்ரவரி", march: "மார்ச்",
+  april: "ஏப்ரல்", may: "மே", june: "ஜூன்",
+  july: "ஜூலை", august: "ஆகஸ்ட்", september: "செப்டம்பர்",
+  october: "அக்டோபர்", november: "நவம்பர்", december: "டிசம்பர்",
+};
+
+function formatMonthSlug(slug: string, lang: "en" | "ta"): string {
   const [name, year] = slug.split("-");
-  return `${name.charAt(0).toUpperCase() + name.slice(1)} ${year}`;
+  const names = lang === "ta" ? MONTH_NAMES_TA : MONTH_NAMES_EN;
+  return `${names[name] ?? name} ${year}`;
 }
 
 export default async function StudyMaterialsPage() {
@@ -79,7 +94,7 @@ export default async function StudyMaterialsPage() {
         </div>
 
         {months.map((month) => {
-          const label = formatMonthSlug(month);
+          const label = formatMonthSlug(month, lang);
           const enHref = `/tnpsc-study-materials/current-affairs/${month}`;
           const taHref = `/tnpsc-study-materials/current-affairs/${month}/tamil`;
           return (
@@ -109,7 +124,7 @@ export default async function StudyMaterialsPage() {
                     background: T.indigo, color: "white", borderRadius: 10, padding: 11,
                     fontSize: 13, fontWeight: 700, textDecoration: "none",
                   }}>
-                    📖 Read {label}
+                    {lang === "ta" ? `📖 ${label} படிக்க` : `📖 Read ${label}`}
                   </Link>
                   <Link href={taHref} style={{
                     background: T.indigoLight, color: T.indigo,
