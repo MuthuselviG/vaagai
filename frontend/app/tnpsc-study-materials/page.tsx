@@ -119,21 +119,21 @@ export default async function StudyMaterialsPage() {
                   ))}
                 </div>
                 <div style={{ display: "flex", gap: 8 }}>
-                  <Link href={enHref} style={{
+                  <Link href={lang === "ta" ? taHref : enHref} style={{
                     flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
                     background: T.indigo, color: "white", borderRadius: 10, padding: 11,
                     fontSize: 13, fontWeight: 700, textDecoration: "none",
                   }}>
                     {lang === "ta" ? `📖 ${label} படிக்க` : `📖 Read ${label}`}
                   </Link>
-                  <Link href={taHref} style={{
+                  <Link href={lang === "ta" ? enHref : taHref} style={{
                     background: T.indigoLight, color: T.indigo,
                     border: `1px solid ${T.indigoMid}`,
                     borderRadius: 10, padding: "11px 14px",
                     fontSize: 13, fontWeight: 600,
                     textDecoration: "none", whiteSpace: "nowrap" as const,
                   }}>
-                    தமிழ்
+                    {lang === "ta" ? "English" : "தமிழ்"}
                   </Link>
                 </div>
               </div>
