@@ -167,7 +167,7 @@ export default async function CAUnitPage({ params }: { params: Promise<{ unit: s
             { href: "/tnpsc-study-materials/current-affairs/june-2026", icon: "📅", bg: T.indigoLight, title: "June 2026 — All Units", sub: "All current affairs for June 2026" },
             { href: "/current-affairs", icon: "📰", bg: T.greenBg, title: "Today's Current Affairs", sub: "Daily updated questions" },
             { href: "/subjects", icon: "📋", bg: "#FEF3C7", title: "Group 4 PYQ Practice", sub: "Previous Year Question Papers" },
-            { href: "/mock", icon: "📝", bg: "#F5F3FF", title: "Full Mock Test / மாக் தேர்வு", sub: "200 questions · 3 hours · Free" },
+            { href: "/mock", icon: "📝", bg: "#F5F3FF", title: "Full Mock Test", sub: "200 questions · 3 hours · Free" },
           ].map((link) => (
             <Link key={link.href} href={link.href} style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 12, padding: "14px 16px", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: shadow.sm }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
