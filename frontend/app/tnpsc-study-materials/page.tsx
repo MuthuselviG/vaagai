@@ -96,7 +96,7 @@ export default async function StudyMaterialsPage() {
         {months.map((month) => {
           const label = formatMonthSlug(month, lang);
           const enHref = `/tnpsc-study-materials/current-affairs/${month}`;
-          const taHref = `/tnpsc-study-materials/current-affairs/${month}/tamil`;
+          const taHref = `/tnpsc-study-materials/current-affairs/${month}-tamil`;
           return (
             <div key={month} style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, overflow: "hidden", marginBottom: 12, boxShadow: shadow.sm }}>
               <div style={{ background: `linear-gradient(135deg, ${T.indigo} 0%, ${T.indigoDark} 100%)`, padding: "14px 16px 12px" }}>

@@ -15,7 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       },
       {
-        url: `${BASE}/tnpsc-study-materials/current-affairs/${month}/tamil/${slug}`,
+        url: `${BASE}/tnpsc-study-materials/current-affairs/${month}-tamil/${slug}`,
         lastModified: new Date(),
         changeFrequency: "weekly" as const,
         priority: 0.6,
@@ -29,7 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
       },
       {
-        url: `${BASE}/tnpsc-study-materials/current-affairs/${month}/tamil`,
+        url: `${BASE}/tnpsc-study-materials/current-affairs/${month}-tamil`,
         lastModified: new Date(),
         changeFrequency: "weekly" as const,
         priority: 0.8,

@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://mcqpalagu.in/tnpsc-study-materials/current-affairs/june-2026",
     languages: {
-      ta: "https://mcqpalagu.in/tnpsc-study-materials/current-affairs/june-2026/tamil",
+      ta: "https://mcqpalagu.in/tnpsc-study-materials/current-affairs/june-2026-tamil",
     },
   },
 };
@@ -116,7 +116,7 @@ export default async function CAMonthlyPage() {
       {faqItems.length > 0 && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />}
       <nav style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: shadow.sm }}>
         <Link href="/tnpsc-study-materials" style={{ height: 34, borderRadius: 10, background: T.bg, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 6, padding: "0 12px", textDecoration: "none", color: T.text, fontSize: 13, fontWeight: 600 }}>← படிப்பகம்</Link>
-        <Link href="/tnpsc-study-materials/current-affairs/june-2026/tamil" style={{ background: T.indigoLight, color: T.indigo, border: `1px solid ${T.indigoMid}`, borderRadius: 20, padding: "5px 12px", fontSize: 12, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" as const }}>
+        <Link href="/tnpsc-study-materials/current-affairs/june-2026-tamil" style={{ background: T.indigoLight, color: T.indigo, border: `1px solid ${T.indigoMid}`, borderRadius: 20, padding: "5px 12px", fontSize: 12, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" as const }}>
           தமிழில் படிக்க →
         </Link>
       </nav>
@@ -221,7 +221,7 @@ export default async function CAMonthlyPage() {
             { href: "/current-affairs", icon: "📰", bg: T.greenBg, title: "Today's Current Affairs", sub: "Daily updated questions" },
             { href: "/pyq/group4", icon: "📋", bg: "#FEF3C7", title: "Group 4 PYQ Practice", sub: "Previous Year Question Papers" },
             { href: "/tnpsc-study-materials/syllabus/group-4", icon: "📚", bg: T.indigoLight, title: "TNPSC Group 4 Syllabus", sub: "Full unit-wise syllabus breakdown" },
-            { href: "/tnpsc-study-materials/current-affairs/june-2026/tamil", icon: "🔤", bg: "#F5F3FF", title: "தமிழில் படிக்க", sub: "Read June 2026 in Tamil" },
+            { href: "/tnpsc-study-materials/current-affairs/june-2026-tamil", icon: "🔤", bg: "#F5F3FF", title: "தமிழில் படிக்க", sub: "Read June 2026 in Tamil" },
           ].map((link) => (
             <Link key={link.href} href={link.href} style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 12, padding: "14px 16px", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: shadow.sm }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>

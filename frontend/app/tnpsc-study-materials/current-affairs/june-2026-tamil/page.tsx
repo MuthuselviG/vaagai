@@ -8,8 +8,8 @@ import {
   CA_UNIT_SUBJECTS,
   CAQuestion,
   CAUnitMeta,
-} from "../../../../../lib/supabase";
-import { T, shadow } from "../../../../../lib/tokens";
+} from "../../../../lib/supabase";
+import { T, shadow } from "../../../../lib/tokens";
 
 export const revalidate = 86400;
 
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   title: "TNPSC Group 4 Current Affairs June 2026 in Tamil | Free Test",
   description: "TNPSC குரூப் 4 மற்றும் குரூப் 2 தேர்வுகளுக்கான ஜூன் 2026 நடப்பு நிகழ்வுகள் வினாக்கள். சமச்சீர் பாடத்திட்ட விளக்கங்களுடன் இலவச ஆன்லைன் பயிற்சி.",
   alternates: {
-    canonical: "https://mcqpalagu.in/tnpsc-study-materials/current-affairs/june-2026/tamil",
+    canonical: "https://mcqpalagu.in/tnpsc-study-materials/current-affairs/june-2026-tamil",
     languages: { en: "https://mcqpalagu.in/tnpsc-study-materials/current-affairs/june-2026" },
   },
 };
@@ -175,7 +175,7 @@ export default async function CAMonthlyTamilPage() {
                   : qs.map((q, i) => <QCard key={q.id} q={q} num={i + 1} />)
                 }
                 <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-                  <Link href={`/tnpsc-study-materials/current-affairs/june-2026/tamil/${slug}`} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 11, borderRadius: 10, border: `1.5px solid ${col.border}`, background: col.bg, color: col.text, fontSize: 13, fontWeight: 700, textDecoration: "none" }}>
+                  <Link href={`/tnpsc-study-materials/current-affairs/june-2026-tamil/${slug}`} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 11, borderRadius: 10, border: `1.5px solid ${col.border}`, background: col.bg, color: col.text, fontSize: 13, fontWeight: 700, textDecoration: "none" }}>
                     📖 {count} வினாக்களை படிக்கவும் →
                   </Link>
                   <Link href={`/practice/current-affairs/${slug}?month=june-2026&lang=ta`} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 11, borderRadius: 10, background: col.btn, color: "white", fontSize: 13, fontWeight: 700, textDecoration: "none", border: "none" }}>
@@ -217,7 +217,7 @@ export default async function CAMonthlyTamilPage() {
           <div style={{ fontSize: 14, fontWeight: 700, color: T.text }}>⬇️ ஜூன் 2026 PDF பதிவிறக்கம்</div>
           <div style={{ fontSize: 12, color: T.textSec, marginTop: 2 }}>{totalCount || "—"} வினாக்கள் விடைகளுடன். உள்நுழைவுடன் இலவசம்.</div>
         </div>
-        <Link href="/login?redirect=/tnpsc-study-materials/current-affairs/june-2026/tamil?download=pdf" style={{ background: T.indigoLight, color: T.indigo, border: `1px solid ${T.indigoMid}`, borderRadius: 8, padding: "8px 14px", fontSize: 13, fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap" as const }}>பதிவிறக்கம்</Link>
+        <Link href="/login?redirect=/tnpsc-study-materials/current-affairs/june-2026-tamil?download=pdf" style={{ background: T.indigoLight, color: T.indigo, border: `1px solid ${T.indigoMid}`, borderRadius: 8, padding: "8px 14px", fontSize: 13, fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap" as const }}>பதிவிறக்கம்</Link>
       </div>
 
       <div style={{ height: 100 }} />

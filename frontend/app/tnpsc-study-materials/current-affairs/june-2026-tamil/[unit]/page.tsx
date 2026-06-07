@@ -6,8 +6,8 @@ import {
   CA_UNIT_LABELS,
   CA_UNIT_ORDER,
   CAQuestion,
-} from "../../../../../../lib/supabase";
-import { T, shadow } from "../../../../../../lib/tokens";
+} from "../../../../../lib/supabase";
+import { T, shadow } from "../../../../../lib/tokens";
 
 export const revalidate = 86400;
 
@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: { params: Promise<{ unit: str
     title: seo.title,
     description: seo.description,
     alternates: {
-      canonical: `https://mcqpalagu.in/tnpsc-study-materials/current-affairs/june-2026/tamil/${unit}`,
+      canonical: `https://mcqpalagu.in/tnpsc-study-materials/current-affairs/june-2026-tamil/${unit}`,
       languages: { en: `https://mcqpalagu.in/tnpsc-study-materials/current-affairs/june-2026/${unit}` },
     },
   };
@@ -97,7 +97,7 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
   return (
     <>
       <nav style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: shadow.sm }}>
-        <Link href="/tnpsc-study-materials/current-affairs/june-2026/tamil" style={{ height: 34, borderRadius: 10, background: T.bg, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 6, padding: "0 12px", textDecoration: "none", color: T.text, fontSize: 13, fontWeight: 600 }}>← படிப்பகம்</Link>
+        <Link href="/tnpsc-study-materials/current-affairs/june-2026-tamil" style={{ height: 34, borderRadius: 10, background: T.bg, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 6, padding: "0 12px", textDecoration: "none", color: T.text, fontSize: 13, fontWeight: 600 }}>← படிப்பகம்</Link>
         <Link href={`/tnpsc-study-materials/current-affairs/june-2026/${unit}`} style={{ background: T.greenBg, color: T.green, border: `1px solid ${T.greenBorder}`, borderRadius: 20, padding: "5px 12px", fontSize: 12, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" as const }}>
           ஆங்கிலத்தில் படிக்க →
         </Link>
@@ -107,7 +107,7 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
         <div style={{ fontSize: 12, color: T.textTer, marginBottom: 12, display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" as const }}>
           <Link href="/tnpsc-study-materials" style={{ color: T.indigo, textDecoration: "none", fontWeight: 500 }}>படிப்பகம்</Link>
           <span>›</span>
-          <Link href="/tnpsc-study-materials/current-affairs/june-2026/tamil" style={{ color: T.indigo, textDecoration: "none", fontWeight: 500 }}>ஜூன் 2026</Link>
+          <Link href="/tnpsc-study-materials/current-affairs/june-2026-tamil" style={{ color: T.indigo, textDecoration: "none", fontWeight: 500 }}>ஜூன் 2026</Link>
           <span>›</span>
           <span>{label.ta}</span>
         </div>
@@ -148,7 +148,7 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
             const n = UNIT_NUMERALS[CA_UNIT_ORDER.indexOf(slug)];
             const isLast = i === otherUnits.length - 1 && otherUnits.length % 2 !== 0;
             return (
-              <Link key={slug} href={`/tnpsc-study-materials/current-affairs/june-2026/tamil/${slug}`} style={{ background: c.bg, border: `1.5px solid ${c.border}`, borderRadius: 12, padding: 12, textDecoration: "none", display: "block", gridColumn: isLast ? "1 / -1" : undefined }}>
+              <Link key={slug} href={`/tnpsc-study-materials/current-affairs/june-2026-tamil/${slug}`} style={{ background: c.bg, border: `1.5px solid ${c.border}`, borderRadius: 12, padding: 12, textDecoration: "none", display: "block", gridColumn: isLast ? "1 / -1" : undefined }}>
                 <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.4px", marginBottom: 3, color: c.text, opacity: 0.7 }}>அலகு {n}</div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: c.text, lineHeight: 1.3 }}>{l.icon} {l.ta}</div>
               </Link>
@@ -159,7 +159,7 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
         <div style={{ fontFamily: "serif", fontSize: 18, fontWeight: 700, color: T.text, marginBottom: 14 }}>மேலும் படிக்கவும்</div>
         <div style={{ display: "flex", flexDirection: "column" as const, gap: 10, marginBottom: 24 }}>
           {[
-            { href: "/tnpsc-study-materials/current-affairs/june-2026/tamil", icon: "📅", bg: T.indigoLight, title: "ஜூன் 2026 — அனைத்து அலகுகள்", sub: "6 அலகுகளில் அனைத்து வினாக்கள்" },
+            { href: "/tnpsc-study-materials/current-affairs/june-2026-tamil", icon: "📅", bg: T.indigoLight, title: "ஜூன் 2026 — அனைத்து அலகுகள்", sub: "6 அலகுகளில் அனைத்து வினாக்கள்" },
             { href: "/current-affairs", icon: "📰", bg: T.greenBg, title: "இன்றைய நடப்பு நிகழ்வுகள்", sub: "தினமும் புதுப்பிக்கப்படும் வினாக்கள்" },
             { href: "/pyq/group4", icon: "📋", bg: "#FEF3C7", title: "குரூப் 4 PYQ பயிற்சி", sub: "முந்தைய ஆண்டு வினாத்தாள்கள்" },
             { href: "/tnpsc-study-materials/syllabus/group-4", icon: "📚", bg: T.indigoLight, title: "TNPSC குரூப் 4 பாடத்திட்டம்", sub: "அலகு வாரியான பாடத்திட்ட விவரம்" },
@@ -184,7 +184,7 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
         <Link href={`/practice/current-affairs/${unit}?month=june-2026&lang=ta`} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 13, borderRadius: 10, background: T.indigo, color: "white", fontSize: 15, fontWeight: 700, textDecoration: "none", boxShadow: shadow.indigo }}>
           🎯 தேர்வு எழுது — {questions.length} வினாக்கள்
         </Link>
-        <Link href={`/login?redirect=/tnpsc-study-materials/current-affairs/june-2026/tamil/${unit}?download=pdf`} style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "13px 12px", borderRadius: 10, background: T.bg, color: T.textSec, border: `1px solid ${T.border}`, fontSize: 13, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" as const }}>
+        <Link href={`/login?redirect=/tnpsc-study-materials/current-affairs/june-2026-tamil/${unit}?download=pdf`} style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "13px 12px", borderRadius: 10, background: T.bg, color: T.textSec, border: `1px solid ${T.border}`, fontSize: 13, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" as const }}>
           ⬇️ PDF பதிவிறக்கம்
         </Link>
       </div>
