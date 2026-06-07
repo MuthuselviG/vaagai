@@ -1,5 +1,10 @@
 # MCQ Palagu — Project Context for Claude Code
 
+## HARD RULES — Never Break These
+
+- **NEVER run INSERT, UPDATE, or DELETE on Supabase without explicit user approval.** Always show the query first and wait for the user to say "go ahead" or similar before executing. SELECT queries are fine.
+- **NEVER modify May 2026 CA pages** or any existing SEO routes.
+
 ## What This App Is
 
 **MCQ Palagu** (`mcqpalagu.in`) is a bilingual (Tamil + English) MCQ practice platform for Tamil Nadu government exam aspirants — TNPSC Group 2, Group 4, TET, TNUSRB. Built under the repo name `vaagai`.
