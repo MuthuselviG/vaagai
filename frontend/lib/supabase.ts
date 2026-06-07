@@ -93,7 +93,7 @@ const CA_QUESTION_SELECT =
 export const CA_UNIT_SUBJECTS: Record<string, string[]> = {
   "general-science":     ["General Science"],
   "geography":           ["Geography"],
-  "indian-history":      ["History", "Indian National Movement"],
+  "indian-history":      ["History", "Indian National Movement", "Indian History"],
   "indian-polity":       ["Indian Polity"],
   "welfare-schemes":     ["Economy"],
   "archaeology-updates": ["Tamil Nadu History"],
