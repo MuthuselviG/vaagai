@@ -9,7 +9,7 @@ import {
 } from "../../../../../lib/supabase";
 import { T, shadow } from "../../../../../lib/tokens";
 
-export const revalidate = 86400;
+export const revalidate = 3600;
 
 const MONTH = "2026-06";
 
