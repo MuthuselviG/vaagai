@@ -12,7 +12,6 @@ const supabase = createClient(
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY_CRON });
 
-// Exactly 6 allowed subject values — no exceptions
 const VALID_SUBJECTS = [
   "General Science",
   "Geography",
@@ -20,6 +19,7 @@ const VALID_SUBJECTS = [
   "Indian Polity",
   "Economy",
   "General Tamil",
+  "Tamil Nadu History",
 ] as const;
 
 type ValidSubject = typeof VALID_SUBJECTS[number];
@@ -89,7 +89,7 @@ function sanitizeSubject(subject: string): ValidSubject {
     "Science": "General Science",
     "Polity": "Indian Polity",
     "History": "History",
-    "Tamil Nadu History": "History",
+    "Tamil Nadu History": "Tamil Nadu History",
     "Current Affairs": "History",
     "Economy": "Economy",
     "Geography": "Geography",
@@ -213,7 +213,7 @@ async function generateQuestions(
             properties: {
               subject: {
                 type: "string",
-                enum: ["General Science", "Geography", "History", "Indian Polity", "Economy", "General Tamil"]
+                enum: ["General Science", "Geography", "History", "Indian Polity", "Economy", "General Tamil", "Tamil Nadu History"]
               },
               topic: { type: "string" },
               source_ministry: { type: "string", nullable: true },
@@ -314,7 +314,7 @@ ${batchText}
 
 Return a raw JSON array of exactly 5 objects:
 [{
-  "subject": "MUST be one of: General Science|Geography|History|Indian Polity|Economy|General Tamil",
+  "subject": "MUST be one of: General Science|Geography|History|Indian Polity|Economy|General Tamil|Tamil Nadu History",
   "topic": "specific-english-slug-not-generic",
   "source_ministry": "Ministry name from article or null",
   "question_en": "question in English",
@@ -349,7 +349,7 @@ Avoid topics already covered: [${coveredTopics}].
 
 Return a raw JSON array of exactly 5 objects:
 [{
-  "subject": "MUST be one of: General Science|Geography|History|Indian Polity|Economy|General Tamil",
+  "subject": "MUST be one of: General Science|Geography|History|Indian Polity|Economy|General Tamil|Tamil Nadu History",
   "topic": "specific-english-slug-not-generic",
   "source_ministry": null,
   "question_en": "question in English",
