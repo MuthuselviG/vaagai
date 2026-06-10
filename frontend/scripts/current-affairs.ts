@@ -120,6 +120,35 @@ const tnpscKeywords = [
   "Tamil Virtual Academy", "Classical Tamil",
 ];
 
+// Generic words that don't help distinguish one topic/scheme from another
+const topicStopwords = new Set([
+  "scheme", "schemes", "yojana", "mission", "phase", "update", "updates",
+  "launch", "launched", "launches", "new", "india", "indian", "tamil", "nadu",
+  "government", "govt", "ministry", "department", "national", "state",
+  "central", "plan", "policy", "programme", "program", "initiative",
+  "project", "news", "current", "affairs", "tnpsc", "exam", "scheme2026",
+]);
+
+function topicKeywords(topic: string): Set<string> {
+  return new Set(
+    topic
+      .toLowerCase()
+      .split(/[^a-z0-9]+/)
+      .filter(w => w.length >= 4 && !/^\d+$/.test(w) && !topicStopwords.has(w))
+  );
+}
+
+// Two topics are considered the "same topic" if they're identical (case-insensitive)
+// or share at least 2 distinctive keywords (e.g. scheme/place names)
+function topicsOverlap(a: string, b: string): boolean {
+  if (a.trim().toLowerCase() === b.trim().toLowerCase()) return true;
+  const wa = topicKeywords(a);
+  const wb = topicKeywords(b);
+  let shared = 0;
+  for (const w of wa) if (wb.has(w)) shared++;
+  return shared >= 2;
+}
+
 async function getPIBArticlePRIDs(): Promise<number[]> {
   try {
     console.log("[PIB] Fetching all releases page...");
@@ -248,18 +277,22 @@ async function main() {
   const currentMonthYear = new Date().toLocaleDateString("en-IN", { month: "long", year: "numeric", timeZone: "Asia/Kolkata" });
   console.log(`[Pipeline] Target date: ${todayStr}`);
 
-  const fiveDaysAgo = new Date();
-  fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
+  const MAX_EXCLUDED_TOPICS = 50;
+  const fourteenDaysAgo = new Date();
+  fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
   const { data: recentRecords, error: recentError } = await supabase
     .from("current_affairs")
     .select("topic, subject")
-    .gte("published_date", fiveDaysAgo.toISOString().split("T")[0]);
+    .eq("status", "approved")
+    .gte("published_date", fourteenDaysAgo.toISOString().split("T")[0]);
   if (recentError) console.error("[DB] Error fetching recent topics:", recentError);
-  console.log(`[DB] Recent records fetched: ${recentRecords?.length ?? 0}`);
+  console.log(`[DB] Recent records fetched (last 14 days, approved): ${recentRecords?.length ?? 0}`);
 
-  const excludedTopics = recentRecords
+  const excludedTopicsAll = recentRecords
     ? Array.from(new Set(recentRecords.map(r => r.topic).filter(Boolean)))
     : [];
+  const excludedTopics = excludedTopicsAll.slice(0, MAX_EXCLUDED_TOPICS);
+  console.log(`[DB] Distinct recent topics: ${excludedTopicsAll.length}, capped to ${excludedTopics.length} for prompt`);
   console.log(`[DB] Excluded topics: ${excludedTopics.join(", ")}`);
 
   console.log("[Pipeline] Fetching PIB articles...");
@@ -283,7 +316,8 @@ TOPIC SLUG RULES:
 - Good: "pudhumai-penn-scheme-2026", "keezhadi-phase7-findings", "isro-spadex-docking-mission"
 - Bad: "welfare-schemes", "science", "current-affairs"
 
-ANTI-DUPLICATION: Avoid topics similar to: [${excludedTopics.join(", ")}]
+ANTI-DUPLICATION — STRICT: Do NOT generate questions about these recently covered topics (last 14 days): [${excludedTopics.join(", ")}]
+If a recent event relates to one of these topics but is genuinely a NEW development (e.g. a new phase, new beneficiary figures, a new policy update), you may cover it ONLY if its topic slug AND specific angle are clearly distinct from every listed topic above.
 TN SAMPLE TOPICS (not restricted to): ${tnpscKeywords.join(", ")}
 
 QUESTION RULES:
@@ -293,6 +327,7 @@ QUESTION RULES:
 - correct_option must exactly match one string in options array
 - Return raw JSON array only, no markdown
   `;
+  console.log(`[Pipeline] System instruction size: ${systemInstruction.length} chars (excluded topics: ${excludedTopics.length})`);
 
   let allQuestions: Array<GeminiBilingualQuestion & { source_url?: string; source_date?: string }> = [];
 
@@ -369,9 +404,36 @@ Return a raw JSON array of exactly 5 objects:
 
   console.log(`[Pipeline] Total questions generated: ${allQuestions.length}`);
 
+  // Post-generation topic guard: drop anything covering a recently-used topic
+  // or a topic already accepted earlier in this same batch
+  const acceptedTopics: string[] = [];
+  let droppedTopicCount = 0;
+  const topicFiltered = allQuestions.filter(q => {
+    const matchRecent = excludedTopics.find(t => topicsOverlap(t, q.topic));
+    if (matchRecent) {
+      console.log(`[TopicGuard] Dropped "${q.topic}" — overlaps recent topic "${matchRecent}"`);
+      droppedTopicCount++;
+      return false;
+    }
+    const matchBatch = acceptedTopics.find(t => topicsOverlap(t, q.topic));
+    if (matchBatch) {
+      console.log(`[TopicGuard] Dropped "${q.topic}" — duplicates batch topic "${matchBatch}"`);
+      droppedTopicCount++;
+      return false;
+    }
+    acceptedTopics.push(q.topic);
+    return true;
+  });
+  console.log(`[TopicGuard] Dropped ${droppedTopicCount} question(s); ${topicFiltered.length} remain`);
+
+  const DAILY_TARGET = 30;
+  if (topicFiltered.length < DAILY_TARGET) {
+    console.warn(`[TopicGuard] WARNING: only ${topicFiltered.length} question(s) remain after topic guard, below daily target of ${DAILY_TARGET}. Not making extra Gemini calls (cost) — proceeding with what's available.`);
+  }
+
   // Deduplicate
   const seen = new Set<string>();
-  const unique = allQuestions.filter(q => {
+  const unique = topicFiltered.filter(q => {
     const key = q.question_en.substring(0, 80).toLowerCase();
     if (seen.has(key)) { console.log(`[Dedup] Dropped duplicate: ${key}`); return false; }
     seen.add(key);
