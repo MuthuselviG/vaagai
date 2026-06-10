@@ -1,0 +1,48 @@
+name: Daily CA Instagram Carousel
+
+on:
+  schedule:
+    # 6:00 AM IST = 00:30 UTC
+    - cron: "30 0 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  carousel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install pillow numpy requests
+
+      - name: Download fonts
+        run: |
+          mkdir -p fonts
+          curl -sL -o fonts/NotoSansTamil.ttf "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanstamil/NotoSansTamil%5Bwdth%2Cwght%5D.ttf"
+          curl -sL -o fonts/Inter.ttf "https://raw.githubusercontent.com/google/fonts/main/ofl/inter/Inter%5Bopsz%2Cwght%5D.ttf"
+          ls -la fonts/
+
+      - name: Generate and deliver carousel
+        env:
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          FONT_DIR: ./fonts
+        run: python scripts/social_carousel.py
+
+      - name: Upload slides as artifact (backup)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: carousel-${{ github.run_id }}
+          path: /tmp/carousel/
+          retention-days: 7
+          if-no-files-found: ignore
