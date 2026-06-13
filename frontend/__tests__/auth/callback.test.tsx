@@ -63,7 +63,7 @@ describe("AuthCallbackPage", () => {
     mockFrom.mockReturnValue({
       select: vi.fn().mockReturnThis(),
       eq: vi.fn().mockReturnThis(),
-      single: vi.fn().mockResolvedValue({ data: { id: "user-123" } }),
+      single: vi.fn().mockResolvedValue({ data: { id: "user-123", exam_target: "group2" } }),
     });
     render(<AuthCallbackPage />);
     await waitFor(() =>
@@ -80,6 +80,7 @@ describe("AuthCallbackPage", () => {
       select: vi.fn().mockReturnThis(),
       eq: vi.fn().mockReturnThis(),
       single: vi.fn().mockResolvedValue({ data: null }),
+      insert: vi.fn().mockResolvedValue({ data: null, error: null }),
     });
     render(<AuthCallbackPage />);
     await waitFor(() =>
