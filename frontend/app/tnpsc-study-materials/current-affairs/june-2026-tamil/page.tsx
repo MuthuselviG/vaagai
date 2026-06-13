@@ -233,7 +233,7 @@ export default async function CAMonthlyTamilPage() {
         <div style={{ width: 40, height: 40, borderRadius: 10, background: "#FEF3C7", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>📄</div>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: T.text }}>⬇️ ஜூன் 2026 PDF பதிவிறக்கம்</div>
-          <div style={{ fontSize: 12, color: T.textSec, marginTop: 2 }}>{totalCount || "—"} வினாக்கள் விடைகளுடன் — இலவசம், உள்நுழைவு தேவையில்லை.</div>
+          <div style={{ fontSize: 12, color: T.textSec, marginTop: 2 }}>{totalCount || "—"} வினாக்கள் விடைகளுடன். உள்நுழைவுடன் இலவசம்.</div>
         </div>
         <PdfDownloadButton style={{ background: T.indigoLight, color: T.indigo, border: `1px solid ${T.indigoMid}`, borderRadius: 8, padding: "8px 14px", fontSize: 13, fontWeight: 700, whiteSpace: "nowrap" as const }}>பதிவிறக்கம்</PdfDownloadButton>
       </div>

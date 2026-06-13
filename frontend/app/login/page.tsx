@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -10,7 +10,15 @@ const supabase = createClient(
 );
 
 export default function LoginPage() {
-  const router = useRouter();
+  return (
+    <Suspense fallback={null}>
+      <LoginPageContent />
+    </Suspense>
+  );
+}
+
+function LoginPageContent() {
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -18,10 +26,15 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
+    const redirect = searchParams.get("redirect");
+    const callbackUrl = redirect
+      ? `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirect)}`
+      : `${window.location.origin}/auth/callback`;
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: callbackUrl,
       },
     });
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { supabase, fetchMyCreatorProfile, fetchMyPacks, fetchMyArchivedPacks, createPack, archivePack, unarchivePack, publishPack, deleteQuestion, updateQuestion } from "@/lib/supabase";
 import type { Creator, Pack, Question } from "@/lib/supabase";
 import { T, shadow } from "@/lib/tokens";
@@ -29,6 +29,7 @@ function L(lang: "en" | "ta", en: string, ta: string) { return lang === "ta" ? t
 
 export default function CreatorPage() {
   const router = useRouter();
+  const pathname = usePathname();
   const [creator, setCreator] = useState<Creator | null>(null);
   const [packs, setPacks] = useState<Pack[]>([]);
   const [archivedPacks, setArchivedPacks] = useState<Pack[]>([]);
@@ -65,7 +66,7 @@ export default function CreatorPage() {
   useEffect(() => {
     async function load() {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { router.push("/login"); return; }
+      if (!user) { router.push(`/login?redirect=${encodeURIComponent(pathname)}`); return; }
 
       const c = await fetchMyCreatorProfile();
       if (!c) { router.push("/subjects"); return; }

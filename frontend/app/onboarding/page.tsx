@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { EXAM_CHIPS } from "./chips/examchips";
 import { ROLE_CHIPS } from "./chips/rolechip";
@@ -37,7 +37,17 @@ function ProgressDots({ step }: { step: number }) {
 }
 
 export default function OnboardingPage() {
+  return (
+    <Suspense fallback={null}>
+      <OnboardingPageContent />
+    </Suspense>
+  );
+}
+
+function OnboardingPageContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect");
 
   const [name, setName] = useState("");
   const [selectedExam, setSelectedExam] = useState<string | null>(null);
@@ -56,22 +66,19 @@ export default function OnboardingPage() {
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      router.push("/login");
+      router.push(`/login?redirect=${encodeURIComponent("/onboarding")}`);
       return;
     }
 
-    // 1. Insert user row
-    const { error: insertError } = await supabase.from("users").insert({
-      id: user.id,
-      email: user.email ?? null,
-      phone: user.phone ?? null,
+    // 1. Update user row (created at login)
+    const { error: updateError } = await supabase.from("users").update({
       name: name.trim(),
       exam_target: selectedExam,
       taluk: selectedTaluk,
       role: selectedRole,
-    });
+    }).eq("id", user.id);
 
-    if (insertError) {
+    if (updateError) {
       setLoading(false);
       setError("Something went wrong. Please try again.");
       return;
@@ -89,7 +96,7 @@ export default function OnboardingPage() {
     }
 
     setLoading(false);
-    router.push("/subjects");
+    router.push(redirect || "/subjects");
   }
 
   return (

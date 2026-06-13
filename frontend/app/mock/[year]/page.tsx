@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, usePathname } from "next/navigation";
 import { T, shadow } from "@/lib/tokens";
 import { supabase, type Question } from "@/lib/supabase";
 
@@ -20,6 +20,7 @@ const LABELS = ["A", "B", "C", "D"];
 export default function MockTestPage() {
   const { year } = useParams();
   const router = useRouter();
+  const pathname = usePathname();
   const yearNum = parseInt(year as string);
 
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -38,9 +39,9 @@ export default function MockTestPage() {
   // Auth check
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) router.push("/login");
+      if (!user) router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
     });
-  }, [router]);
+  }, [router, pathname]);
 
   // Fetch questions via API route
   useEffect(() => {
