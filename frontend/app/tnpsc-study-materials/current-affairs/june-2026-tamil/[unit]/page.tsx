@@ -9,6 +9,7 @@ import {
 } from "../../../../../lib/supabase";
 import { T, shadow } from "../../../../../lib/tokens";
 import PdfDownloadButton from "../../../../../components/PdfDownloadButton";
+import PdfBranding from "../../../../../components/PdfBranding";
 
 export const revalidate = 3600;
 
@@ -103,6 +104,7 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
           body { background: white; }
         }
       `}</style>
+      <PdfBranding />
       <nav className="no-print" style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: shadow.sm }}>
         <Link href="/tnpsc-study-materials/current-affairs/june-2026-tamil" style={{ height: 34, borderRadius: 10, background: T.bg, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 6, padding: "0 12px", textDecoration: "none", color: T.text, fontSize: 13, fontWeight: 600 }}>← படிப்பகம்</Link>
         <Link href={`/tnpsc-study-materials/current-affairs/june-2026/${unit}`} style={{ background: T.greenBg, color: T.green, border: `1px solid ${T.greenBorder}`, borderRadius: 20, padding: "5px 12px", fontSize: 12, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" as const }}>

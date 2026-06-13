@@ -10,12 +10,10 @@ export default function PdfBranding() {
     <>
       <style>{`
         @media print {
-          .pdf-header {
+          .pdf-header, .pdf-watermark, .pdf-footer {
             display: flex !important;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+          }
+          .pdf-header {
             align-items: center;
             justify-content: space-between;
             padding: 8px 16px;
@@ -23,55 +21,43 @@ export default function PdfBranding() {
             color: #6B7280;
             font-family: sans-serif;
             border-bottom: 1px solid #E5E7EB;
-            background: white;
-            z-index: 10000;
+          }
+          .pdf-header img {
+            height: 26px;
+          }
+          .pdf-watermark {
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            opacity: 0.15;
+            padding: 28px 0;
+          }
+          .pdf-watermark img {
+            width: 60vw;
+            max-width: 420px;
+          }
+          .pdf-watermark span {
+            font-size: 42px;
+            font-weight: 800;
+            font-family: sans-serif;
+            color: #10204F;
+            margin-top: 10px;
+            letter-spacing: 2px;
           }
           .pdf-footer {
-            display: block !important;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            text-align: center;
-            padding: 6px 0;
+            justify-content: center;
+            padding: 8px 0;
             font-size: 10px;
             color: #9CA3AF;
             font-family: sans-serif;
             border-top: 1px solid #E5E7EB;
-            background: white;
-            z-index: 10000;
-          }
-          .pdf-watermark {
-            display: flex !important;
-            position: fixed;
-            inset: 0;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            opacity: 0.10;
-            z-index: 5;
-            pointer-events: none;
-          }
-          .pdf-watermark img {
-            width: 80vw;
-          }
-          .pdf-watermark span {
-            font-size: 60px;
-            font-weight: 800;
-            font-family: sans-serif;
-            color: #10204F;
-            margin-top: 14px;
-            letter-spacing: 2px;
-            transform: rotate(-25deg);
-          }
-          body {
-            padding-top: 46px !important;
-            padding-bottom: 28px !important;
+            margin-top: 4px;
+            margin-bottom: 16px;
           }
         }
       `}</style>
       <div className="pdf-header" style={{ display: "none" }}>
-        <img src="/logo.png" alt="mcqpalagu.in" style={{ height: 26 }} />
+        <img src="/logo.png" alt="mcqpalagu.in" />
         <span>{url}</span>
       </div>
       <div className="pdf-watermark" style={{ display: "none" }}>
