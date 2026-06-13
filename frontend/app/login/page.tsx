@@ -1,16 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
-  const router = useRouter();
+  return (
+    <Suspense fallback={null}>
+      <LoginPageContent />
+    </Suspense>
+  );
+}
+
+function LoginPageContent() {
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -18,10 +21,22 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
+    const redirect = searchParams.get("redirect");
+    // Supabase's OAuth redirect URL allowlist can strip extra query params from
+    // redirectTo, so stash the target in sessionStorage as a reliable fallback.
+    if (redirect) {
+      sessionStorage.setItem("postLoginRedirect", redirect);
+    } else {
+      sessionStorage.removeItem("postLoginRedirect");
+    }
+    const callbackUrl = redirect
+      ? `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirect)}`
+      : `${window.location.origin}/auth/callback`;
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: callbackUrl,
       },
     });
 

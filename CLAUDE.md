@@ -3,7 +3,8 @@
 ## HARD RULES — Never Break These
 
 - **NEVER run INSERT, UPDATE, or DELETE on Supabase without explicit user approval.** Always show the query first and wait for the user to say "go ahead" or similar before executing. SELECT queries are fine.
-- **NEVER modify May 2026 CA pages** or any existing SEO routes.
+- **NEVER modify existing SEO routes' URLs, slugs, or canonical paths without explicit user approval.** Content/feature changes (e.g. the PDF download fix applied to both May and June 2026 CA pages) are fine once approved — don't restructure routes.
+- **Before any code change, state a short plan and get explicit user approval first.** Don't write or edit code until the user says go ahead.
 
 ## What This App Is
 
@@ -146,9 +147,17 @@ Quality rules: ≥60% TN-specific, no profanity/religious hatred, dedup against 
 
 - Language preference stored in `localStorage` key `mcqpalagu_lang` and synced to `users.language`
 - Domain: `vaagai.vercel.app` permanently redirects to `mcqpalagu.in` (configured in next.config.mjs)
-- Auth flow: Google OAuth → `/auth/callback` → `/onboarding` (first time) → `/subjects`
+- Auth flow: Google OAuth → `/auth/callback` → `/onboarding` (first time, if `exam_target` not set) → `/subjects`
+  - A `users` row is created at `/auth/callback` on first login (before onboarding). `/onboarding` then `update`s that row (name, exam_target, taluk, role) rather than inserting.
 - Fonts: Inter (English) + Noto Sans Tamil (Tamil) from Google Fonts
 - Styling: Inline styles using tokens from `lib/tokens.ts` (no CSS framework)
+
+---
+
+## Login Redirects
+
+- Any link/redirect to `/login` **must** include `?redirect=<encoded path>` so the user returns to where they came from after signing in — except the homepage login CTA (`app/page.tsx`, `HomeLoginButton.tsx`), which intentionally defaults to `/subjects`.
+- `/login` passes `redirect` through to `/auth/callback?redirect=...`, which passes it to `/onboarding?redirect=...` (if onboarding is needed) and finally `router.push(redirect || "/subjects")`.
 
 ---
 

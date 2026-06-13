@@ -10,6 +10,8 @@ import {
   CAUnitMeta,
 } from "../../../../lib/supabase";
 import { T, shadow } from "../../../../lib/tokens";
+import PdfDownloadButton from "../../../../components/PdfDownloadButton";
+import PdfBranding from "../../../../components/PdfBranding";
 
 export const revalidate = 3600;
 
@@ -91,7 +93,15 @@ export default async function CAMonthlyTamilPage() {
 
   return (
     <>
-      <nav style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: shadow.sm }}>
+      <style>{`
+        @media print {
+          .no-print { display: none !important; }
+          .ca-unit-details > *:not(summary) { display: block !important; }
+          body { background: white; }
+        }
+      `}</style>
+      <PdfBranding />
+      <nav className="no-print" style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: shadow.sm }}>
         <Link href="/tnpsc-study-materials" style={{ height: 34, borderRadius: 10, background: T.bg, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 6, padding: "0 12px", textDecoration: "none", color: T.text, fontSize: 13, fontWeight: 600 }}>← படிப்பகம்</Link>
         <Link href="/tnpsc-study-materials/current-affairs/june-2026" style={{ background: T.greenBg, color: T.green, border: `1px solid ${T.greenBorder}`, borderRadius: 20, padding: "5px 12px", fontSize: 12, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" as const }}>
           ஆங்கிலத்தில் படிக்க →
@@ -160,7 +170,7 @@ export default async function CAMonthlyTamilPage() {
           const count = getCountForUnit(slug, taCounts);
           const qs: CAQuestion[] = previews[idx] ?? [];
           return (
-            <details key={slug} style={{ background: col.bg, border: `1.5px solid ${col.border}`, borderRadius: 16, marginBottom: 14, overflow: "hidden", boxShadow: shadow.sm }}>
+            <details key={slug} className="ca-unit-details" style={{ background: col.bg, border: `1.5px solid ${col.border}`, borderRadius: 16, marginBottom: 14, overflow: "hidden", boxShadow: shadow.sm }}>
               <summary style={{ padding: 16, display: "flex", alignItems: "center", gap: 12, cursor: "pointer", listStyle: "none" }}>
                 <div style={{ width: 44, height: 44, borderRadius: 12, background: col.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>{label.icon}</div>
                 <div style={{ flex: 1 }}>
@@ -174,7 +184,7 @@ export default async function CAMonthlyTamilPage() {
                   ? <p style={{ fontSize: 13, color: T.textSec, padding: "12px 0" }}>வினாக்கள் சேர்க்கப்படுகின்றன — சீக்கிரம் திரும்பி வாருங்கள்.</p>
                   : qs.map((q, i) => <QCard key={q.id} q={q} num={i + 1} />)
                 }
-                <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                <div className="no-print" style={{ display: "flex", gap: 8, marginTop: 8 }}>
                   <Link href={`/tnpsc-study-materials/current-affairs/june-2026-tamil/${slug}`} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 11, borderRadius: 10, border: `1.5px solid ${col.border}`, background: col.bg, color: col.text, fontSize: 13, fontWeight: 700, textDecoration: "none" }}>
                     📖 {count} வினாக்களை படிக்கவும் →
                   </Link>
@@ -188,7 +198,7 @@ export default async function CAMonthlyTamilPage() {
         })}
       </div>
 
-      <div style={{ padding: "24px 20px 0" }}>
+      <div className="no-print" style={{ padding: "24px 20px 0" }}>
         <div style={{ fontFamily: "serif", fontSize: 18, fontWeight: 700, color: T.text, marginBottom: 14 }}>மேலும் படிக்கவும்</div>
         <div style={{ display: "flex", flexDirection: "column" as const, gap: 10, marginBottom: 24 }}>
           {[
@@ -221,13 +231,13 @@ export default async function CAMonthlyTamilPage() {
         </div>
       </div>
 
-      <div style={{ margin: "0 20px 24px", background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 16, padding: 16, display: "flex", alignItems: "center", gap: 14, boxShadow: shadow.sm }}>
+      <div className="no-print" style={{ margin: "0 20px 24px", background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 16, padding: 16, display: "flex", alignItems: "center", gap: 14, boxShadow: shadow.sm }}>
         <div style={{ width: 40, height: 40, borderRadius: 10, background: "#FEF3C7", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>📄</div>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: T.text }}>⬇️ ஜூன் 2026 PDF பதிவிறக்கம்</div>
           <div style={{ fontSize: 12, color: T.textSec, marginTop: 2 }}>{totalCount || "—"} வினாக்கள் விடைகளுடன். உள்நுழைவுடன் இலவசம்.</div>
         </div>
-        <Link href="/login?redirect=/tnpsc-study-materials/current-affairs/june-2026-tamil?download=pdf" style={{ background: T.indigoLight, color: T.indigo, border: `1px solid ${T.indigoMid}`, borderRadius: 8, padding: "8px 14px", fontSize: 13, fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap" as const }}>பதிவிறக்கம்</Link>
+        <PdfDownloadButton style={{ background: T.indigoLight, color: T.indigo, border: `1px solid ${T.indigoMid}`, borderRadius: 8, padding: "8px 14px", fontSize: 13, fontWeight: 700, whiteSpace: "nowrap" as const }}>பதிவிறக்கம்</PdfDownloadButton>
       </div>
 
       <div style={{ height: 100 }} />

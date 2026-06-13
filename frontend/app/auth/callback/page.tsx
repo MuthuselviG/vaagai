@@ -1,16 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
+import { Suspense, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
-export default function AuthCallbackPage() {
+function AuthCallbackContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     async function handleCallback() {
@@ -21,21 +17,37 @@ export default function AuthCallbackPage() {
         return;
       }
 
+      const redirect = searchParams.get("redirect") || sessionStorage.getItem("postLoginRedirect");
+      sessionStorage.removeItem("postLoginRedirect");
+      const redirectSuffix = redirect ? `?redirect=${encodeURIComponent(redirect)}` : "";
+
       const { data: existingUser } = await supabase
         .from("users")
-        .select("id")
+        .select("id, exam_target")
         .eq("id", session.user.id)
         .single();
 
-      if (existingUser) {
-        router.push("/subjects");
+      if (!existingUser) {
+        const meta = session.user.user_metadata ?? {};
+        await supabase.from("users").insert({
+          id: session.user.id,
+          email: session.user.email ?? null,
+          phone: session.user.phone ?? null,
+          name: meta.full_name || meta.name || session.user.email?.split("@")[0] || "",
+        });
+      }
+
+      const needsOnboarding = !existingUser || !existingUser.exam_target;
+
+      if (needsOnboarding) {
+        router.push(`/onboarding${redirectSuffix}`);
       } else {
-        router.push("/onboarding");
+        router.push(redirect || "/subjects");
       }
     }
 
     handleCallback();
-  }, [router]);
+  }, [router, searchParams]);
 
   return (
     <div style={{
@@ -51,5 +63,13 @@ export default function AuthCallbackPage() {
     }}>
       Signing you in...
     </div>
+  );
+}
+
+export default function AuthCallbackPage() {
+  return (
+    <Suspense fallback={null}>
+      <AuthCallbackContent />
+    </Suspense>
   );
 }
