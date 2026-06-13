@@ -19,7 +19,7 @@ export default function PdfBranding() {
             align-items: center;
             justify-content: space-between;
             padding: 8px 16px;
-            font-size: 10px;
+            font-size: 11px;
             color: #6B7280;
             font-family: sans-serif;
             border-bottom: 1px solid #E5E7EB;
@@ -34,7 +34,7 @@ export default function PdfBranding() {
             right: 0;
             text-align: center;
             padding: 6px 0;
-            font-size: 9px;
+            font-size: 10px;
             color: #9CA3AF;
             font-family: sans-serif;
             border-top: 1px solid #E5E7EB;
@@ -48,15 +48,15 @@ export default function PdfBranding() {
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            opacity: 0.07;
-            z-index: 1;
+            opacity: 0.10;
+            z-index: 5;
             pointer-events: none;
           }
           .pdf-watermark img {
-            width: 55vw;
+            width: 80vw;
           }
           .pdf-watermark span {
-            font-size: 46px;
+            font-size: 60px;
             font-weight: 800;
             font-family: sans-serif;
             color: #10204F;
