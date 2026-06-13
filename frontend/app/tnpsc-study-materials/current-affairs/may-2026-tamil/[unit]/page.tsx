@@ -11,7 +11,7 @@ import {
 } from "../../../../../lib/supabase";
 import { T, shadow } from "../../../../../lib/tokens";
 import PdfDownloadButton from "../../../../../components/PdfDownloadButton";
-import PdfBranding from "../../../../../components/PdfBranding";
+import PdfBranding, { PdfBrandingStrip } from "../../../../../components/PdfBranding";
 
 export const revalidate = 86400;
 
@@ -146,7 +146,12 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
         <div style={{ fontSize: 13, color: T.textSec, marginBottom: 16 }}>அனைத்து வினாக்களும் விடைகளும் விளக்கங்களும். TNPSC குரூப் 4 பாடத்திட்டம் அலகு {numeral}-க்கு ஏற்ப வரிசைப்படுத்தப்பட்டுள்ளது.</div>
         {questions.length === 0
           ? <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 14, padding: 24, textAlign: "center" as const, color: T.textSec }}>இந்த அலகிற்கான வினாக்கள் சேர்க்கப்படுகின்றன — சீக்கிரம் திரும்பி வாருங்கள்.</div>
-          : questions.map((q, i) => <QCard key={q.id} q={q} num={i + 1} />)
+          : questions.map((q, i) => (
+              <div key={q.id}>
+                <QCard q={q} num={i + 1} />
+                {(i + 1) % 4 === 0 && <PdfBrandingStrip />}
+              </div>
+            ))
         }
       </div>
 

@@ -54,6 +54,27 @@ export default function PdfBranding() {
             margin-top: 4px;
             margin-bottom: 16px;
           }
+          .pdf-strip {
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 14px 0;
+            margin: 18px 0;
+            border-top: 2px solid #10204F;
+            border-bottom: 2px solid #10204F;
+            background: #F0F3FF;
+          }
+          .pdf-strip img {
+            height: 36px;
+          }
+          .pdf-strip span {
+            font-size: 22px;
+            font-weight: 800;
+            font-family: sans-serif;
+            color: #10204F;
+            letter-spacing: 1px;
+          }
         }
       `}</style>
       <div className="pdf-header" style={{ display: "none" }}>
@@ -68,5 +89,14 @@ export default function PdfBranding() {
         © 2026 mcqpalagu.in — All rights reserved.
       </div>
     </>
+  );
+}
+
+export function PdfBrandingStrip() {
+  return (
+    <div className="pdf-strip" style={{ display: "none" }}>
+      <img src="/logo.png" alt="" />
+      <span>mcqpalagu.in</span>
+    </div>
   );
 }

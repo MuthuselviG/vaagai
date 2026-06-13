@@ -13,7 +13,7 @@ import {
 } from "../../../../lib/supabase";
 import { T, shadow } from "../../../../lib/tokens";
 import PdfDownloadButton from "../../../../components/PdfDownloadButton";
-import PdfBranding from "../../../../components/PdfBranding";
+import PdfBranding, { PdfBrandingStrip } from "../../../../components/PdfBranding";
 
 export const revalidate = 86400;
 
@@ -197,7 +197,8 @@ export default async function CAMonthlyPage() {
           const count = getCountForUnit(slug, enCounts);
           const qs: CAQuestion[] = previews[idx] ?? [];
           return (
-            <details key={slug} className="ca-unit-details" style={{ background: col.bg, border: `1.5px solid ${col.border}`, borderRadius: 16, marginBottom: 14, overflow: "hidden", boxShadow: shadow.sm }}>
+            <div key={slug}>
+            <details className="ca-unit-details" style={{ background: col.bg, border: `1.5px solid ${col.border}`, borderRadius: 16, marginBottom: 14, overflow: "hidden", boxShadow: shadow.sm }}>
               <summary style={{ padding: 16, display: "flex", alignItems: "center", gap: 12, cursor: "pointer", listStyle: "none" }}>
                 <div style={{ width: 44, height: 44, borderRadius: 12, background: col.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>{label.icon}</div>
                 <div style={{ flex: 1 }}>
@@ -221,6 +222,8 @@ export default async function CAMonthlyPage() {
                 </div>
               </div>
             </details>
+            <PdfBrandingStrip />
+            </div>
           );
         })}
       </div>
