@@ -178,3 +178,4 @@ Quality rules: ≥60% TN-specific, no profanity/religious hatred, dedup against 
 - Lint: `cd frontend && npm run lint`
 - All Supabase changes: edit `supabase/schema.sql` and apply via Supabase MCP or CLI
 - No separate backend server — all API logic is in Next.js API routes under `frontend/app/api/`
+- Before merging a PR: wait for the user to do local/manual testing first. If local testing isn't possible in this environment, ensure the `test` CI check passes, then push/merge.
