@@ -2,12 +2,7 @@
 
 import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { supabase } from "@/lib/supabase";
 
 function AuthCallbackContent() {
   const router = useRouter();
@@ -22,7 +17,8 @@ function AuthCallbackContent() {
         return;
       }
 
-      const redirect = searchParams.get("redirect");
+      const redirect = searchParams.get("redirect") || sessionStorage.getItem("postLoginRedirect");
+      sessionStorage.removeItem("postLoginRedirect");
       const redirectSuffix = redirect ? `?redirect=${encodeURIComponent(redirect)}` : "";
 
       const { data: existingUser } = await supabase

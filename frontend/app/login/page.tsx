@@ -2,12 +2,7 @@
 
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
   return (
@@ -27,6 +22,13 @@ function LoginPageContent() {
     setError("");
 
     const redirect = searchParams.get("redirect");
+    // Supabase's OAuth redirect URL allowlist can strip extra query params from
+    // redirectTo, so stash the target in sessionStorage as a reliable fallback.
+    if (redirect) {
+      sessionStorage.setItem("postLoginRedirect", redirect);
+    } else {
+      sessionStorage.removeItem("postLoginRedirect");
+    }
     const callbackUrl = redirect
       ? `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirect)}`
       : `${window.location.origin}/auth/callback`;

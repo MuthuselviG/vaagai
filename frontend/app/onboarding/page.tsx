@@ -2,16 +2,10 @@
 
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
 import { EXAM_CHIPS } from "./chips/examchips";
 import { ROLE_CHIPS } from "./chips/rolechip";
 import { TAMIL_NADU_TALUKS } from "./chips/taluk";
-import { createCreatorRow } from "@/lib/supabase";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { createCreatorRow, supabase } from "@/lib/supabase";
 
 function ProgressDots({ step }: { step: number }) {
   return (
