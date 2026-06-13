@@ -1,0 +1,284 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { T, shadow } from "../../../lib/tokens";
+import { UNITS, RISING, PAPER_COUNT, MAX_TOPIC_COUNT, TOTAL_MARKS, Unit } from "./data";
+
+/* ---------- Mark Map: 100 tiles that flow into unit blocks ---------- */
+function MarkMap({ onPick, active }: { onPick: (key: string) => void; active: string | null }) {
+  const [shown, setShown] = useState(0);
+  useEffect(() => {
+    let i = 0;
+    const id = setInterval(() => {
+      i += 4;
+      setShown(Math.min(i, 100));
+      if (i >= 100) clearInterval(id);
+    }, 28);
+    return () => clearInterval(id);
+  }, []);
+
+  const tiles: Unit[] = [];
+  UNITS.forEach((u) => { for (let k = 0; k < u.marks; k++) tiles.push(u); });
+
+  return (
+    <div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(10, 1fr)", gap: 4, maxWidth: 360, margin: "0 auto" }}>
+        {tiles.map((u, idx) => {
+          const on = idx < shown;
+          const dim = active && active !== u.key;
+          return (
+            <div
+              key={idx}
+              onClick={() => onPick(u.key)}
+              style={{
+                aspectRatio: "1",
+                borderRadius: 4,
+                cursor: "pointer",
+                background: on ? u.color : "#E9ECF5",
+                opacity: on ? (dim ? 0.25 : 1) : 0.4,
+                transform: on ? "scale(1)" : "scale(0.6)",
+                transition: "all .35s cubic-bezier(.2,.8,.2,1)",
+                transitionDelay: `${(idx % 10) * 12}ms`,
+              }}
+            />
+          );
+        })}
+      </div>
+      <div style={{ textAlign: "center", marginTop: 12, fontSize: 13, color: T.textSec }}>
+        Each square = 1 mark · tap a colour to jump to that subject
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Donut (pure SVG) ---------- */
+function Donut({ onPick, active }: { onPick: (key: string) => void; active: string | null }) {
+  let acc = 0;
+  const R = 70;
+  const C = 2 * Math.PI * R;
+  return (
+    <svg viewBox="0 0 180 180" style={{ width: 200, height: 200, display: "block", margin: "0 auto" }}>
+      <circle cx="90" cy="90" r={R} fill="none" stroke="#EEF1FA" strokeWidth="26" />
+      {UNITS.map((u) => {
+        const frac = u.marks / TOTAL_MARKS;
+        const dash = `${frac * C} ${C - frac * C}`;
+        const off = -acc * C;
+        acc += frac;
+        const dim = active && active !== u.key;
+        return (
+          <circle
+            key={u.key}
+            cx="90" cy="90" r={R} fill="none"
+            stroke={u.color}
+            strokeWidth={dim ? 16 : 26}
+            strokeDasharray={dash}
+            strokeDashoffset={off}
+            transform="rotate(-90 90 90)"
+            style={{ cursor: "pointer", transition: "stroke-width .25s", opacity: dim ? 0.4 : 1 }}
+            onClick={() => onPick(u.key)}
+          />
+        );
+      })}
+      <text x="90" y="84" textAnchor="middle" fontSize="30" fontWeight="800" fill={T.text}>{TOTAL_MARKS}</text>
+      <text x="90" y="104" textAnchor="middle" fontSize="11" fill={T.textSec}>marks total</text>
+    </svg>
+  );
+}
+
+function UnitCard({ u, open, onToggle }: { u: Unit; open: boolean; onToggle: () => void }) {
+  return (
+    <div
+      id={u.key}
+      style={{
+        background: T.surface, borderRadius: 18, border: `1px solid ${T.border}`,
+        boxShadow: shadow.sm, overflow: "hidden", marginBottom: 14,
+      }}
+    >
+      <button
+        onClick={onToggle}
+        style={{
+          width: "100%", border: "none", background: "none", padding: 18,
+          display: "flex", alignItems: "center", gap: 14, cursor: "pointer", textAlign: "left",
+        }}
+      >
+        <div style={{
+          width: 54, height: 54, borderRadius: 14, background: u.color, color: "#fff",
+          display: "grid", placeItems: "center", flexShrink: 0, boxShadow: `0 4px 12px ${u.color}55`,
+        }}>
+          <div style={{ fontSize: 22, fontWeight: 800, lineHeight: 1 }}>{u.marks}</div>
+          <div style={{ fontSize: 9, opacity: 0.9 }}>marks</div>
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontWeight: 700, color: T.text, fontSize: 16 }}>{u.name}</div>
+          <div style={{ fontSize: 13, color: T.textSec }}>{u.tamil}</div>
+        </div>
+        <div style={{ fontSize: 20, color: T.textTer, transform: open ? "rotate(180deg)" : "none", transition: "transform .2s" }}>⌄</div>
+      </button>
+      {open && (
+        <div style={{ padding: "0 18px 18px" }}>
+          <div style={{
+            background: u.soft, color: u.color, fontWeight: 600, fontSize: 13.5,
+            padding: "10px 14px", borderRadius: 12, marginBottom: 16,
+          }}>
+            💡 {u.ease}
+          </div>
+          {u.topics.map((t, i) => (
+            <div key={i} style={{ marginBottom: 13 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 5 }}>
+                <span style={{ fontSize: 14, color: T.text, fontWeight: 500, display: "flex", alignItems: "center", gap: 6 }}>
+                  {t.label}
+                  {t.rising && (
+                    <span style={{
+                      fontSize: 10, background: "#FEF3C7", color: "#B45309",
+                      padding: "1px 6px", borderRadius: 6, fontWeight: 700,
+                    }}>
+                      RISING
+                    </span>
+                  )}
+                </span>
+                <span style={{ fontSize: 13, color: T.textSec, fontWeight: 700, whiteSpace: "nowrap", marginLeft: 8 }}>{t.n}Q</span>
+              </div>
+              <div style={{ height: 9, background: "#F0F2F8", borderRadius: 6, overflow: "hidden" }}>
+                <div style={{
+                  width: `${(t.n / MAX_TOPIC_COUNT) * 100}%`, height: "100%", background: u.color,
+                  borderRadius: 6, transition: "width .6s",
+                }} />
+              </div>
+              <div style={{ fontSize: 11, color: T.textTer, marginTop: 3 }}>asked in {t.papers} of {PAPER_COUNT} papers</div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function PyqAnalysisClient() {
+  const [active, setActive] = useState<string | null>(null);
+  const [open, setOpen] = useState<string | null>(null);
+  const unitRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  const pick = (key: string) => {
+    setActive(key);
+    setOpen(key);
+    setTimeout(() => unitRefs.current[key]?.scrollIntoView({ behavior: "smooth", block: "center" }), 60);
+  };
+
+  return (
+    <div style={{ background: T.bg, fontFamily: "'Inter', system-ui, sans-serif", color: T.text, paddingBottom: 100 }}>
+      {/* top syllabus strip */}
+      <div style={{ background: T.indigoDark, color: "#fff", padding: "10px 16px", fontSize: 13, textAlign: "center" }}>
+        📋 Based on the latest TNPSC syllabus (revised 2024, for 2026 exam) ·{" "}
+        <Link href="/tnpsc-study-materials" style={{ color: "#fff", textDecoration: "underline", fontWeight: 600 }}>
+          View full syllabus →
+        </Link>
+      </div>
+
+      {/* hero */}
+      <div style={{ padding: "30px 18px 10px", textAlign: "center", maxWidth: 460, margin: "0 auto" }}>
+        <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, color: T.indigo, textTransform: "uppercase" }}>AI PYQ Analysis</div>
+        <h1 style={{ fontSize: 27, fontWeight: 800, margin: "8px 0 10px", lineHeight: 1.2 }}>
+          TNPSC Group 4:<br />which topics actually repeat?
+        </h1>
+        <p style={{ fontSize: 15, color: T.textSec, lineHeight: 1.5, margin: "0 0 22px" }}>
+          We read every General Studies &amp; Aptitude question paper from 2012 to 2025 and counted what TNPSC asks again and again,
+          mapped against the latest 2026 syllabus. Study the repeating topics first.
+        </p>
+        <div style={{ display: "flex", justifyContent: "center", gap: 22, marginBottom: 26 }}>
+          {[["900", "questions"], ["9", "papers"], ["14", "years"]].map(([n, l]) => (
+            <div key={l}>
+              <div style={{ fontSize: 26, fontWeight: 800, color: T.indigo }}>{n}</div>
+              <div style={{ fontSize: 12, color: T.textSec }}>{l}</div>
+            </div>
+          ))}
+        </div>
+        <MarkMap onPick={pick} active={active} />
+      </div>
+
+      {/* scope banner */}
+      <div style={{ maxWidth: 460, margin: "26px auto 0", padding: "0 16px" }}>
+        <div style={{ background: "#FFF7ED", border: "1px solid #FED7AA", borderRadius: 14, padding: 14, fontSize: 13.5, color: "#9A3412" }}>
+          This page covers <b>General Studies + Aptitude</b> only.<br />
+          Looking for the Tamil paper (தமிழ்)?{" "}
+          <Link href="/pyq/group4" style={{ color: "#9A3412", textDecoration: "underline", fontWeight: 700 }}>
+            See Tamil paper practice →
+          </Link>
+        </div>
+      </div>
+
+      {/* donut */}
+      <div style={{ maxWidth: 460, margin: "30px auto 0", padding: "0 16px", textAlign: "center" }}>
+        <h2 style={{ fontSize: 19, fontWeight: 800, marginBottom: 4 }}>How the 100 marks are split</h2>
+        <p style={{ fontSize: 13.5, color: T.textSec, margin: "0 0 14px" }}>Tap a slice to explore that subject</p>
+        <Donut onPick={pick} active={active} />
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "8px 14px", marginTop: 16 }}>
+          {UNITS.map((u) => (
+            <button
+              key={u.key}
+              onClick={() => pick(u.key)}
+              style={{
+                border: "none", background: "none", cursor: "pointer",
+                display: "flex", alignItems: "center", gap: 6, fontSize: 12.5,
+                color: active && active !== u.key ? T.textTer : T.text,
+              }}
+            >
+              <span style={{ width: 11, height: 11, borderRadius: 3, background: u.color }} />
+              {u.short} <b>{u.marks}</b>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* rising topics */}
+      <div style={{ maxWidth: 460, margin: "34px auto 0", padding: "0 16px" }}>
+        <div style={{ background: "linear-gradient(135deg,#1A1A2E,#3D2A5C)", borderRadius: 20, padding: 20, color: "#fff" }}>
+          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, opacity: 0.8, textTransform: "uppercase" }}>🔥 New &amp; rising</div>
+          <h2 style={{ fontSize: 20, fontWeight: 800, margin: "6px 0 4px", color: "#fff" }}>Topics TNPSC started asking more</h2>
+          <p style={{ fontSize: 13, opacity: 0.75, margin: "0 0 16px" }}>
+            The new syllabus added these. They barely appeared before — now they&apos;re regulars. Don&apos;t skip them.
+          </p>
+          {RISING.map((r, i) => (
+            <div key={i} style={{ display: "flex", gap: 12, padding: "12px 0", borderTop: i ? "1px solid rgba(255,255,255,.12)" : "none" }}>
+              <div style={{ width: 6, borderRadius: 3, background: r.color, flexShrink: 0 }} />
+              <div>
+                <div style={{ fontWeight: 700, fontSize: 15 }}>
+                  {r.topic} <span style={{ fontSize: 11, opacity: 0.6, fontWeight: 500 }}>· {r.unit}</span>
+                </div>
+                <div style={{ fontSize: 13, opacity: 0.8, lineHeight: 1.45 }}>{r.note}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* per-unit cards */}
+      <div style={{ maxWidth: 460, margin: "34px auto 0", padding: "0 16px" }}>
+        <h2 style={{ fontSize: 19, fontWeight: 800, marginBottom: 4 }}>Every subject, topic by topic</h2>
+        <p style={{ fontSize: 13.5, color: T.textSec, margin: "0 0 16px" }}>Longer bar = asked more often. Start from the top of each list.</p>
+        {UNITS.map((u) => (
+          <div key={u.key} ref={(el) => { unitRefs.current[u.key] = el; }}>
+            <UnitCard u={u} open={open === u.key} onToggle={() => setOpen(open === u.key ? null : u.key)} />
+          </div>
+        ))}
+      </div>
+
+      {/* CTA */}
+      <div style={{ maxWidth: 460, margin: "30px auto 0", padding: "0 16px" }}>
+        <Link
+          href="/pyq/group4"
+          style={{
+            display: "block", background: T.indigo, borderRadius: 20, padding: 24, textAlign: "center", color: "#fff",
+            boxShadow: shadow.indigo, textDecoration: "none",
+          }}
+        >
+          <div style={{ fontSize: 19, fontWeight: 800, marginBottom: 6 }}>Now practice these topics</div>
+          <div style={{ fontSize: 14, opacity: 0.85, marginBottom: 16 }}>Solve real past questions, topic by topic, in Tamil &amp; English.</div>
+          <div style={{ background: "#fff", color: T.indigo, fontWeight: 700, padding: "12px 20px", borderRadius: 12, display: "inline-block" }}>
+            Start practising →
+          </div>
+        </Link>
+      </div>
+    </div>
+  );
+}

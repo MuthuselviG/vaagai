@@ -1,0 +1,4278 @@
+{
+  "_meta": {
+    "syllabus_version": "TNPSC Group IV, dated 12.12.2024 (for 2026 exam)",
+    "built_by": "Claude PYQ classification, question-text against official syllabus topics",
+    "scope": "Year-tagged Group 4 PYQ, lang=en; ta twins share the same topic",
+    "units": {
+      "science": {
+        "unit": "Unit I: General Science",
+        "topics": {
+          "physics": "Physics: mechanics, force, momentum, energy, optics/lenses, sound, heat, electricity, magnetism, units, modern physics",
+          "chemistry": "Chemistry: elements/compounds, acids-bases-salts, metallurgy, electrochemistry, organic groups, everyday chemistry",
+          "biology-botany": "Botany: plant physiology, photosynthesis, plant classification, plant reproduction, algae/fungi",
+          "biology-zoology": "Zoology & human physiology: blood, hormones, organs, reproduction, cells, genetics, diseases, nutrition/vitamins",
+          "agriculture-science": "Fertilizers, pesticides, insecticides, crop science, biofertilizers, food adulterants",
+          "astronomy-space": "Universe, planets, satellites, comets, asteroids, ISRO/space missions, atomic energy programme",
+          "environment": "Environmental science, ecosystems, pollution, eutrophication, greenhouse gases, wildlife protection",
+          "science-tech-current": "Latest inventions, IT/computers, technology current affairs, science days",
+          "general-knowledge-misc": "Sports/awards/GK questions mislabeled General Science"
+        }
+      },
+      "geography": {
+        "unit": "Unit II: Geography",
+        "topics": {
+          "earth-location": "Earth location, latitudes/longitudes, world geography, continents, deserts, world lakes, borders",
+          "physical-features-india": "Himalayas, plains, plateaus, physical features of India",
+          "climate-monsoon": "Monsoon, winds, weather, climate",
+          "rivers-water": "Rivers, tributaries, water resources, river landforms",
+          "forest-wildlife": "Forests, wildlife sanctuaries, national parks, biosphere reserves",
+          "agriculture-pattern": "Crop production patterns, shifting cultivation, agricultural geography",
+          "transport-communication": "Ports, railways, highways, metro, shipping",
+          "tn-geography": "Tamil Nadu specific geography: windfarms, hills, TN sanctuaries, TN forest cover, Chennai",
+          "population": "Population density, distribution, growth factors",
+          "disasters-environment": "Calamities, floods, disaster management",
+          "misc-current-affairs": "GK/current events mislabeled Geography"
+        }
+      },
+      "history": {
+        "unit": "Unit III: History, Culture of India, and Indian National Movement",
+        "topics": {
+          "indus-valley": "Indus Valley Civilization, Harappan sites and excavations",
+          "ancient-india": "Vedic age, prehistory, Mauryas, Guptas, ancient literature, archaeology",
+          "medieval-india": "Delhi Sultans, Mughals, Marathas, Vijayanagar",
+          "south-indian-history": "Pallavas, Cholas, Sangam-era kings, TN excavations, south Indian literature",
+          "early-uprisings-renaissance": "1857 and early revolts, socio-religious reform movements, national renaissance, British-era acts",
+          "inc-freedom-movement": "Indian National Congress, Gandhian era, revolutionary movement, partition-era plans",
+          "national-leaders": "Leader-specific questions (Ambedkar, Bhagat Singh, Tagore, VOC, Nehru, Bharathiar, etc.)",
+          "tn-agitations": "Tamil Nadu movements: Justice Party, Devadasi abolition, Muthulakshmi Ammaiyar, labour strikes",
+          "indian-culture": "Unity in diversity, religion, language, arts, Thirukkural-in-GS, secular state",
+          "misc-current-affairs": "Awards, modern world events, unclassifiable fragments mislabeled History"
+        }
+      },
+      "polity": {
+        "unit": "Unit IV: Indian Polity",
+        "topics": {
+          "constitution-basics": "Constitution, Preamble, salient features, amendments, Union/State/UT structure, citizenship, Constituent Assembly",
+          "fundamental-rights": "Fundamental Rights (Part III), writ-related rights, reservation",
+          "fundamental-duties": "Fundamental Duties (Art 51A)",
+          "dpsp": "Directive Principles of State Policy",
+          "union-executive": "President, Vice-President, PM, Attorney General",
+          "union-legislature": "Parliament, Lok Sabha, Rajya Sabha",
+          "state-executive": "Governor, Chief Minister",
+          "state-legislature": "Legislative Assembly / Council",
+          "local-government": "Local governments, Panchayat Raj, municipalities",
+          "federalism-centre-state": "Centre-State relations, Finance Commission, inter-state council, related commissions",
+          "elections": "Elections, Election Commission",
+          "judiciary": "Judiciary, Supreme Court, High Courts, writs, rule of law, Lok Adalat",
+          "anti-corruption": "Lokpal, Lokayukta, CVC, anti-corruption measures",
+          "rti": "Right to Information",
+          "women-empowerment": "Empowerment of Women",
+          "consumer-protection": "Consumer Protection Forums",
+          "human-rights": "Human Rights Charter, social justice, child rights",
+          "political-parties-system": "Political parties and political systems, anti-defection, political theory",
+          "misc-current-affairs": "GK/current-affairs questions labeled Polity by extraction (census, UN bodies, awards, schemes)"
+        }
+      },
+      "economy": {
+        "unit": "Unit V: Indian Economy and Development Administration in Tamil Nadu",
+        "topics": {
+          "economy-basics": "Nature of Indian economy, national income concepts, inflation, economic thought, 1991 reforms",
+          "five-year-plans": "Five-year plans, early plan proposals, Planning Commission, NITI Aayog, NDC",
+          "revenue-banking-gst": "Taxes, GST, RBI, monetary policy, Finance Commission, FERA, financial inclusion",
+          "agriculture-land": "Green/colour revolutions, food security, agri policy, KCC, crops",
+          "industry": "Industrial policy, PSUs, MRTP, specific industries, Make in India, energy",
+          "rural-welfare-schemes": "Central rural welfare and poverty eradication schemes (JGSY, NSAP, EAS, NRLM, etc.)",
+          "social-problems": "Population, poverty concepts, education system, health (national level)",
+          "tn-schemes-development": "TN welfare schemes, TN education/health systems, TN economy/GSDP, GI tags, TN industry",
+          "misc-current-affairs": "International groupings, awards, one-off current events mislabeled Economy"
+        }
+      },
+      "tnhistory": {
+        "unit": "Unit VI: History, Culture, Heritage, and Socio-Political Movements of Tamil Nadu",
+        "topics": {
+          "tamil-society-archaeology": "History of Tamil society, archaeological discoveries (Keezhadi, Sivakalai), Sangam-era kingdoms, ancient TN trade and temples",
+          "tamil-literature": "Tamil literature from Sangam to contemporary, authors and works, Tamil antiquity",
+          "thirukkural": "Thirukkural-specific questions: couplets, values, philosophy",
+          "tn-freedom-struggle": "TN role in freedom struggle: Palayakkarars, Kattabomman, Velu Nachiyar, VOC, early agitations",
+          "social-reformers": "Social reformers and movements: Periyar, Muthulakshmi, Iyothee Thass, Ramalinga Adigal, Devadasi abolition, labour movement",
+          "tn-politics": "Madras Presidency / TN political history: Justice Party ministries, CMs, Anna, Dravidian movement politics",
+          "misc-modern-tn": "Modern TN administrative/infrastructure facts mislabeled into this unit"
+        }
+      },
+      "aptitude": {
+        "unit": "Part B: Aptitude and Mental Ability",
+        "topics": {
+          "simplification": "Simplification, surds, indices/powers, fractions, BODMAS",
+          "hcf-lcm": "HCF, LCM, divisibility, remainders",
+          "percentage": "Percentage, profit & loss, discount",
+          "ratio-proportion": "Ratio, proportion, partnership, ages, mixtures",
+          "simple-interest": "Simple interest",
+          "compound-interest": "Compound interest, population growth",
+          "area-volume": "Area, mensuration, volume, surface area, geometry",
+          "time-work": "Time & work, pipes & cisterns, men-days",
+          "algebra-identities": "Algebraic identities, linear/quadratic equations",
+          "progressions": "Arithmetic & geometric progressions, series sums",
+          "statistics-probability": "Mean/SD, probability, data interpretation",
+          "number-series": "Number series, missing number, odd-one-out",
+          "coding-decoding": "Coding-decoding, alphanumeric reasoning",
+          "dice": "Dice problems",
+          "puzzles-arrangement": "Seating/arrangement, blood relations, calendar, figure counting"
+        }
+      }
+    }
+  },
+  "science": [
+    {
+      "id": "7e37bb13-9d91-4ed5-98f1-91cc8f320eb2",
+      "year": 2012,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "abb41095-a752-4b2b-9a22-91bab4cfe5a7",
+      "year": 2012,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "e152b070-ef72-4bf8-a181-83534caccf29",
+      "year": 2012,
+      "topic": "astronomy-space"
+    },
+    {
+      "id": "17da9d3b-bfe8-48cf-8af6-e7e773f8b26a",
+      "year": 2012,
+      "topic": "astronomy-space"
+    },
+    {
+      "id": "c1012257-bbba-4b89-8554-74ce678300cc",
+      "year": 2012,
+      "topic": "physics"
+    },
+    {
+      "id": "f7c62b68-78fa-4156-b4e7-9ca9207e365d",
+      "year": 2012,
+      "topic": "astronomy-space"
+    },
+    {
+      "id": "cfd95927-cb0b-4cea-9add-9e16d4a9a6b3",
+      "year": 2012,
+      "topic": "science-tech-current"
+    },
+    {
+      "id": "7bdd8d30-fc27-401f-9517-6e2e8a5f7e58",
+      "year": 2012,
+      "topic": "astronomy-space"
+    },
+    {
+      "id": "1eb7c1d4-2557-4a8f-81c2-e8f0861677f4",
+      "year": 2012,
+      "topic": "science-tech-current"
+    },
+    {
+      "id": "e6a66c8f-66f3-41a5-8090-6a3b9e1a1cdd",
+      "year": 2012,
+      "topic": "agriculture-science"
+    },
+    {
+      "id": "6e81168c-b01a-47e4-92c1-8e2da4d2a980",
+      "year": 2012,
+      "topic": "astronomy-space"
+    },
+    {
+      "id": "9a125368-cb8a-4d84-b775-f4ac63ca0ec1",
+      "year": 2012,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "49f3e991-ffba-4ea5-81ee-1c9e0ae46daf",
+      "year": 2012,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "082b730b-e0dd-4905-8f3d-994ab4d62b9b",
+      "year": 2012,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "a7c20156-db58-46a3-8493-2aaf3cafa8d5",
+      "year": 2012,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "976afac8-ec5d-45dc-b28e-7a6bae7e290a",
+      "year": 2012,
+      "topic": "environment"
+    },
+    {
+      "id": "a4b201f5-0dab-4c88-9e84-67138d8f13cf",
+      "year": 2012,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "dc259a47-8cce-4101-b964-8faa139cc14b",
+      "year": 2012,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "c4fedc55-c621-4eed-bd40-b2c39b9bf706",
+      "year": 2012,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "15b5ff25-01e2-4d69-9312-697f9f9d32fb",
+      "year": 2012,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "ed6669a1-d95d-4af7-9c6a-b885de0b1ad2",
+      "year": 2012,
+      "topic": "chemistry"
+    },
+    {
+      "id": "55953824-5f67-4a2b-b3d9-76949afc9ea9",
+      "year": 2012,
+      "topic": "chemistry"
+    },
+    {
+      "id": "27c7d801-fef0-4039-8583-d34c0eb2e0c2",
+      "year": 2012,
+      "topic": "agriculture-science"
+    },
+    {
+      "id": "cc747524-374d-48e2-a2fd-196ab1ae4303",
+      "year": 2012,
+      "topic": "chemistry"
+    },
+    {
+      "id": "58656877-70f1-485f-a514-c244b7e45a74",
+      "year": 2012,
+      "topic": "chemistry"
+    },
+    {
+      "id": "8598535b-5521-46cb-b357-84548c1303c6",
+      "year": 2012,
+      "topic": "chemistry"
+    },
+    {
+      "id": "30789ac5-d287-41e7-b382-5f93fe9d21e5",
+      "year": 2012,
+      "topic": "general-knowledge-misc"
+    },
+    {
+      "id": "f706f638-0f9c-47f9-b33f-ee9b3d600bb6",
+      "year": 2012,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "aa638fee-34eb-4a56-bbcd-1d8a11a9e6d6",
+      "year": 2012,
+      "topic": "astronomy-space"
+    },
+    {
+      "id": "2d86494b-57fa-450a-bda1-f207fdca0d70",
+      "year": 2012,
+      "topic": "physics"
+    },
+    {
+      "id": "3f14ee15-1747-40fd-a81e-cd4c49c87cac",
+      "year": 2012,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "deb291ac-9811-4224-ae8c-d42b46d8df73",
+      "year": 2012,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "4c8e8c3e-10f6-4959-9f88-3f3c932b033d",
+      "year": 2012,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "5eafc38d-432e-4cc2-ab8e-5024675deb6c",
+      "year": 2012,
+      "topic": "science-tech-current"
+    },
+    {
+      "id": "99f55fb0-899e-4d2d-b8f8-58a94b0b3118",
+      "year": 2012,
+      "topic": "physics"
+    },
+    {
+      "id": "4aa85643-18c2-479d-8a41-cd9f911fe3ae",
+      "year": 2012,
+      "topic": "general-knowledge-misc"
+    },
+    {
+      "id": "e6ad3162-5df4-499a-b927-12cfaf4ec059",
+      "year": 2012,
+      "topic": "chemistry"
+    },
+    {
+      "id": "98edc902-fb9f-4724-960a-5254e2679ee5",
+      "year": 2012,
+      "topic": "chemistry"
+    },
+    {
+      "id": "eefe3ce1-aec3-4732-a632-459351f794f5",
+      "year": 2013,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "938231d7-1bfd-4ab9-9cd5-dc2f4b6df5f2",
+      "year": 2013,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "1138e7b2-16b6-4743-8933-db0c4062e530",
+      "year": 2013,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "8363fe06-9700-4d5e-ad7c-d6d73188c4a0",
+      "year": 2013,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "ab06e8cd-29ae-4ed5-a5bd-e5316776a3aa",
+      "year": 2013,
+      "topic": "physics"
+    },
+    {
+      "id": "2effb548-5527-4140-b97e-c856aaaa456a",
+      "year": 2013,
+      "topic": "physics"
+    },
+    {
+      "id": "79266d53-de19-4d5c-b2d1-d8d2ad5b78aa",
+      "year": 2013,
+      "topic": "astronomy-space"
+    },
+    {
+      "id": "ee9dd365-c9da-4987-845f-6aec8ea337fe",
+      "year": 2013,
+      "topic": "agriculture-science"
+    },
+    {
+      "id": "6d5c48e5-8f9f-4326-92f2-8d11422c04f9",
+      "year": 2013,
+      "topic": "agriculture-science"
+    },
+    {
+      "id": "f90d21c9-f828-4a70-8e99-384cb90488d6",
+      "year": 2013,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "172791de-f300-4bbd-a5f6-47d0990c72ea",
+      "year": 2013,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "0c3bad4c-14b6-4b22-bb4d-6bde5e2ab526",
+      "year": 2013,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "d0ea0a04-5e4b-498b-bb41-683130d71cea",
+      "year": 2013,
+      "topic": "astronomy-space"
+    },
+    {
+      "id": "b91566e5-5389-4ad2-8934-281dd010980c",
+      "year": 2013,
+      "topic": "astronomy-space"
+    },
+    {
+      "id": "7c95e146-d9f6-45e1-bdd8-33bca1e04c69",
+      "year": 2013,
+      "topic": "chemistry"
+    },
+    {
+      "id": "57af56ed-3f77-4122-8d5f-6226169142d0",
+      "year": 2013,
+      "topic": "chemistry"
+    },
+    {
+      "id": "b4120aeb-d074-4b88-8337-728f518bf093",
+      "year": 2013,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "5085032d-7790-4fdf-87ac-5acb601a6cb3",
+      "year": 2013,
+      "topic": "science-tech-current"
+    },
+    {
+      "id": "f98f3926-1ebe-4a19-a352-a87b492f7ec5",
+      "year": 2013,
+      "topic": "physics"
+    },
+    {
+      "id": "6ea57dbf-fd7b-4fb4-8885-bef612d1c9da",
+      "year": 2013,
+      "topic": "environment"
+    },
+    {
+      "id": "cdfd0879-909c-4e98-a0ff-e1a44cb37295",
+      "year": 2014,
+      "topic": "physics"
+    },
+    {
+      "id": "3cc9b1d9-be9e-4555-b4ba-c1ba9ea5aaed",
+      "year": 2014,
+      "topic": "physics"
+    },
+    {
+      "id": "47b2abfd-2a51-4aee-b4d4-1c4fb5ac5314",
+      "year": 2014,
+      "topic": "chemistry"
+    },
+    {
+      "id": "5cbd4c2a-7256-47b0-89bc-587170015f62",
+      "year": 2014,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "c76fab97-e131-4729-8644-04ed29225c66",
+      "year": 2014,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "236e9d28-c1f4-463d-a6bd-56bf5b931ffa",
+      "year": 2014,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "9aa57bc9-5b49-4065-8d3b-0ff0db22b849",
+      "year": 2014,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "d1d089a7-d179-44fc-96f3-11a4d5209fad",
+      "year": 2014,
+      "topic": "environment"
+    },
+    {
+      "id": "dc2701f3-8cfb-46a5-8eb5-5d396f44db4d",
+      "year": 2014,
+      "topic": "environment"
+    },
+    {
+      "id": "233adf8b-36ea-47ee-8d0f-7fc549305ee8",
+      "year": 2014,
+      "topic": "general-knowledge-misc"
+    },
+    {
+      "id": "e7bad2c6-0319-4685-b2c2-00b3986d8141",
+      "year": 2014,
+      "topic": "science-tech-current"
+    },
+    {
+      "id": "10477e9f-e88f-48c9-97b6-a2292058d1bc",
+      "year": 2014,
+      "topic": "physics"
+    },
+    {
+      "id": "2e989f6b-334e-4083-9257-9f6fcef75713",
+      "year": 2014,
+      "topic": "physics"
+    },
+    {
+      "id": "98a01d02-8c04-4805-bd90-39504635cc31",
+      "year": 2014,
+      "topic": "chemistry"
+    },
+    {
+      "id": "78dc08ce-536a-4ec8-ab84-902082e37d1d",
+      "year": 2014,
+      "topic": "chemistry"
+    },
+    {
+      "id": "9a716330-7374-4829-a0cd-9ce0c8056782",
+      "year": 2014,
+      "topic": "agriculture-science"
+    },
+    {
+      "id": "561ced71-7fcf-49a2-a306-0e2897496b18",
+      "year": 2014,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "49b36b88-9d23-41d0-bc81-df35d99c7b99",
+      "year": 2014,
+      "topic": "environment"
+    },
+    {
+      "id": "f6e0af4c-cedc-4a95-9eaf-002d13956936",
+      "year": 2014,
+      "topic": "chemistry"
+    },
+    {
+      "id": "a4743fdc-9373-4e33-b23b-7fea92bf9429",
+      "year": 2014,
+      "topic": "science-tech-current"
+    },
+    {
+      "id": "e21e358f-2201-419c-917f-49f7eeb2d031",
+      "year": 2014,
+      "topic": "science-tech-current"
+    },
+    {
+      "id": "bd3d83cc-31c5-4740-a990-f1da7b054a9b",
+      "year": 2014,
+      "topic": "science-tech-current"
+    },
+    {
+      "id": "3d54497b-9f64-4c39-a4e2-df1fb7bf3a44",
+      "year": 2014,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "6c029d34-b842-4026-8866-2743118fafd8",
+      "year": 2016,
+      "topic": "physics"
+    },
+    {
+      "id": "6dea637e-ccc4-4bcf-ad86-c84afafae2a0",
+      "year": 2016,
+      "topic": "physics"
+    },
+    {
+      "id": "91ea3bff-79af-4a83-b19a-b923375543aa",
+      "year": 2016,
+      "topic": "chemistry"
+    },
+    {
+      "id": "fa3cb708-1c5f-419e-a1c7-12bae5b9f98c",
+      "year": 2016,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "fda3e794-6bc2-4678-8ca5-9b9657e0f6a2",
+      "year": 2016,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "eedd226f-583d-40c6-9801-97a8a67fd9b1",
+      "year": 2016,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "2e5e114e-f38d-4295-97bd-1baf12288c11",
+      "year": 2016,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "83771c07-da1b-4e16-bfaa-0c9279e7a4a4",
+      "year": 2016,
+      "topic": "science-tech-current"
+    },
+    {
+      "id": "26440e72-0adc-4488-9dbf-384e49639c7f",
+      "year": 2016,
+      "topic": "general-knowledge-misc"
+    },
+    {
+      "id": "5e8ea815-6597-4d3a-ac41-465bb6e6dcf7",
+      "year": 2016,
+      "topic": "general-knowledge-misc"
+    },
+    {
+      "id": "f2041c81-0f23-4e4d-9c42-691197b5508c",
+      "year": 2016,
+      "topic": "astronomy-space"
+    },
+    {
+      "id": "21842500-da0d-4ae1-8bff-21889ea57d7b",
+      "year": 2016,
+      "topic": "physics"
+    },
+    {
+      "id": "db74592d-fd1c-4871-acc9-7b5d9d7efc87",
+      "year": 2016,
+      "topic": "physics"
+    },
+    {
+      "id": "355125ba-bb30-43cf-8ac7-887aad579fd1",
+      "year": 2016,
+      "topic": "chemistry"
+    },
+    {
+      "id": "a75f7962-e10f-427d-860d-23c3db12ab06",
+      "year": 2016,
+      "topic": "agriculture-science"
+    },
+    {
+      "id": "78e3c6c3-f0b1-4dda-94df-573a8e21198c",
+      "year": 2016,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "0a6e4ee5-ac93-4e2a-9cc6-a5f3fa94faea",
+      "year": 2016,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "86e70f97-f1d3-4802-ad39-fcd00f2e1bce",
+      "year": 2016,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "c31181c1-3a03-46f0-9853-e35620d1eb23",
+      "year": 2016,
+      "topic": "science-tech-current"
+    },
+    {
+      "id": "b792503c-7aac-4d86-9edc-866674572d22",
+      "year": 2016,
+      "topic": "astronomy-space"
+    },
+    {
+      "id": "a99e18d1-1e75-44a5-b1dd-529360ee7713",
+      "year": 2016,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "6f5482b4-8039-4b47-b7c1-a77b8faecb87",
+      "year": 2018,
+      "topic": "general-knowledge-misc"
+    },
+    {
+      "id": "2c89eb5f-d3cd-4b67-af4c-3ce04c8b6a8d",
+      "year": 2018,
+      "topic": "physics"
+    },
+    {
+      "id": "34700d85-377b-4fc0-9f3e-53e4400c6882",
+      "year": 2018,
+      "topic": "physics"
+    },
+    {
+      "id": "7476f6e9-9e84-4b12-95dc-13eefd843097",
+      "year": 2018,
+      "topic": "astronomy-space"
+    },
+    {
+      "id": "3b959e92-be61-42f1-970b-bca2d0b4e6c4",
+      "year": 2018,
+      "topic": "chemistry"
+    },
+    {
+      "id": "a9f0dc36-5009-47dd-8dab-85b386698127",
+      "year": 2018,
+      "topic": "chemistry"
+    },
+    {
+      "id": "76edf8bc-2ca5-4c1d-b9c1-717b61472d13",
+      "year": 2018,
+      "topic": "science-tech-current"
+    },
+    {
+      "id": "4289cb26-e359-437c-b421-430c4fb9432c",
+      "year": 2018,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "6676960f-eaac-4cdb-8b10-7a6e08181d72",
+      "year": 2018,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "1846825e-afa1-488d-9a16-68ce512d712e",
+      "year": 2018,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "e620c573-c9b1-4f76-9f20-5c56139d50fb",
+      "year": 2018,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "459e2411-9899-4dfa-b144-9eb94881da82",
+      "year": 2018,
+      "topic": "general-knowledge-misc"
+    },
+    {
+      "id": "228cbec6-926b-4be3-821a-ee6c481c8414",
+      "year": 2018,
+      "topic": "astronomy-space"
+    },
+    {
+      "id": "6e39f7d7-672a-4eda-af97-92bca897fb1c",
+      "year": 2018,
+      "topic": "environment"
+    },
+    {
+      "id": "754bd33a-1b43-4373-bfb2-6d70cb2209ac",
+      "year": 2018,
+      "topic": "chemistry"
+    },
+    {
+      "id": "72bb0dcd-b60f-4dd8-a68f-a13795200a71",
+      "year": 2018,
+      "topic": "chemistry"
+    },
+    {
+      "id": "8a2dc725-7ebc-43b6-b554-23bbe7dbb7ba",
+      "year": 2018,
+      "topic": "chemistry"
+    },
+    {
+      "id": "fe38392e-8376-4462-9714-e3a8638abfe0",
+      "year": 2018,
+      "topic": "general-knowledge-misc"
+    },
+    {
+      "id": "58903fff-0c34-4631-8c3b-4582416bfc43",
+      "year": 2018,
+      "topic": "general-knowledge-misc"
+    },
+    {
+      "id": "c8faa9f2-ae43-4608-ba86-684de4949fd6",
+      "year": 2018,
+      "topic": "general-knowledge-misc"
+    },
+    {
+      "id": "d9683c99-c0e5-4ee9-887e-199454cf2ab3",
+      "year": 2018,
+      "topic": "general-knowledge-misc"
+    },
+    {
+      "id": "9acc2f69-acc5-484b-9c62-8944f74a360e",
+      "year": 2018,
+      "topic": "general-knowledge-misc"
+    },
+    {
+      "id": "68f31278-6ba4-4b34-b32c-fedc472ec2af",
+      "year": 2018,
+      "topic": "general-knowledge-misc"
+    },
+    {
+      "id": "c5601bc3-cee0-42e3-8760-9dbd287c9a4c",
+      "year": 2018,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "0f458ad1-1e60-4189-a49f-1e6c2b65d9b4",
+      "year": 2018,
+      "topic": "environment"
+    },
+    {
+      "id": "d1b6e7f8-5f1a-4deb-81e9-6c5c1fc75891",
+      "year": 2018,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "2c9d5604-2d1a-4bea-9823-4d9073830c5e",
+      "year": 2018,
+      "topic": "physics"
+    },
+    {
+      "id": "3eeeaff8-5700-44b1-8e29-e638e2b510ec",
+      "year": 2019,
+      "topic": "astronomy-space"
+    },
+    {
+      "id": "da5a459e-7b38-44dc-8bbc-7aba3cdbb20d",
+      "year": 2019,
+      "topic": "chemistry"
+    },
+    {
+      "id": "32e48cf3-712c-4127-855b-9596ff3d4227",
+      "year": 2019,
+      "topic": "environment"
+    },
+    {
+      "id": "b4eb98d9-de23-4b81-83a5-4a83af85533d",
+      "year": 2019,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "6afea88c-67ac-4926-a9cc-8c881a5392d3",
+      "year": 2019,
+      "topic": "chemistry"
+    },
+    {
+      "id": "ec9b86fb-4065-4a7e-829a-143bdd4ba8b3",
+      "year": 2019,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "7e0b659f-5d35-4ddd-979f-f351eb26d604",
+      "year": 2019,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "82a3ed9b-b123-4cd9-b0ab-3d2053486de3",
+      "year": 2019,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "b7d16a06-8cbc-4e89-b9e7-82ca31d6853e",
+      "year": 2019,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "534bde47-bc39-40ff-a35e-9f7b78e77d38",
+      "year": 2019,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "431122af-0f83-439f-b7b9-638de4df6d54",
+      "year": 2019,
+      "topic": "chemistry"
+    },
+    {
+      "id": "01902f35-b2bb-41f9-a135-eca0b9b10d44",
+      "year": 2019,
+      "topic": "physics"
+    },
+    {
+      "id": "e383f1f9-a426-4d6e-83ee-02d261814a32",
+      "year": 2019,
+      "topic": "physics"
+    },
+    {
+      "id": "66739726-e238-4edb-8c7f-2f2fdd656939",
+      "year": 2019,
+      "topic": "physics"
+    },
+    {
+      "id": "0d5133c3-370d-4608-8316-269ac77e6430",
+      "year": 2019,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "138f2dd2-96cf-4db1-9dd6-ac9a4940468d",
+      "year": 2019,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "bb03e188-6578-4839-ba8c-d2bca23e73b7",
+      "year": 2019,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "550893e6-8df1-4fb0-a43c-d5257cef093c",
+      "year": 2019,
+      "topic": "chemistry"
+    },
+    {
+      "id": "21657bf8-243c-4d6b-a90a-0237f69c6aa9",
+      "year": 2019,
+      "topic": "agriculture-science"
+    },
+    {
+      "id": "69f9861b-567a-4934-81fd-1b170b9b0b05",
+      "year": 2019,
+      "topic": "chemistry"
+    },
+    {
+      "id": "39a3db7c-6f0f-4559-b1c9-6ea6bd5591d8",
+      "year": 2019,
+      "topic": "physics"
+    },
+    {
+      "id": "25ad6960-dea6-4a17-abb4-6725e0fd2b0d",
+      "year": 2022,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "9916c2ad-b31e-44ac-8c39-a4f279aab3c0",
+      "year": 2022,
+      "topic": "chemistry"
+    },
+    {
+      "id": "b8ed0b20-332e-4c54-ae81-18bc634d581c",
+      "year": 2022,
+      "topic": "astronomy-space"
+    },
+    {
+      "id": "ffaab6e7-7a54-4d63-bf9e-d751e3cf962d",
+      "year": 2022,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "cdc9f1e1-b4aa-43d3-a664-92b51de9b41e",
+      "year": 2022,
+      "topic": "science-tech-current"
+    },
+    {
+      "id": "6ecb56bc-cea0-4b60-8f04-46c5572b10f7",
+      "year": 2022,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "49dafe9e-2bb7-4ef2-b3dc-0082d10ee26b",
+      "year": 2022,
+      "topic": "chemistry"
+    },
+    {
+      "id": "b7fa258a-54a8-47f7-9026-eae8f2150ba1",
+      "year": 2022,
+      "topic": "chemistry"
+    },
+    {
+      "id": "ed2d49a2-4eb5-49e3-a7a8-4eec5f19e95e",
+      "year": 2022,
+      "topic": "physics"
+    },
+    {
+      "id": "7be998e4-f32e-4e50-909d-75744d09216e",
+      "year": 2022,
+      "topic": "physics"
+    },
+    {
+      "id": "d9a2aa39-f04a-49f4-be5a-4135d95b304c",
+      "year": 2022,
+      "topic": "agriculture-science"
+    },
+    {
+      "id": "ea5dad9f-e93d-41f0-b1bc-adf617c1a7a7",
+      "year": 2022,
+      "topic": "agriculture-science"
+    },
+    {
+      "id": "6ba0d001-cc82-4f30-8386-bfe52ef729bf",
+      "year": 2022,
+      "topic": "physics"
+    },
+    {
+      "id": "7a6c7342-cc50-4657-8a72-bd5eb650bbc0",
+      "year": 2024,
+      "topic": "chemistry"
+    },
+    {
+      "id": "f21a1a3e-ecec-4c1f-baa4-70701de3657e",
+      "year": 2024,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "59878e59-cc10-4ddb-8383-08d5b5d1bf58",
+      "year": 2024,
+      "topic": "astronomy-space"
+    },
+    {
+      "id": "a87ff859-bcca-4830-85a0-6863e346f4ae",
+      "year": 2024,
+      "topic": "astronomy-space"
+    },
+    {
+      "id": "984437fb-5ce7-4817-9d48-a14ae547d39b",
+      "year": 2024,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "a60e800f-df0c-464e-b63c-dd6fe8f4bd5a",
+      "year": 2024,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "c3a23fb2-b748-461f-b46c-693c1754b78b",
+      "year": 2024,
+      "topic": "physics"
+    },
+    {
+      "id": "cf63a42d-9300-4e8d-ac94-0b0820a99106",
+      "year": 2024,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "ade3eb90-2e55-44dd-a374-e51a539b4b1d",
+      "year": 2024,
+      "topic": "chemistry"
+    },
+    {
+      "id": "e4fc0d0c-a699-4364-a61d-8e76ab762db4",
+      "year": 2024,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "c7e4da8c-b796-45f6-aae4-119c9ac04a52",
+      "year": 2024,
+      "topic": "environment"
+    },
+    {
+      "id": "e1e814a4-6a14-403e-9a5a-4d11a7097ed6",
+      "year": 2024,
+      "topic": "science-tech-current"
+    },
+    {
+      "id": "0d59967a-1c15-4532-be2d-d4eca92a297f",
+      "year": 2025,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "520769ae-9553-486d-85aa-436c84f45126",
+      "year": 2025,
+      "topic": "biology-botany"
+    },
+    {
+      "id": "7e1adb08-ecbb-4a84-99cb-6690b23129ab",
+      "year": 2025,
+      "topic": "chemistry"
+    },
+    {
+      "id": "2d4d6fbd-23ce-449d-83bd-fc7a835b9ab9",
+      "year": 2025,
+      "topic": "astronomy-space"
+    },
+    {
+      "id": "7bfc7cf4-dca2-4152-b709-d2eda68ef60b",
+      "year": 2025,
+      "topic": "astronomy-space"
+    },
+    {
+      "id": "ccdfb059-47ac-40a6-96a2-d1c931309441",
+      "year": 2025,
+      "topic": "science-tech-current"
+    },
+    {
+      "id": "a31d6324-d345-45d1-864a-4b67b885f3be",
+      "year": 2025,
+      "topic": "biology-zoology"
+    },
+    {
+      "id": "f5e32517-0ef8-4cfc-b50a-83d00f210ca6",
+      "year": 2025,
+      "topic": "physics"
+    }
+  ],
+  "geography": [
+    {
+      "id": "2280f6ff-d143-483f-852f-2c4f8554996f",
+      "year": 2012,
+      "topic": "rivers-water"
+    },
+    {
+      "id": "ef1f8d83-d370-4abb-a8b0-34cf73de6c62",
+      "year": 2012,
+      "topic": "tn-geography"
+    },
+    {
+      "id": "ce1bd835-bac4-4268-9e3f-4c8370a43bfa",
+      "year": 2012,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "f4ab06f1-e40a-44d5-9c7c-25dbd73fe771",
+      "year": 2012,
+      "topic": "earth-location"
+    },
+    {
+      "id": "be27777c-4b54-4b24-9096-d79e7662d961",
+      "year": 2012,
+      "topic": "tn-geography"
+    },
+    {
+      "id": "249f8fa4-1e74-4692-b9a3-14103cefc664",
+      "year": 2012,
+      "topic": "climate-monsoon"
+    },
+    {
+      "id": "1d4583f2-f76b-438b-bae5-e7391e397b8f",
+      "year": 2012,
+      "topic": "physical-features-india"
+    },
+    {
+      "id": "a20c9fe6-6828-4461-9fd7-46db6cd69184",
+      "year": 2012,
+      "topic": "earth-location"
+    },
+    {
+      "id": "12d0dbb1-87ea-4ac8-9263-125f35beaa4a",
+      "year": 2013,
+      "topic": "forest-wildlife"
+    },
+    {
+      "id": "332ab8c2-776f-4ae9-8923-5d5f89341f27",
+      "year": 2013,
+      "topic": "climate-monsoon"
+    },
+    {
+      "id": "58dcdf3f-2acb-465d-a3f0-16e3d884e8d6",
+      "year": 2013,
+      "topic": "tn-geography"
+    },
+    {
+      "id": "2e2d2ec3-5ae1-4941-a2c0-ab4eec85a479",
+      "year": 2013,
+      "topic": "transport-communication"
+    },
+    {
+      "id": "c6c10c73-1701-41c7-9bce-36ccbfc3072b",
+      "year": 2013,
+      "topic": "tn-geography"
+    },
+    {
+      "id": "c91e522f-4905-4e94-91c2-3df0729ee20a",
+      "year": 2014,
+      "topic": "population"
+    },
+    {
+      "id": "adcd66d6-ab1a-4e28-ac67-e706d22c5760",
+      "year": 2014,
+      "topic": "earth-location"
+    },
+    {
+      "id": "b95a78b3-776c-4447-843f-50d5d2ffa850",
+      "year": 2014,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "9e93c865-7fd1-441a-ab79-428a9971e13e",
+      "year": 2014,
+      "topic": "transport-communication"
+    },
+    {
+      "id": "794a5b45-a871-4b07-9a6f-faad18aa2670",
+      "year": 2014,
+      "topic": "earth-location"
+    },
+    {
+      "id": "6aeaf75c-a078-45bb-904e-20cedea886dc",
+      "year": 2014,
+      "topic": "agriculture-pattern"
+    },
+    {
+      "id": "bc920383-2ca1-4039-980d-fcbd5c3b2f72",
+      "year": 2014,
+      "topic": "transport-communication"
+    },
+    {
+      "id": "b1e7a285-bfa4-46dc-9f03-8b9c2980d1c8",
+      "year": 2016,
+      "topic": "forest-wildlife"
+    },
+    {
+      "id": "6260b7eb-5902-4c3d-b1d0-c190c777b8a4",
+      "year": 2016,
+      "topic": "agriculture-pattern"
+    },
+    {
+      "id": "8eae0834-7968-4b5d-8670-e7ba1359299b",
+      "year": 2016,
+      "topic": "transport-communication"
+    },
+    {
+      "id": "bcc00497-6800-4ce4-9686-bb8bc0ac34c9",
+      "year": 2016,
+      "topic": "rivers-water"
+    },
+    {
+      "id": "0a60e0b9-2695-43f8-89e0-57fe1867617b",
+      "year": 2016,
+      "topic": "transport-communication"
+    },
+    {
+      "id": "7f7b6a2b-3ab7-4ab8-a087-e4ab51c4f44a",
+      "year": 2018,
+      "topic": "climate-monsoon"
+    },
+    {
+      "id": "701f520c-3fed-4e6c-b308-1087cb093e17",
+      "year": 2018,
+      "topic": "disasters-environment"
+    },
+    {
+      "id": "506eae2a-9475-4cc1-9b63-d3d015ccce78",
+      "year": 2018,
+      "topic": "agriculture-pattern"
+    },
+    {
+      "id": "69f34df4-222f-4004-adaa-b00a9128e539",
+      "year": 2018,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "11d75190-bd41-4025-a6a4-f12f5a39ffb2",
+      "year": 2019,
+      "topic": "earth-location"
+    },
+    {
+      "id": "f85f2d71-80b4-4c03-86f2-9969a6565f76",
+      "year": 2019,
+      "topic": "transport-communication"
+    },
+    {
+      "id": "c69a40f3-857e-468f-8ae7-7d3e9cf1e2a8",
+      "year": 2019,
+      "topic": "physical-features-india"
+    },
+    {
+      "id": "6b7b3e0b-5d9f-4e33-97f5-89e62ca4aae1",
+      "year": 2019,
+      "topic": "earth-location"
+    },
+    {
+      "id": "9156d3b3-2e78-4171-a412-8d8afaf60598",
+      "year": 2019,
+      "topic": "tn-geography"
+    },
+    {
+      "id": "64ea9631-dd21-40a2-b5aa-29a7a55b08a8",
+      "year": 2019,
+      "topic": "forest-wildlife"
+    },
+    {
+      "id": "6bd76aee-9213-414f-b752-5194db99ded9",
+      "year": 2019,
+      "topic": "transport-communication"
+    },
+    {
+      "id": "c9626b5c-ac42-4abd-bb4d-a0091733788e",
+      "year": 2019,
+      "topic": "earth-location"
+    },
+    {
+      "id": "e391740d-e5e6-4bd3-8300-c33299e726ad",
+      "year": 2019,
+      "topic": "transport-communication"
+    },
+    {
+      "id": "22efa6f3-6233-4bbf-beef-a903748b01f3",
+      "year": 2019,
+      "topic": "transport-communication"
+    },
+    {
+      "id": "f097776c-6f0b-4b59-a744-68b833c51b1b",
+      "year": 2019,
+      "topic": "rivers-water"
+    },
+    {
+      "id": "522d6060-960b-4fca-8099-6cb606d25067",
+      "year": 2022,
+      "topic": "forest-wildlife"
+    },
+    {
+      "id": "1bfee873-12df-4ca9-8677-1b576afb780c",
+      "year": 2022,
+      "topic": "physical-features-india"
+    },
+    {
+      "id": "3826da85-15be-4084-be64-fbde95226d54",
+      "year": 2022,
+      "topic": "forest-wildlife"
+    },
+    {
+      "id": "e70fd22f-9b3b-4f48-9e3d-3f517cf2da37",
+      "year": 2022,
+      "topic": "rivers-water"
+    },
+    {
+      "id": "c9a97b5f-8bd8-4935-a3be-f52a6a2454fc",
+      "year": 2022,
+      "topic": "rivers-water"
+    },
+    {
+      "id": "3a99c3a0-c292-4970-b01e-7a73fe9bbd06",
+      "year": 2022,
+      "topic": "tn-geography"
+    },
+    {
+      "id": "34b567e8-76e3-45d5-be95-88c5d749482f",
+      "year": 2024,
+      "topic": "physical-features-india"
+    },
+    {
+      "id": "20f2f985-4b4a-44ab-99bb-c69c347d32d7",
+      "year": 2024,
+      "topic": "forest-wildlife"
+    },
+    {
+      "id": "d93cd6f3-9222-4886-9576-34047297b406",
+      "year": 2024,
+      "topic": "earth-location"
+    },
+    {
+      "id": "ea75126e-e929-4c3b-9d38-a35b13e46b6d",
+      "year": 2025,
+      "topic": "transport-communication"
+    },
+    {
+      "id": "1511b0e2-61c9-4fd7-ad5b-7a80a62fd5bf",
+      "year": 2025,
+      "topic": "population"
+    },
+    {
+      "id": "03108896-922f-452f-b05d-73a2a2b56172",
+      "year": 2025,
+      "topic": "agriculture-pattern"
+    }
+  ],
+  "history": [
+    {
+      "id": "2d617fed-c3e0-46e1-872b-c41055354c3a",
+      "year": 2012,
+      "topic": "early-uprisings-renaissance"
+    },
+    {
+      "id": "d68b9d93-0867-4a36-8479-6115d6a38cd6",
+      "year": 2012,
+      "topic": "inc-freedom-movement"
+    },
+    {
+      "id": "242b46d1-18f2-4653-b0ab-23d43ea68b35",
+      "year": 2012,
+      "topic": "ancient-india"
+    },
+    {
+      "id": "9502c442-c2ae-4431-8e10-f587c2644ef2",
+      "year": 2012,
+      "topic": "ancient-india"
+    },
+    {
+      "id": "46be4614-d51a-41cb-a69a-6bf8a4f9702e",
+      "year": 2012,
+      "topic": "tn-agitations"
+    },
+    {
+      "id": "4c791000-7813-47e4-b52c-d50ad53bee63",
+      "year": 2012,
+      "topic": "medieval-india"
+    },
+    {
+      "id": "7a168707-b33f-4d96-a6b1-2d0e749cdc80",
+      "year": 2012,
+      "topic": "inc-freedom-movement"
+    },
+    {
+      "id": "a554f3f9-cafd-437a-8279-924a829aa72f",
+      "year": 2012,
+      "topic": "inc-freedom-movement"
+    },
+    {
+      "id": "3615e23b-8bf8-43d7-8a61-ba6b95b9b665",
+      "year": 2012,
+      "topic": "early-uprisings-renaissance"
+    },
+    {
+      "id": "d00ea119-64a7-4ab0-923a-5bc93feb3838",
+      "year": 2012,
+      "topic": "indian-culture"
+    },
+    {
+      "id": "ae5eec0f-5c73-43c2-a2e5-9e5b6ecbdc20",
+      "year": 2012,
+      "topic": "south-indian-history"
+    },
+    {
+      "id": "b59070b7-5d9d-4cc3-9a35-009fc29d1483",
+      "year": 2012,
+      "topic": "tn-agitations"
+    },
+    {
+      "id": "245a4eba-4503-4843-ad65-03c4fd4609ef",
+      "year": 2012,
+      "topic": "south-indian-history"
+    },
+    {
+      "id": "ea169af6-6501-47e7-a11b-ebaec1c4829b",
+      "year": 2012,
+      "topic": "south-indian-history"
+    },
+    {
+      "id": "68c2f6c5-aac3-47cc-8065-bd49c538c55f",
+      "year": 2013,
+      "topic": "inc-freedom-movement"
+    },
+    {
+      "id": "17d0e53c-4e85-4723-9784-d0e6cc511037",
+      "year": 2013,
+      "topic": "inc-freedom-movement"
+    },
+    {
+      "id": "d3569b47-5f0b-4cee-ae82-fcc3194c7650",
+      "year": 2013,
+      "topic": "national-leaders"
+    },
+    {
+      "id": "a80d9933-92d8-44bf-882f-cf240319873c",
+      "year": 2013,
+      "topic": "national-leaders"
+    },
+    {
+      "id": "1debc7f0-e091-44dc-90b7-b6121fefcfcc",
+      "year": 2013,
+      "topic": "ancient-india"
+    },
+    {
+      "id": "09c9ea3a-b4a2-4a27-9532-f630a6e2c528",
+      "year": 2013,
+      "topic": "indian-culture"
+    },
+    {
+      "id": "e8ed8541-9bed-423c-b3f9-5422f47eec6d",
+      "year": 2013,
+      "topic": "early-uprisings-renaissance"
+    },
+    {
+      "id": "6bfb9659-dd2e-4b5c-813c-e9f9e6d088c4",
+      "year": 2013,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "f12bce0a-35da-420d-8fc0-5ed99813df8f",
+      "year": 2013,
+      "topic": "early-uprisings-renaissance"
+    },
+    {
+      "id": "d67a2808-1c9a-49a1-9b3f-60fb72c37882",
+      "year": 2013,
+      "topic": "early-uprisings-renaissance"
+    },
+    {
+      "id": "c84a0859-0cbc-4a05-a910-0b1f613cb9a8",
+      "year": 2013,
+      "topic": "ancient-india"
+    },
+    {
+      "id": "b10c4777-f714-4d00-90e3-4faaa19d3426",
+      "year": 2013,
+      "topic": "early-uprisings-renaissance"
+    },
+    {
+      "id": "31046392-db5f-4171-9e34-df785f95e801",
+      "year": 2013,
+      "topic": "ancient-india"
+    },
+    {
+      "id": "aab8dd7d-e74e-4d4f-a451-d28c55d44d5d",
+      "year": 2013,
+      "topic": "ancient-india"
+    },
+    {
+      "id": "35250cbe-ae2b-4d84-a8dd-9f3de9672db5",
+      "year": 2013,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "7e3dbfa5-3a8f-474d-9aee-96a0ccb065f6",
+      "year": 2013,
+      "topic": "indian-culture"
+    },
+    {
+      "id": "93c122c9-17fa-42cb-b7bb-bb5d832b9a7b",
+      "year": 2013,
+      "topic": "indus-valley"
+    },
+    {
+      "id": "6c47fdf4-a00b-431f-8d6a-e6070ea98c68",
+      "year": 2014,
+      "topic": "national-leaders"
+    },
+    {
+      "id": "3f8b9746-137c-4d53-b73e-acad37ef6583",
+      "year": 2014,
+      "topic": "medieval-india"
+    },
+    {
+      "id": "f4b93d56-1256-4ff2-9e69-6aa89d6127d2",
+      "year": 2014,
+      "topic": "medieval-india"
+    },
+    {
+      "id": "dda3b9a2-8e72-4af1-a06f-2c31ea2c41cb",
+      "year": 2014,
+      "topic": "indian-culture"
+    },
+    {
+      "id": "57341dd3-0ac4-486c-9307-23252c088453",
+      "year": 2014,
+      "topic": "inc-freedom-movement"
+    },
+    {
+      "id": "29630f31-ea21-45ed-b2e2-263a8409dd7e",
+      "year": 2014,
+      "topic": "national-leaders"
+    },
+    {
+      "id": "3abefe18-9954-4c4c-b9ce-17f9dbde54a0",
+      "year": 2014,
+      "topic": "indian-culture"
+    },
+    {
+      "id": "a7c7f207-3079-4a5f-8f39-f2b424cd0c17",
+      "year": 2014,
+      "topic": "ancient-india"
+    },
+    {
+      "id": "0f7167d4-5f0c-425e-badb-8f8cfa589083",
+      "year": 2014,
+      "topic": "indus-valley"
+    },
+    {
+      "id": "6abcea29-53ef-4489-b1a0-03a8a166d7f9",
+      "year": 2014,
+      "topic": "medieval-india"
+    },
+    {
+      "id": "2615399a-4cf7-462f-8f43-dd4ac9b45f2d",
+      "year": 2014,
+      "topic": "medieval-india"
+    },
+    {
+      "id": "3b3d81db-03fc-44c6-80c9-bf830702b87f",
+      "year": 2014,
+      "topic": "medieval-india"
+    },
+    {
+      "id": "73c0e4b4-f7b4-4918-8c2d-ae7535d3b2c5",
+      "year": 2014,
+      "topic": "early-uprisings-renaissance"
+    },
+    {
+      "id": "72b0c6a0-f290-4b83-89e9-78ede25418b9",
+      "year": 2014,
+      "topic": "inc-freedom-movement"
+    },
+    {
+      "id": "c95c9b86-ae2b-4d8f-ba29-a007d417e942",
+      "year": 2016,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "f9e131d6-a70e-4fc9-996b-ac0377781241",
+      "year": 2016,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "66fcf8ee-9424-46d2-94f2-ab6279c8601b",
+      "year": 2016,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "28464f55-321c-44df-ad9e-e0652372c7c4",
+      "year": 2016,
+      "topic": "indian-culture"
+    },
+    {
+      "id": "4ccce8c9-b488-4df3-95aa-978fc77ff210",
+      "year": 2016,
+      "topic": "medieval-india"
+    },
+    {
+      "id": "bdfe187e-7ae5-400e-b2c1-36e70468d772",
+      "year": 2016,
+      "topic": "south-indian-history"
+    },
+    {
+      "id": "e67115e8-d5c9-4c0f-b871-aff507df1834",
+      "year": 2016,
+      "topic": "early-uprisings-renaissance"
+    },
+    {
+      "id": "4d7b7b0a-d8c2-4362-8641-f0009f7f8780",
+      "year": 2016,
+      "topic": "inc-freedom-movement"
+    },
+    {
+      "id": "57a4b543-293f-4a76-b584-e71b7b306199",
+      "year": 2016,
+      "topic": "south-indian-history"
+    },
+    {
+      "id": "073374fa-db38-4875-90e5-18f52d9887cd",
+      "year": 2016,
+      "topic": "ancient-india"
+    },
+    {
+      "id": "ea204463-cd40-40d0-99c1-255d98f3655a",
+      "year": 2016,
+      "topic": "medieval-india"
+    },
+    {
+      "id": "b8398967-d5d6-4d4f-96f7-0b1b697852ce",
+      "year": 2016,
+      "topic": "ancient-india"
+    },
+    {
+      "id": "a0cfaa09-7421-49c9-ad64-38f1eb643638",
+      "year": 2016,
+      "topic": "national-leaders"
+    },
+    {
+      "id": "90bf6442-272d-47f3-8863-d79d6328873f",
+      "year": 2016,
+      "topic": "national-leaders"
+    },
+    {
+      "id": "2c05d3af-2af4-40c5-b23d-c09d7d331712",
+      "year": 2016,
+      "topic": "national-leaders"
+    },
+    {
+      "id": "94f60eae-6b31-49d0-bb9b-f052d6d1f9fd",
+      "year": 2016,
+      "topic": "inc-freedom-movement"
+    },
+    {
+      "id": "53033e9f-067f-407f-ab1b-529ddfd808b4",
+      "year": 2018,
+      "topic": "ancient-india"
+    },
+    {
+      "id": "6e55d907-bd20-42e8-839c-b1bccf0f2464",
+      "year": 2018,
+      "topic": "medieval-india"
+    },
+    {
+      "id": "433f3676-8245-40d4-b87f-f6ad1a1211fb",
+      "year": 2018,
+      "topic": "indian-culture"
+    },
+    {
+      "id": "c647d9a1-43a4-465e-a746-666578351f8f",
+      "year": 2018,
+      "topic": "ancient-india"
+    },
+    {
+      "id": "fdf9931e-2f0d-4dc4-af0a-5212d3f3d2ab",
+      "year": 2018,
+      "topic": "tn-agitations"
+    },
+    {
+      "id": "f648357e-6533-470e-aba5-e593012bb765",
+      "year": 2018,
+      "topic": "medieval-india"
+    },
+    {
+      "id": "28f92fe3-1006-4963-9a06-d8b680ef1aa7",
+      "year": 2018,
+      "topic": "medieval-india"
+    },
+    {
+      "id": "b5a629b0-3760-4854-a25f-1ea8adbf188a",
+      "year": 2018,
+      "topic": "ancient-india"
+    },
+    {
+      "id": "fb87803a-dae1-4ff2-a864-9d7019b2148a",
+      "year": 2018,
+      "topic": "medieval-india"
+    },
+    {
+      "id": "ae24d45a-1e22-48aa-bfae-f3697355b94b",
+      "year": 2018,
+      "topic": "medieval-india"
+    },
+    {
+      "id": "4b820e6a-afc9-425a-9be7-cde4e0163c66",
+      "year": 2018,
+      "topic": "medieval-india"
+    },
+    {
+      "id": "4072c6e3-794e-41ca-b518-63918fe16062",
+      "year": 2018,
+      "topic": "medieval-india"
+    },
+    {
+      "id": "78a7fc24-8e9c-4016-aab8-8b25ac133e9e",
+      "year": 2018,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "b4b4adb5-73b3-45af-a516-c2f269e019b7",
+      "year": 2019,
+      "topic": "early-uprisings-renaissance"
+    },
+    {
+      "id": "03987ab1-a86d-407a-ab8c-614a1e9074f3",
+      "year": 2019,
+      "topic": "inc-freedom-movement"
+    },
+    {
+      "id": "7b421d5a-109d-4d7c-b25f-64c284b7349a",
+      "year": 2019,
+      "topic": "indian-culture"
+    },
+    {
+      "id": "5c593c76-7747-4769-95e8-ec7033918c82",
+      "year": 2019,
+      "topic": "indus-valley"
+    },
+    {
+      "id": "6facd31f-e534-4534-8695-3e3acfb90fa8",
+      "year": 2019,
+      "topic": "medieval-india"
+    },
+    {
+      "id": "273ee547-ebca-4c0f-8e14-a84e8bf81a2e",
+      "year": 2019,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "423790f9-d528-49f7-bac5-68121c92bdc4",
+      "year": 2019,
+      "topic": "early-uprisings-renaissance"
+    },
+    {
+      "id": "9240a165-4af7-44b3-909d-0767733650fd",
+      "year": 2019,
+      "topic": "inc-freedom-movement"
+    },
+    {
+      "id": "b37158a9-4fb0-44cc-ae32-029ae4bad763",
+      "year": 2019,
+      "topic": "early-uprisings-renaissance"
+    },
+    {
+      "id": "1d2d2494-1308-49d1-b88f-b3c14d26044e",
+      "year": 2022,
+      "topic": "south-indian-history"
+    },
+    {
+      "id": "271508b1-25bb-49ff-ab6e-1cf9c323b6d2",
+      "year": 2022,
+      "topic": "indus-valley"
+    },
+    {
+      "id": "4720005f-f02f-44ea-a2d3-cc62e3258bb6",
+      "year": 2022,
+      "topic": "national-leaders"
+    },
+    {
+      "id": "2af1c642-a3c6-4816-af85-6f8e74710aeb",
+      "year": 2022,
+      "topic": "indian-culture"
+    },
+    {
+      "id": "fc87b1d0-f15a-412e-a8b3-40aadeab81e8",
+      "year": 2022,
+      "topic": "ancient-india"
+    },
+    {
+      "id": "0ee50e6a-24b6-4688-83b8-1309edaabb7a",
+      "year": 2022,
+      "topic": "ancient-india"
+    },
+    {
+      "id": "ef553efd-6888-4c99-9937-5996e46fa35d",
+      "year": 2022,
+      "topic": "indian-culture"
+    },
+    {
+      "id": "9d4e7af0-d457-4956-a349-4fe44b36f224",
+      "year": 2022,
+      "topic": "medieval-india"
+    },
+    {
+      "id": "bc89f21f-fb08-419a-a033-68cb560bae88",
+      "year": 2022,
+      "topic": "national-leaders"
+    },
+    {
+      "id": "aea50de1-e447-43a2-8446-485caad9a4d8",
+      "year": 2022,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "04f844b1-fc14-447e-98eb-c1aaab9fd325",
+      "year": 2022,
+      "topic": "ancient-india"
+    },
+    {
+      "id": "a59e4a97-e246-49cf-bf2c-c79dcd013b86",
+      "year": 2022,
+      "topic": "ancient-india"
+    },
+    {
+      "id": "d7eba0c5-d37d-4ec4-a411-f89c93e7864e",
+      "year": 2022,
+      "topic": "indian-culture"
+    },
+    {
+      "id": "3148d47e-ea5b-442e-8619-55dfe9d66bfa",
+      "year": 2022,
+      "topic": "indian-culture"
+    },
+    {
+      "id": "ae06dbe2-8124-4e31-884c-a68839487183",
+      "year": 2022,
+      "topic": "south-indian-history"
+    },
+    {
+      "id": "c69aaeba-d914-4681-ad20-4450906755e7",
+      "year": 2022,
+      "topic": "indian-culture"
+    },
+    {
+      "id": "71bcd82a-984c-48e6-a88d-b33215916590",
+      "year": 2022,
+      "topic": "indian-culture"
+    },
+    {
+      "id": "65e52636-b819-4c35-8333-cbed0dd99a59",
+      "year": 2024,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "81cf2d36-a387-422f-bec6-997b38e95799",
+      "year": 2024,
+      "topic": "national-leaders"
+    },
+    {
+      "id": "ef67ffcf-eeb8-4e50-89d2-9159511b0957",
+      "year": 2024,
+      "topic": "indian-culture"
+    },
+    {
+      "id": "bc37b5a0-7c12-4f2d-b552-e63fdae9eb1d",
+      "year": 2024,
+      "topic": "indus-valley"
+    },
+    {
+      "id": "75e82289-eecf-4503-91fe-fc2762a01603",
+      "year": 2024,
+      "topic": "medieval-india"
+    },
+    {
+      "id": "11fc6aaa-4646-4dad-8d5c-fcff840769ca",
+      "year": 2024,
+      "topic": "national-leaders"
+    },
+    {
+      "id": "800f2d94-5698-4f02-bb9e-6f0a8be8481e",
+      "year": 2024,
+      "topic": "inc-freedom-movement"
+    },
+    {
+      "id": "d43c18e0-4e4e-40a4-8a8c-2f1ba26cc7f4",
+      "year": 2024,
+      "topic": "inc-freedom-movement"
+    },
+    {
+      "id": "4113d4d8-fae9-42e8-a2e5-e0dd9205f566",
+      "year": 2024,
+      "topic": "ancient-india"
+    },
+    {
+      "id": "7750f154-18d8-4109-8033-12dbae9c69cd",
+      "year": 2024,
+      "topic": "inc-freedom-movement"
+    },
+    {
+      "id": "9da22d91-27d6-403d-bf44-54a037668279",
+      "year": 2024,
+      "topic": "medieval-india"
+    },
+    {
+      "id": "2f486a0a-2989-49b4-8500-f391b847400c",
+      "year": 2024,
+      "topic": "indus-valley"
+    },
+    {
+      "id": "4ce48b1f-a003-4ffd-a02a-5326bb7d094a",
+      "year": 2024,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "a2a64f1c-1e00-4ea7-882f-b7257aebb838",
+      "year": 2024,
+      "topic": "national-leaders"
+    },
+    {
+      "id": "69fa9d61-b5a7-4e9d-b1da-3ef2c94e9e63",
+      "year": 2024,
+      "topic": "national-leaders"
+    },
+    {
+      "id": "d353036e-78ad-40f5-afa7-00a6af0a59ad",
+      "year": 2024,
+      "topic": "medieval-india"
+    },
+    {
+      "id": "6a8950ea-0f2f-4dc7-893c-3544d4d57a18",
+      "year": 2024,
+      "topic": "south-indian-history"
+    },
+    {
+      "id": "45ab06a2-71d8-41d4-b630-3bac052260bc",
+      "year": 2024,
+      "topic": "national-leaders"
+    },
+    {
+      "id": "3f0a1a9d-209f-4e05-96b1-ec47155d8945",
+      "year": 2025,
+      "topic": "south-indian-history"
+    },
+    {
+      "id": "03401607-98ff-4df9-bb21-3a6e3dad8851",
+      "year": 2025,
+      "topic": "indian-culture"
+    },
+    {
+      "id": "c9700518-eae7-4d01-805d-09a246345f54",
+      "year": 2025,
+      "topic": "national-leaders"
+    },
+    {
+      "id": "3d5b0396-9f8f-41d3-be22-d04a2408cf95",
+      "year": 2025,
+      "topic": "inc-freedom-movement"
+    },
+    {
+      "id": "113993c3-2edd-4397-8c18-b0acb5c19352",
+      "year": 2025,
+      "topic": "indus-valley"
+    },
+    {
+      "id": "f97262e3-d27c-4371-bc29-92b922be284f",
+      "year": 2025,
+      "topic": "early-uprisings-renaissance"
+    },
+    {
+      "id": "0f2ddceb-3fd2-49ab-b51e-8940852b1001",
+      "year": 2025,
+      "topic": "tn-agitations"
+    },
+    {
+      "id": "406ea276-9bbc-453d-96f7-721bb97b1aba",
+      "year": 2025,
+      "topic": "inc-freedom-movement"
+    },
+    {
+      "id": "f7e862eb-b81a-4ddd-8241-12d427e2910e",
+      "year": 2025,
+      "topic": "south-indian-history"
+    },
+    {
+      "id": "a0f3f817-9ec9-476f-9b98-9fc09ce281b0",
+      "year": 2025,
+      "topic": "inc-freedom-movement"
+    },
+    {
+      "id": "24c566fe-cad4-407a-99ac-ab17ab2a215f",
+      "year": 2025,
+      "topic": "tn-agitations"
+    }
+  ],
+  "polity": [
+    {
+      "id": "4676d1ec-2b04-4f33-bc86-f38ae18bf4d7",
+      "year": 2012,
+      "topic": "union-executive"
+    },
+    {
+      "id": "2ed5e169-5b6a-4cd9-9e02-3126f423289d",
+      "year": 2012,
+      "topic": "union-executive"
+    },
+    {
+      "id": "9386dc76-582a-411a-ba91-b1541ebeb8cb",
+      "year": 2012,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "cf1f5a6b-5f42-45ad-a3a4-acd3512f33f1",
+      "year": 2012,
+      "topic": "federalism-centre-state"
+    },
+    {
+      "id": "42cbdd1a-7c64-45dd-9ad1-6aa63c3b443b",
+      "year": 2012,
+      "topic": "union-executive"
+    },
+    {
+      "id": "4c6437d6-0240-495b-907c-8729a295133c",
+      "year": 2012,
+      "topic": "political-parties-system"
+    },
+    {
+      "id": "dcf2e798-5be3-41a1-aa73-5a06224df302",
+      "year": 2012,
+      "topic": "union-executive"
+    },
+    {
+      "id": "600cb154-de05-449a-b8f1-c39705bc7718",
+      "year": 2012,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "cc874c10-d8ee-433d-aad7-b529a1967652",
+      "year": 2012,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "4df791d4-5bc5-4b6d-94c0-af6346065162",
+      "year": 2012,
+      "topic": "judiciary"
+    },
+    {
+      "id": "4262f095-d3c1-4ac8-81b8-ec79bfb5b66a",
+      "year": 2012,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "337ebf75-3572-4be8-a4b3-b63a07103a03",
+      "year": 2012,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "ea6e1ea9-8105-419f-9d94-57f33e0c7a60",
+      "year": 2013,
+      "topic": "union-executive"
+    },
+    {
+      "id": "c454e9c3-c61e-4bb6-a703-1219ea365867",
+      "year": 2013,
+      "topic": "consumer-protection"
+    },
+    {
+      "id": "6a7ee1b4-9b96-4e48-b913-25834dc78e17",
+      "year": 2013,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "03cba286-cd05-4294-8eb1-c0e2a3f9e836",
+      "year": 2013,
+      "topic": "constitution-basics"
+    },
+    {
+      "id": "5dd962e6-b7ba-4a66-957d-5457c0f96510",
+      "year": 2013,
+      "topic": "anti-corruption"
+    },
+    {
+      "id": "4f7bee1b-0a92-4e0c-bf73-4b641cb11cde",
+      "year": 2013,
+      "topic": "union-legislature"
+    },
+    {
+      "id": "1d88c3a2-84cf-4dda-885b-5be3b68a3c00",
+      "year": 2013,
+      "topic": "federalism-centre-state"
+    },
+    {
+      "id": "b25afca0-171d-4dc5-be08-38f2f2f6410b",
+      "year": 2013,
+      "topic": "judiciary"
+    },
+    {
+      "id": "048c228c-bc80-4193-a9d1-bae6ce5d5e54",
+      "year": 2013,
+      "topic": "anti-corruption"
+    },
+    {
+      "id": "861cecf2-6ec8-46b1-9ddb-aa17b491b5f1",
+      "year": 2013,
+      "topic": "union-executive"
+    },
+    {
+      "id": "ccdede3d-3687-493a-b403-88e9bc2ce1ec",
+      "year": 2014,
+      "topic": "local-government"
+    },
+    {
+      "id": "15e358bf-9483-4d99-8b5f-de63f7ce6793",
+      "year": 2014,
+      "topic": "union-legislature"
+    },
+    {
+      "id": "1cd8989c-5182-4dcf-b365-f75bb3e97c65",
+      "year": 2014,
+      "topic": "fundamental-rights"
+    },
+    {
+      "id": "924e514f-32bf-4535-988b-e039aad7a49f",
+      "year": 2014,
+      "topic": "fundamental-rights"
+    },
+    {
+      "id": "a12824b0-4748-4463-aaa1-41ee763fb7b5",
+      "year": 2014,
+      "topic": "constitution-basics"
+    },
+    {
+      "id": "a1303d71-1314-4208-916e-c57919cf45b8",
+      "year": 2014,
+      "topic": "constitution-basics"
+    },
+    {
+      "id": "22940e93-8a3c-4823-afde-a535ccd0dedc",
+      "year": 2014,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "12e58ccc-73ac-4666-aba3-feb991251af7",
+      "year": 2014,
+      "topic": "elections"
+    },
+    {
+      "id": "29c1c37c-e469-4968-ad9a-a074abbfb969",
+      "year": 2014,
+      "topic": "state-executive"
+    },
+    {
+      "id": "b4a82296-ba75-4990-8b78-253d184b0c3f",
+      "year": 2014,
+      "topic": "union-legislature"
+    },
+    {
+      "id": "eb000d0d-c02c-4564-8fad-a7f692b86759",
+      "year": 2014,
+      "topic": "federalism-centre-state"
+    },
+    {
+      "id": "f2083bdd-3263-463a-b4f9-058e2336b4d2",
+      "year": 2014,
+      "topic": "union-executive"
+    },
+    {
+      "id": "ea0b7306-daf3-4cd9-8c3e-b579a053799d",
+      "year": 2014,
+      "topic": "constitution-basics"
+    },
+    {
+      "id": "013ff731-e6aa-45ab-a1ac-714015818820",
+      "year": 2014,
+      "topic": "local-government"
+    },
+    {
+      "id": "7ef58452-8149-400b-9ae6-e6350ffe0617",
+      "year": 2014,
+      "topic": "state-executive"
+    },
+    {
+      "id": "6a458edc-22ab-4136-ad8e-2c01cc46d077",
+      "year": 2014,
+      "topic": "local-government"
+    },
+    {
+      "id": "9f25c332-1874-4158-8313-59c1c7b09f82",
+      "year": 2014,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "c4e12ca0-c857-42f1-93ca-dd0243bfb163",
+      "year": 2016,
+      "topic": "state-executive"
+    },
+    {
+      "id": "b085b5b4-f883-46fe-8305-6dd3c982ad14",
+      "year": 2016,
+      "topic": "constitution-basics"
+    },
+    {
+      "id": "7bf0ae75-6e9d-41e4-b87f-526041b52ee4",
+      "year": 2016,
+      "topic": "elections"
+    },
+    {
+      "id": "f9da19a2-00c5-4fff-86b4-474e090717e5",
+      "year": 2016,
+      "topic": "union-executive"
+    },
+    {
+      "id": "d0b1109f-b308-475a-9997-d275b03fca25",
+      "year": 2016,
+      "topic": "judiciary"
+    },
+    {
+      "id": "c4cf3c94-ec21-4888-967a-962f9a45f82e",
+      "year": 2016,
+      "topic": "constitution-basics"
+    },
+    {
+      "id": "6eb37ec3-0257-4736-91eb-984f09390295",
+      "year": 2016,
+      "topic": "elections"
+    },
+    {
+      "id": "8538510a-b2ec-4639-a34a-20f7364e1aa7",
+      "year": 2016,
+      "topic": "constitution-basics"
+    },
+    {
+      "id": "0cd104b9-8262-40bf-ab3b-17460b6b7ce7",
+      "year": 2016,
+      "topic": "constitution-basics"
+    },
+    {
+      "id": "d68e5ac9-7fa4-4b55-95a0-05f045aa8b70",
+      "year": 2016,
+      "topic": "consumer-protection"
+    },
+    {
+      "id": "cb3f61b8-d0c9-49a5-9bf8-6e6db547af34",
+      "year": 2016,
+      "topic": "human-rights"
+    },
+    {
+      "id": "c0bdb385-5797-4bc0-8b87-c0446a2cb2f6",
+      "year": 2018,
+      "topic": "state-legislature"
+    },
+    {
+      "id": "01bfbeee-213f-4a52-bf6e-e80a2db40e6f",
+      "year": 2018,
+      "topic": "women-empowerment"
+    },
+    {
+      "id": "a8ad99e8-d8cd-4d73-9f03-d0b91fb878e8",
+      "year": 2018,
+      "topic": "union-executive"
+    },
+    {
+      "id": "16782353-3568-40d0-8b05-79c6e2b55306",
+      "year": 2018,
+      "topic": "fundamental-rights"
+    },
+    {
+      "id": "13ce4104-d638-4751-ba72-297c58fa1a0d",
+      "year": 2018,
+      "topic": "judiciary"
+    },
+    {
+      "id": "50bd2e21-795d-4f00-9de4-68f125711af6",
+      "year": 2018,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "2a49244e-4d6b-4087-b74b-742850815be0",
+      "year": 2018,
+      "topic": "dpsp"
+    },
+    {
+      "id": "c95f4250-aa72-4756-a549-e50512f83a44",
+      "year": 2018,
+      "topic": "union-executive"
+    },
+    {
+      "id": "e5e522b7-8de5-416e-9857-8c1a6ae7bc1d",
+      "year": 2019,
+      "topic": "political-parties-system"
+    },
+    {
+      "id": "0f1377fb-6d2c-43cf-b41b-52927dfe0a42",
+      "year": 2019,
+      "topic": "anti-corruption"
+    },
+    {
+      "id": "5898b249-25c0-4513-9816-c3be70048155",
+      "year": 2019,
+      "topic": "consumer-protection"
+    },
+    {
+      "id": "b97908af-782e-48d8-9022-fac88c7e64f8",
+      "year": 2019,
+      "topic": "elections"
+    },
+    {
+      "id": "2ee0d3a1-51ab-4476-a33b-bd43f7827b18",
+      "year": 2019,
+      "topic": "state-executive"
+    },
+    {
+      "id": "dd6b45d4-8fb1-4b72-97bd-25b0df488d3a",
+      "year": 2019,
+      "topic": "fundamental-rights"
+    },
+    {
+      "id": "e11de0ce-4ef6-4930-8b1f-5b6a01cbb9aa",
+      "year": 2019,
+      "topic": "fundamental-rights"
+    },
+    {
+      "id": "4d20c2f1-76a5-4477-9ee7-869c9a530319",
+      "year": 2019,
+      "topic": "federalism-centre-state"
+    },
+    {
+      "id": "e4efbce8-09a3-4188-b7aa-7058877face1",
+      "year": 2019,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "2c0facae-b46b-4df9-81ec-eca6b60bdaf4",
+      "year": 2019,
+      "topic": "elections"
+    },
+    {
+      "id": "529bb0ce-0911-41fc-8306-552393104bc8",
+      "year": 2019,
+      "topic": "anti-corruption"
+    },
+    {
+      "id": "e0f72ac3-4b65-4580-ba1a-0f7a26692232",
+      "year": 2019,
+      "topic": "judiciary"
+    },
+    {
+      "id": "7e6558b8-b60f-4f28-95a8-5789195b66ea",
+      "year": 2019,
+      "topic": "local-government"
+    },
+    {
+      "id": "fb0e0383-aab6-44b4-a9be-460399b70210",
+      "year": 2019,
+      "topic": "constitution-basics"
+    },
+    {
+      "id": "c81e08ce-b3b8-4f7c-a1ed-2cbb3fd2e235",
+      "year": 2019,
+      "topic": "union-legislature"
+    },
+    {
+      "id": "b10b9031-15cf-4756-8aea-454b2a8ac964",
+      "year": 2019,
+      "topic": "fundamental-rights"
+    },
+    {
+      "id": "07163ffe-8cd6-4787-ad0f-1bfe8e21ef44",
+      "year": 2019,
+      "topic": "constitution-basics"
+    },
+    {
+      "id": "d103fabb-bd77-4004-ac88-54af5d278220",
+      "year": 2019,
+      "topic": "fundamental-rights"
+    },
+    {
+      "id": "0561434a-3ec8-49e9-9128-7e7288d30d9e",
+      "year": 2019,
+      "topic": "rti"
+    },
+    {
+      "id": "0b188e7d-e88b-4ba4-8184-94d02f880c9e",
+      "year": 2019,
+      "topic": "constitution-basics"
+    },
+    {
+      "id": "c3119cfa-5685-4047-bd1c-8c98eb4d8cbc",
+      "year": 2022,
+      "topic": "state-legislature"
+    },
+    {
+      "id": "c4b2bdb6-4e53-4ab2-b7c9-cdcffceb858d",
+      "year": 2022,
+      "topic": "federalism-centre-state"
+    },
+    {
+      "id": "30cd216f-5daf-4398-9e53-980d31231a11",
+      "year": 2022,
+      "topic": "fundamental-duties"
+    },
+    {
+      "id": "0094a560-2937-4e9b-bab1-fee016bd769b",
+      "year": 2022,
+      "topic": "political-parties-system"
+    },
+    {
+      "id": "a7717f13-726c-4e6f-b4fe-d01226dc9dd7",
+      "year": 2022,
+      "topic": "judiciary"
+    },
+    {
+      "id": "2e2463d4-9ef3-4f0d-9405-0783ec595fc3",
+      "year": 2022,
+      "topic": "judiciary"
+    },
+    {
+      "id": "be28df67-037f-458a-9a7c-7fd309f814f9",
+      "year": 2022,
+      "topic": "human-rights"
+    },
+    {
+      "id": "2c023470-b9db-4c6c-9645-0a197b815b8d",
+      "year": 2022,
+      "topic": "local-government"
+    },
+    {
+      "id": "1e07c2ae-0824-4232-9957-0e595c1f9531",
+      "year": 2022,
+      "topic": "federalism-centre-state"
+    },
+    {
+      "id": "dfca62cb-103d-4d92-90c3-0c1403bc72af",
+      "year": 2022,
+      "topic": "fundamental-rights"
+    },
+    {
+      "id": "3178af5e-cab4-4ffe-b17f-9b522e904bf1",
+      "year": 2022,
+      "topic": "dpsp"
+    },
+    {
+      "id": "af5fd279-b832-442e-bfcf-bb4186cc44d3",
+      "year": 2022,
+      "topic": "federalism-centre-state"
+    },
+    {
+      "id": "7aea631a-c536-47fd-82ed-b953846dad32",
+      "year": 2022,
+      "topic": "consumer-protection"
+    },
+    {
+      "id": "81b23e40-1d6c-4390-8ffd-6d472b85bb2c",
+      "year": 2022,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "bed2aa99-0eb6-49e2-9619-b397587925c0",
+      "year": 2022,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "737eded7-461e-4109-9d33-f8fb321ce8eb",
+      "year": 2022,
+      "topic": "human-rights"
+    },
+    {
+      "id": "d647d621-626e-48d2-9985-b6ccdcbbff91",
+      "year": 2024,
+      "topic": "local-government"
+    },
+    {
+      "id": "39ddf555-41ff-4e8a-80f4-5ba5303e211d",
+      "year": 2024,
+      "topic": "judiciary"
+    },
+    {
+      "id": "eab09e2b-af11-4de9-bbc4-a29170e492fd",
+      "year": 2024,
+      "topic": "human-rights"
+    },
+    {
+      "id": "18dd3687-7b12-4bd0-bbb8-a624ac81b721",
+      "year": 2024,
+      "topic": "local-government"
+    },
+    {
+      "id": "ba664f5e-8967-459e-b7ee-887de13a9669",
+      "year": 2024,
+      "topic": "political-parties-system"
+    },
+    {
+      "id": "92eac367-fe5e-4c2c-b659-1a1e343c9801",
+      "year": 2024,
+      "topic": "dpsp"
+    },
+    {
+      "id": "5d257e35-1f8c-40ef-ac81-ac320176374a",
+      "year": 2024,
+      "topic": "local-government"
+    },
+    {
+      "id": "295e64c2-ac1d-4459-89c5-1531a2148661",
+      "year": 2024,
+      "topic": "federalism-centre-state"
+    },
+    {
+      "id": "f669ef2a-ccbc-4845-9576-e49c2a62f112",
+      "year": 2024,
+      "topic": "constitution-basics"
+    },
+    {
+      "id": "063a1823-ebcb-48cf-8530-4ffd6a6cef4d",
+      "year": 2024,
+      "topic": "federalism-centre-state"
+    },
+    {
+      "id": "3f0697d4-19f6-456c-9ec4-b8cacc0cfb34",
+      "year": 2025,
+      "topic": "constitution-basics"
+    },
+    {
+      "id": "01f53b39-6a3a-4b8c-b286-01d693b82265",
+      "year": 2025,
+      "topic": "elections"
+    },
+    {
+      "id": "fa0951b9-7e64-4a09-b5e0-2c126f8c9c9d",
+      "year": 2025,
+      "topic": "consumer-protection"
+    },
+    {
+      "id": "45205240-2d36-44d8-8c3d-f9b19ac95a47",
+      "year": 2025,
+      "topic": "judiciary"
+    },
+    {
+      "id": "5b74cff4-27f4-46b9-9215-16fa1dd8faa2",
+      "year": 2025,
+      "topic": "federalism-centre-state"
+    },
+    {
+      "id": "55a3b58f-da62-4048-b987-aa3a43fae940",
+      "year": 2025,
+      "topic": "constitution-basics"
+    },
+    {
+      "id": "61f1e7fe-6001-4937-918d-f83f649a6a37",
+      "year": 2025,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "68829931-58c9-4048-9830-e8d3244eb499",
+      "year": 2025,
+      "topic": "constitution-basics"
+    },
+    {
+      "id": "76eb4da8-e1b5-40ea-8792-cbb71fc25a5e",
+      "year": 2025,
+      "topic": "fundamental-rights"
+    }
+  ],
+  "economy": [
+    {
+      "id": "09c5de89-9074-4784-aefa-5a181ad5b237",
+      "year": 2012,
+      "topic": "tn-schemes-development"
+    },
+    {
+      "id": "7c549b6d-2416-4f0e-880f-5f6bfbba8dc8",
+      "year": 2012,
+      "topic": "industry"
+    },
+    {
+      "id": "a0be1409-fb03-44c5-afac-87c68921dbca",
+      "year": 2012,
+      "topic": "revenue-banking-gst"
+    },
+    {
+      "id": "d290149b-c29a-43b6-bdbe-0adce827baa7",
+      "year": 2012,
+      "topic": "economy-basics"
+    },
+    {
+      "id": "5aed7254-0219-4a3a-a1cd-3c314c306bad",
+      "year": 2012,
+      "topic": "revenue-banking-gst"
+    },
+    {
+      "id": "11ac01e2-2fda-4ae0-bd12-21e5bcf31f50",
+      "year": 2012,
+      "topic": "five-year-plans"
+    },
+    {
+      "id": "153fa65e-8fc4-4157-a50c-916ba589beec",
+      "year": 2012,
+      "topic": "five-year-plans"
+    },
+    {
+      "id": "207f1ca9-d491-4bc8-ba73-d71b503d3cef",
+      "year": 2012,
+      "topic": "revenue-banking-gst"
+    },
+    {
+      "id": "afcf3407-1cf4-49b1-a53f-580b715114d7",
+      "year": 2012,
+      "topic": "industry"
+    },
+    {
+      "id": "0eed8082-bb91-456c-afe2-11dfd9bd99cc",
+      "year": 2013,
+      "topic": "agriculture-land"
+    },
+    {
+      "id": "6a54d085-3dec-4a1d-ac0e-fc7661a8b7df",
+      "year": 2013,
+      "topic": "agriculture-land"
+    },
+    {
+      "id": "7c87a441-7538-4e83-8ab9-335e532991fd",
+      "year": 2013,
+      "topic": "social-problems"
+    },
+    {
+      "id": "0c66d861-cedf-4da1-a0cf-8adaf2c268f7",
+      "year": 2013,
+      "topic": "five-year-plans"
+    },
+    {
+      "id": "e48cc443-f1dc-4567-a68e-1d2f97ffe257",
+      "year": 2013,
+      "topic": "agriculture-land"
+    },
+    {
+      "id": "85268889-66ce-4ee7-92de-c9b86bea6794",
+      "year": 2013,
+      "topic": "five-year-plans"
+    },
+    {
+      "id": "d45ca159-7ea6-443c-9275-e22cbccba3e3",
+      "year": 2013,
+      "topic": "rural-welfare-schemes"
+    },
+    {
+      "id": "4c4196e8-aac2-42bf-a639-fcaab2753645",
+      "year": 2013,
+      "topic": "industry"
+    },
+    {
+      "id": "da438e68-0e10-442b-a507-91b5b3636a9c",
+      "year": 2013,
+      "topic": "revenue-banking-gst"
+    },
+    {
+      "id": "8ea9eee9-92f9-440e-89ed-f5dfb84d5511",
+      "year": 2013,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "ba192979-3ed1-4103-8d86-ba37e6e6a4a3",
+      "year": 2013,
+      "topic": "five-year-plans"
+    },
+    {
+      "id": "1cae8d7f-9f89-444b-b3be-0b4554008def",
+      "year": 2013,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "94ba3af7-d501-4418-8217-b33e990ce0d7",
+      "year": 2013,
+      "topic": "rural-welfare-schemes"
+    },
+    {
+      "id": "136f1678-bbe2-4fb3-804e-f739507e7510",
+      "year": 2013,
+      "topic": "economy-basics"
+    },
+    {
+      "id": "2c502ebe-64c9-48e8-a2b9-79b19d17451d",
+      "year": 2014,
+      "topic": "five-year-plans"
+    },
+    {
+      "id": "074edbb5-085f-49da-8fd2-9389d2d821ee",
+      "year": 2014,
+      "topic": "social-problems"
+    },
+    {
+      "id": "1542072f-537f-44e2-b531-d869d4802c48",
+      "year": 2014,
+      "topic": "revenue-banking-gst"
+    },
+    {
+      "id": "db9d905b-21bc-4355-927d-30ccba7e8716",
+      "year": 2014,
+      "topic": "five-year-plans"
+    },
+    {
+      "id": "31e2b637-e9a5-4131-86ec-bf70f521454b",
+      "year": 2014,
+      "topic": "economy-basics"
+    },
+    {
+      "id": "f433e2d7-b693-4f52-861e-f4e0ffd73fab",
+      "year": 2014,
+      "topic": "economy-basics"
+    },
+    {
+      "id": "f707f20d-628b-4df8-8e4e-ece9ced7cc58",
+      "year": 2016,
+      "topic": "social-problems"
+    },
+    {
+      "id": "ffa13800-8830-4fe4-ba0c-5942e526fdb9",
+      "year": 2016,
+      "topic": "revenue-banking-gst"
+    },
+    {
+      "id": "229d7a6c-1b12-4e21-92c5-0dceb9136acd",
+      "year": 2016,
+      "topic": "five-year-plans"
+    },
+    {
+      "id": "06142f35-80fc-419c-adbe-f6011a15ea73",
+      "year": 2016,
+      "topic": "economy-basics"
+    },
+    {
+      "id": "9fda25ec-9202-4863-8cb2-829cf208eb7f",
+      "year": 2016,
+      "topic": "industry"
+    },
+    {
+      "id": "3ed4b183-f505-452c-9282-a69006fd501f",
+      "year": 2016,
+      "topic": "economy-basics"
+    },
+    {
+      "id": "330115c2-ea79-42ff-ad19-ef19b7912167",
+      "year": 2016,
+      "topic": "social-problems"
+    },
+    {
+      "id": "5959c41a-e20f-4f6f-9f3f-d977446ff827",
+      "year": 2016,
+      "topic": "agriculture-land"
+    },
+    {
+      "id": "fe96fea1-df88-4780-ad2a-9f3ed2d51f3c",
+      "year": 2016,
+      "topic": "five-year-plans"
+    },
+    {
+      "id": "88eeae1c-e2de-47fe-9727-6e2511fbc332",
+      "year": 2016,
+      "topic": "agriculture-land"
+    },
+    {
+      "id": "35996bb3-c001-4c54-b28d-72fdae448bc3",
+      "year": 2016,
+      "topic": "social-problems"
+    },
+    {
+      "id": "15ea07ce-3114-419c-a325-740856d68a05",
+      "year": 2018,
+      "topic": "economy-basics"
+    },
+    {
+      "id": "666c7734-4e3e-4fcd-8e1e-3682657cefec",
+      "year": 2018,
+      "topic": "agriculture-land"
+    },
+    {
+      "id": "ecfc5ba6-b7f8-4da3-bad4-bb1d517add2e",
+      "year": 2018,
+      "topic": "economy-basics"
+    },
+    {
+      "id": "da4426ae-ea75-414a-8c12-95bd92203f09",
+      "year": 2018,
+      "topic": "five-year-plans"
+    },
+    {
+      "id": "9963d7fa-03ef-428a-9e8e-a1a47e512aa3",
+      "year": 2018,
+      "topic": "industry"
+    },
+    {
+      "id": "ca0f181e-a04a-4abd-8a3e-ed139be9caf6",
+      "year": 2018,
+      "topic": "agriculture-land"
+    },
+    {
+      "id": "543c4a1a-9e87-46b2-9667-d5206ae38f6e",
+      "year": 2018,
+      "topic": "social-problems"
+    },
+    {
+      "id": "7679654f-37db-47ce-be5d-66eb93979884",
+      "year": 2018,
+      "topic": "rural-welfare-schemes"
+    },
+    {
+      "id": "6264ec59-cb81-4147-9637-790fe5a3bd00",
+      "year": 2018,
+      "topic": "economy-basics"
+    },
+    {
+      "id": "e37e28da-cb99-4ad8-b9f9-69f059cc0937",
+      "year": 2018,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "eb2cfdfd-2e38-4a1e-98f3-1f825b1fa0ce",
+      "year": 2018,
+      "topic": "revenue-banking-gst"
+    },
+    {
+      "id": "7d334066-c4ce-4c78-be47-bb86f6e8f168",
+      "year": 2019,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "674750c9-f3ab-458f-a48e-dc7b14136e55",
+      "year": 2019,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "170047b1-24d4-44c4-9688-56d6cce95eae",
+      "year": 2019,
+      "topic": "social-problems"
+    },
+    {
+      "id": "b6eeefc5-3cf5-4aae-aa0a-e31c76aac0d0",
+      "year": 2019,
+      "topic": "revenue-banking-gst"
+    },
+    {
+      "id": "b3f984f6-7e4c-4f76-a350-58a957a2099b",
+      "year": 2019,
+      "topic": "rural-welfare-schemes"
+    },
+    {
+      "id": "e86759ec-cbcf-4bc0-ab28-9d13a78872d7",
+      "year": 2019,
+      "topic": "tn-schemes-development"
+    },
+    {
+      "id": "fc4abf1c-27f7-41a8-a314-ccfda458e727",
+      "year": 2019,
+      "topic": "social-problems"
+    },
+    {
+      "id": "50091185-8236-4986-b628-dac79758af05",
+      "year": 2019,
+      "topic": "revenue-banking-gst"
+    },
+    {
+      "id": "fd2566ff-cb03-45a8-8348-a67c4a115293",
+      "year": 2022,
+      "topic": "five-year-plans"
+    },
+    {
+      "id": "a9b48660-7a2a-416a-8996-58abe8ce16e0",
+      "year": 2022,
+      "topic": "five-year-plans"
+    },
+    {
+      "id": "b5df3ab4-77a7-49a7-9ac8-e83558cfb7bc",
+      "year": 2022,
+      "topic": "revenue-banking-gst"
+    },
+    {
+      "id": "ee746ae0-24c0-4931-b3c0-f4fa28c4caac",
+      "year": 2022,
+      "topic": "social-problems"
+    },
+    {
+      "id": "03aaef2f-bd9e-4afe-8dad-9f92846c8595",
+      "year": 2022,
+      "topic": "tn-schemes-development"
+    },
+    {
+      "id": "ff969e31-4037-474d-bfd5-9ace657f1093",
+      "year": 2022,
+      "topic": "tn-schemes-development"
+    },
+    {
+      "id": "6614727b-f402-436a-9ac6-68882a517a33",
+      "year": 2022,
+      "topic": "tn-schemes-development"
+    },
+    {
+      "id": "0a917da2-a4a7-4615-9899-4e6c1464451c",
+      "year": 2022,
+      "topic": "five-year-plans"
+    },
+    {
+      "id": "f7c2375d-5ed2-47be-9842-4576151cf958",
+      "year": 2022,
+      "topic": "revenue-banking-gst"
+    },
+    {
+      "id": "35552d37-a2e4-4344-a2cd-14ee7951387a",
+      "year": 2022,
+      "topic": "industry"
+    },
+    {
+      "id": "3852e8e1-db69-4f8a-a59f-2210b62c311a",
+      "year": 2024,
+      "topic": "social-problems"
+    },
+    {
+      "id": "a2e1c7b8-9a5c-44e0-a395-3299e062ba7d",
+      "year": 2024,
+      "topic": "industry"
+    },
+    {
+      "id": "0d627285-f2e6-496b-94e2-56e0cc5acd4a",
+      "year": 2024,
+      "topic": "industry"
+    },
+    {
+      "id": "815d8f02-ee98-4873-9b44-e966bed41a71",
+      "year": 2024,
+      "topic": "agriculture-land"
+    },
+    {
+      "id": "78c9af66-ad52-47b0-a5ed-cce0bfccb385",
+      "year": 2024,
+      "topic": "social-problems"
+    },
+    {
+      "id": "8e3291b2-2965-42cd-bb46-cb3a22682497",
+      "year": 2024,
+      "topic": "tn-schemes-development"
+    },
+    {
+      "id": "c579f94b-63f8-4c10-bb93-74641b0a56af",
+      "year": 2024,
+      "topic": "tn-schemes-development"
+    },
+    {
+      "id": "872e95d2-d867-432f-9902-2cf91bd7e733",
+      "year": 2024,
+      "topic": "agriculture-land"
+    },
+    {
+      "id": "fcfa7856-249c-4667-af56-f579d01d8b42",
+      "year": 2024,
+      "topic": "tn-schemes-development"
+    },
+    {
+      "id": "15529aed-b6f0-4ab6-826c-7ba7990f9efc",
+      "year": 2024,
+      "topic": "tn-schemes-development"
+    },
+    {
+      "id": "f0d260c6-d7de-4a8a-abfe-e991a1d56bb5",
+      "year": 2024,
+      "topic": "industry"
+    },
+    {
+      "id": "db5959c7-acaa-45f1-b9d1-4c53fa072625",
+      "year": 2024,
+      "topic": "misc-current-affairs"
+    },
+    {
+      "id": "0fb60cea-118e-4b0e-a49f-746d25d2fc8b",
+      "year": 2024,
+      "topic": "five-year-plans"
+    },
+    {
+      "id": "fff4af3c-2d20-407f-b27b-ac34edc20124",
+      "year": 2024,
+      "topic": "industry"
+    },
+    {
+      "id": "c26c7f59-5dfe-4480-85ab-618ba45b9f96",
+      "year": 2024,
+      "topic": "tn-schemes-development"
+    },
+    {
+      "id": "144eb499-84c7-4077-ac9f-2940c24903fe",
+      "year": 2024,
+      "topic": "tn-schemes-development"
+    },
+    {
+      "id": "9cd4c46a-65f5-4fc8-99d0-036250542c0f",
+      "year": 2024,
+      "topic": "tn-schemes-development"
+    },
+    {
+      "id": "36c29f24-c0a2-4d27-b408-945ac28edf09",
+      "year": 2025,
+      "topic": "tn-schemes-development"
+    },
+    {
+      "id": "ba3b6081-7430-49ad-a30f-dd6c78a2c399",
+      "year": 2025,
+      "topic": "tn-schemes-development"
+    },
+    {
+      "id": "6793dfc4-6428-41ce-8476-983405f25148",
+      "year": 2025,
+      "topic": "tn-schemes-development"
+    },
+    {
+      "id": "07c48cb5-650c-40b7-a62a-519bed8dee41",
+      "year": 2025,
+      "topic": "economy-basics"
+    },
+    {
+      "id": "4736bc4e-8f2b-495c-a78d-29fd61e49834",
+      "year": 2025,
+      "topic": "rural-welfare-schemes"
+    },
+    {
+      "id": "548a55a6-305d-4ff2-9cff-4dbf0972f939",
+      "year": 2025,
+      "topic": "rural-welfare-schemes"
+    },
+    {
+      "id": "338809dd-62e9-4aa3-a17f-154316f3c8e5",
+      "year": 2025,
+      "topic": "five-year-plans"
+    },
+    {
+      "id": "62e794d1-0975-49cc-8aae-d6c6cdcb1669",
+      "year": 2025,
+      "topic": "tn-schemes-development"
+    }
+  ],
+  "tnhistory": [
+    {
+      "id": "02af7a2a-bc0d-41bc-8f39-8687304a9cb2",
+      "year": 2012,
+      "topic": "tamil-literature"
+    },
+    {
+      "id": "cd76ecad-9631-4950-be12-820ac3c776f0",
+      "year": 2012,
+      "topic": "tamil-literature"
+    },
+    {
+      "id": "bf1af178-687f-41f4-a692-48aab0ddec51",
+      "year": 2012,
+      "topic": "tamil-literature"
+    },
+    {
+      "id": "74639077-e95d-40cd-b0dc-7eac6b0217cd",
+      "year": 2012,
+      "topic": "tamil-literature"
+    },
+    {
+      "id": "9717aee2-4811-4d97-9d09-f6029c3ae4c8",
+      "year": 2012,
+      "topic": "tamil-literature"
+    },
+    {
+      "id": "fd5c9888-e323-4855-aab9-5b69a3179a97",
+      "year": 2012,
+      "topic": "tamil-literature"
+    },
+    {
+      "id": "35d5ab55-a65d-4f24-ac43-2308809a42d1",
+      "year": 2012,
+      "topic": "tamil-literature"
+    },
+    {
+      "id": "99fcb50d-2ea0-469b-877b-192e4d42301a",
+      "year": 2012,
+      "topic": "tamil-literature"
+    },
+    {
+      "id": "1d65cd08-823b-4fcd-bc08-9a7dc05d09ce",
+      "year": 2012,
+      "topic": "tamil-literature"
+    },
+    {
+      "id": "9e7ac5fb-afe0-442e-8884-a7406b1298b4",
+      "year": 2013,
+      "topic": "tamil-literature"
+    },
+    {
+      "id": "5f3af93a-56c9-480d-9f26-de1ffcec1e7b",
+      "year": 2013,
+      "topic": "social-reformers"
+    },
+    {
+      "id": "f0eef8be-7dc3-4f97-ba5c-063edcd5dca4",
+      "year": 2013,
+      "topic": "tn-politics"
+    },
+    {
+      "id": "3dd382ec-34ab-49ce-bffb-233184bb051a",
+      "year": 2014,
+      "topic": "tamil-society-archaeology"
+    },
+    {
+      "id": "4c965df1-6231-4495-b68e-9311849cb3f5",
+      "year": 2014,
+      "topic": "tn-freedom-struggle"
+    },
+    {
+      "id": "8e91b23d-f9cc-489b-b8b4-3f71d9b7b19f",
+      "year": 2016,
+      "topic": "social-reformers"
+    },
+    {
+      "id": "2d114912-adbc-4bfa-95bd-a840fffd69e5",
+      "year": 2016,
+      "topic": "tamil-society-archaeology"
+    },
+    {
+      "id": "b1824579-7779-4f9d-afb0-c3a96f1a4056",
+      "year": 2016,
+      "topic": "tn-politics"
+    },
+    {
+      "id": "968e3627-8318-4145-a67c-c1308b9ec7bb",
+      "year": 2018,
+      "topic": "misc-modern-tn"
+    },
+    {
+      "id": "0b4ad2dc-efa0-4939-833e-c3270ba33682",
+      "year": 2018,
+      "topic": "misc-modern-tn"
+    },
+    {
+      "id": "7c1ecb21-3dc6-4409-b267-cf6cf4891bd1",
+      "year": 2018,
+      "topic": "misc-modern-tn"
+    },
+    {
+      "id": "53b3c52c-7731-448f-9c63-9894eba3944b",
+      "year": 2018,
+      "topic": "tamil-society-archaeology"
+    },
+    {
+      "id": "bb99fc91-74d1-4151-801e-b278da6eb2f2",
+      "year": 2019,
+      "topic": "tn-politics"
+    },
+    {
+      "id": "e9f9ddca-adc7-4773-9115-666165b916b9",
+      "year": 2019,
+      "topic": "tn-politics"
+    },
+    {
+      "id": "31718581-6fdb-4a26-9e96-2cbe97d95993",
+      "year": 2019,
+      "topic": "tamil-society-archaeology"
+    },
+    {
+      "id": "afd8ff6f-a0c7-46d1-a767-8c472141743f",
+      "year": 2019,
+      "topic": "tamil-society-archaeology"
+    },
+    {
+      "id": "64d90398-bea4-417f-9f1a-381a8dc7ea3c",
+      "year": 2019,
+      "topic": "tamil-society-archaeology"
+    },
+    {
+      "id": "8ab2962f-7832-4f21-bc2f-83edd9b66a9d",
+      "year": 2022,
+      "topic": "tn-politics"
+    },
+    {
+      "id": "0658b939-0b98-4901-b1e1-ffeff5252f97",
+      "year": 2022,
+      "topic": "tamil-literature"
+    },
+    {
+      "id": "e9303301-aff8-476e-b4cd-c4a149e63d28",
+      "year": 2022,
+      "topic": "tn-freedom-struggle"
+    },
+    {
+      "id": "8c7e236b-cca2-4475-b082-8367f10d3cc6",
+      "year": 2022,
+      "topic": "social-reformers"
+    },
+    {
+      "id": "34a95ce7-b680-47c3-9762-f7dffd179f20",
+      "year": 2022,
+      "topic": "social-reformers"
+    },
+    {
+      "id": "efe55fbd-727f-476e-be98-6f9667e62b69",
+      "year": 2022,
+      "topic": "social-reformers"
+    },
+    {
+      "id": "7d96388d-f8b0-41d8-93ec-ddc1e0ecf272",
+      "year": 2022,
+      "topic": "thirukkural"
+    },
+    {
+      "id": "a069008f-30d1-46e6-933f-ff31f1af0a52",
+      "year": 2022,
+      "topic": "tn-freedom-struggle"
+    },
+    {
+      "id": "963dd912-95b4-48d4-b790-4895efa6ad80",
+      "year": 2022,
+      "topic": "thirukkural"
+    },
+    {
+      "id": "ed4d872d-4090-4b13-84c8-c4cf4d30e1d8",
+      "year": 2022,
+      "topic": "tn-freedom-struggle"
+    },
+    {
+      "id": "5fe990fc-a6f8-41ff-8c79-270a3dc85dea",
+      "year": 2022,
+      "topic": "tn-freedom-struggle"
+    },
+    {
+      "id": "7a15b6e4-17da-4575-9718-6e23bff03beb",
+      "year": 2022,
+      "topic": "thirukkural"
+    },
+    {
+      "id": "178e1ba9-f7c0-4904-8287-2d2f925a741a",
+      "year": 2024,
+      "topic": "tamil-literature"
+    },
+    {
+      "id": "b7f2d356-d8c8-4ba0-81fb-bc37578289f7",
+      "year": 2024,
+      "topic": "social-reformers"
+    },
+    {
+      "id": "8da5abfe-846a-4de0-a824-a0fcbe094fcd",
+      "year": 2024,
+      "topic": "thirukkural"
+    },
+    {
+      "id": "9f0e4282-31c4-426b-bcc0-1f054e88e667",
+      "year": 2024,
+      "topic": "tamil-society-archaeology"
+    },
+    {
+      "id": "f59ef25c-9e2c-40ea-b784-72fb331b14a6",
+      "year": 2024,
+      "topic": "social-reformers"
+    },
+    {
+      "id": "c057f7bb-31d3-44b3-9444-2bbcba482c62",
+      "year": 2024,
+      "topic": "thirukkural"
+    },
+    {
+      "id": "b85fa33b-d1c5-4013-b1a4-2ac75a3475c6",
+      "year": 2024,
+      "topic": "thirukkural"
+    },
+    {
+      "id": "2e7a7ca2-258c-4ba2-bc79-f256c7ec3777",
+      "year": 2024,
+      "topic": "social-reformers"
+    },
+    {
+      "id": "4486f61b-9458-49a8-98eb-3e1dd9861d9e",
+      "year": 2024,
+      "topic": "tn-freedom-struggle"
+    },
+    {
+      "id": "c528ffeb-b81f-4b07-844e-edb4be098927",
+      "year": 2024,
+      "topic": "social-reformers"
+    },
+    {
+      "id": "6082c529-600e-4ccd-b4f9-095049987947",
+      "year": 2024,
+      "topic": "tn-freedom-struggle"
+    },
+    {
+      "id": "c780f1f6-1239-4ca8-8357-a2c2eafcf8aa",
+      "year": 2024,
+      "topic": "thirukkural"
+    },
+    {
+      "id": "ea493840-fe66-4877-9513-7a7ea0a67f3d",
+      "year": 2024,
+      "topic": "thirukkural"
+    },
+    {
+      "id": "bdec3c2c-469c-4341-999d-2c57b0a30f69",
+      "year": 2025,
+      "topic": "tamil-society-archaeology"
+    },
+    {
+      "id": "d6ac934a-8e67-4e6c-a231-db2864718f55",
+      "year": 2025,
+      "topic": "thirukkural"
+    },
+    {
+      "id": "0f99b650-142c-49f0-a639-fdf1fe59a6f3",
+      "year": 2025,
+      "topic": "thirukkural"
+    },
+    {
+      "id": "a9af66e6-cf20-49b3-88a2-ea1a552c2ef3",
+      "year": 2025,
+      "topic": "tn-politics"
+    },
+    {
+      "id": "8e63d15a-2dbd-4dad-8974-c0f018527ae5",
+      "year": 2025,
+      "topic": "social-reformers"
+    },
+    {
+      "id": "73ef5bc3-2aff-479c-ac8a-03decf4b0a06",
+      "year": 2025,
+      "topic": "tamil-literature"
+    },
+    {
+      "id": "9d103ce1-725d-4b9d-afd0-5dcd06642025",
+      "year": 2025,
+      "topic": "tamil-society-archaeology"
+    },
+    {
+      "id": "b3d02ce1-ed1f-4339-bc6e-d7d12f0c4123",
+      "year": 2025,
+      "topic": "tn-freedom-struggle"
+    }
+  ],
+  "aptitude": [
+    {
+      "id": "5a2a453e-e170-4211-96a4-3b6706aedd3a",
+      "year": 2012,
+      "topic": "statistics-probability"
+    },
+    {
+      "id": "0648edbf-7ada-4861-ac09-e087ead97227",
+      "year": 2012,
+      "topic": "algebra-identities"
+    },
+    {
+      "id": "aeeb71d7-5793-4fde-9576-465d85ba7b1a",
+      "year": 2012,
+      "topic": "statistics-probability"
+    },
+    {
+      "id": "0be0311a-7932-4994-8cf9-d2cf87ca24d5",
+      "year": 2012,
+      "topic": "statistics-probability"
+    },
+    {
+      "id": "1c4540fa-3628-40c8-b588-6563fcb746e9",
+      "year": 2012,
+      "topic": "puzzles-arrangement"
+    },
+    {
+      "id": "8ba24bd3-bbc1-4b41-970e-9fca18e5652e",
+      "year": 2012,
+      "topic": "statistics-probability"
+    },
+    {
+      "id": "fa4f7654-4fdb-46d4-b5b4-855bcdb62757",
+      "year": 2012,
+      "topic": "percentage"
+    },
+    {
+      "id": "7b4a7a3f-9ba2-4dc3-a79b-469e6a897f2f",
+      "year": 2012,
+      "topic": "algebra-identities"
+    },
+    {
+      "id": "b3c843f8-01d7-4b62-b864-e5961954ce56",
+      "year": 2012,
+      "topic": "puzzles-arrangement"
+    },
+    {
+      "id": "bc6aae33-5baa-4ece-822b-4d9d091193c3",
+      "year": 2013,
+      "topic": "ratio-proportion"
+    },
+    {
+      "id": "f0cd7c91-d855-4f87-8ba8-8eb47bc6ec53",
+      "year": 2013,
+      "topic": "number-series"
+    },
+    {
+      "id": "75ed7489-e7c3-4388-9e5f-2dee4cee95de",
+      "year": 2013,
+      "topic": "puzzles-arrangement"
+    },
+    {
+      "id": "f80808d2-fcd1-4fef-bbd4-e9aa00ff7164",
+      "year": 2013,
+      "topic": "statistics-probability"
+    },
+    {
+      "id": "d9455539-b5cf-4cdf-b0de-1804959f3cc5",
+      "year": 2013,
+      "topic": "puzzles-arrangement"
+    },
+    {
+      "id": "95586803-a0cc-4fde-a7d5-f9ffa14b92cb",
+      "year": 2013,
+      "topic": "area-volume"
+    },
+    {
+      "id": "bb99c8ca-2da2-4f19-a770-740717205026",
+      "year": 2013,
+      "topic": "time-work"
+    },
+    {
+      "id": "44147c97-5a08-4dfc-8a27-7d2e97913c8d",
+      "year": 2013,
+      "topic": "compound-interest"
+    },
+    {
+      "id": "c00b8a3d-b899-4eb8-84d7-e75a3960caa9",
+      "year": 2013,
+      "topic": "simplification"
+    },
+    {
+      "id": "2185b8ef-bdfc-4e46-8b10-61af9749d93e",
+      "year": 2013,
+      "topic": "puzzles-arrangement"
+    },
+    {
+      "id": "afd2a56b-377a-445f-b389-d6721dcd70b7",
+      "year": 2013,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "06a3a469-0355-4601-b96f-ccb7b1d34786",
+      "year": 2013,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "d923e7cc-b952-4039-a0a2-d03fd1a5aca5",
+      "year": 2013,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "0a2481b5-5cf7-440b-aa5e-274a54dfaca8",
+      "year": 2013,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "975183c2-ee9b-4117-bb2b-a9373bc07fe0",
+      "year": 2013,
+      "topic": "algebra-identities"
+    },
+    {
+      "id": "b86f5cc1-a6b5-44fe-9026-fc2211bc5815",
+      "year": 2013,
+      "topic": "number-series"
+    },
+    {
+      "id": "d3e021bd-ad52-447c-87bc-bc2d6e14274b",
+      "year": 2013,
+      "topic": "statistics-probability"
+    },
+    {
+      "id": "137db048-5ab7-47f7-8d67-4a7c2dad2378",
+      "year": 2013,
+      "topic": "percentage"
+    },
+    {
+      "id": "a932bf8b-dbe9-49d7-8096-3c096d047265",
+      "year": 2013,
+      "topic": "dice"
+    },
+    {
+      "id": "b80aec96-b667-4d8e-875d-ce950a65e241",
+      "year": 2013,
+      "topic": "coding-decoding"
+    },
+    {
+      "id": "26daf45c-c763-49b7-85b4-81712b27efb6",
+      "year": 2013,
+      "topic": "time-work"
+    },
+    {
+      "id": "c5333df8-fe76-4601-b18f-df0134cdea43",
+      "year": 2013,
+      "topic": "simple-interest"
+    },
+    {
+      "id": "10ed7fe3-e4f4-4abc-b711-cbf47e90b570",
+      "year": 2013,
+      "topic": "compound-interest"
+    },
+    {
+      "id": "8c1dbca2-ea4b-4ffb-a795-1af3c3280240",
+      "year": 2013,
+      "topic": "number-series"
+    },
+    {
+      "id": "b1b1473b-6356-4747-871a-33cdc4a74bf3",
+      "year": 2013,
+      "topic": "number-series"
+    },
+    {
+      "id": "599696a2-580a-4bbb-bef2-e80741a1ed5b",
+      "year": 2013,
+      "topic": "number-series"
+    },
+    {
+      "id": "b18392e2-eb57-4d19-9adf-1f830d57a33c",
+      "year": 2014,
+      "topic": "area-volume"
+    },
+    {
+      "id": "6c1e29ea-8368-49e9-8939-a631249d7867",
+      "year": 2014,
+      "topic": "area-volume"
+    },
+    {
+      "id": "15805220-47f3-4fb5-92a9-f8d24ef584e6",
+      "year": 2014,
+      "topic": "ratio-proportion"
+    },
+    {
+      "id": "63008c15-c907-4c9b-a5c6-98d80bfc0fcb",
+      "year": 2014,
+      "topic": "ratio-proportion"
+    },
+    {
+      "id": "4287bb11-cc85-4565-a4a6-f61d1782104a",
+      "year": 2014,
+      "topic": "number-series"
+    },
+    {
+      "id": "2dc8a053-10c3-49c7-a6a8-1721b986a4c5",
+      "year": 2014,
+      "topic": "simplification"
+    },
+    {
+      "id": "54975e21-5006-4abf-9f60-d6edbeb42375",
+      "year": 2014,
+      "topic": "ratio-proportion"
+    },
+    {
+      "id": "f619a215-709b-4bb7-a931-092ec5c51e31",
+      "year": 2014,
+      "topic": "area-volume"
+    },
+    {
+      "id": "fa8fe3c8-5744-4233-a56a-1d7ec737995d",
+      "year": 2014,
+      "topic": "algebra-identities"
+    },
+    {
+      "id": "bf5b6064-b982-4532-864b-b0b60e05fa9f",
+      "year": 2014,
+      "topic": "time-work"
+    },
+    {
+      "id": "2385db9b-72d8-43a8-a130-175552f1fbca",
+      "year": 2014,
+      "topic": "area-volume"
+    },
+    {
+      "id": "45daeedb-59ad-4936-8b0c-0c3806bffd0c",
+      "year": 2014,
+      "topic": "statistics-probability"
+    },
+    {
+      "id": "3a9029a6-4b9d-4092-b476-416e24fff379",
+      "year": 2014,
+      "topic": "number-series"
+    },
+    {
+      "id": "008b4e87-5a4b-4270-9583-7cbff9240963",
+      "year": 2014,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "01ad45fb-1040-46f0-b605-f1efcf017552",
+      "year": 2014,
+      "topic": "area-volume"
+    },
+    {
+      "id": "bc772c1f-e1be-4c8d-bcfa-2828d3988d74",
+      "year": 2014,
+      "topic": "statistics-probability"
+    },
+    {
+      "id": "b4ce9727-fa2a-41a2-87aa-2f0b05bc8e25",
+      "year": 2014,
+      "topic": "percentage"
+    },
+    {
+      "id": "9ada4762-3cd0-4228-ac63-51025ce53775",
+      "year": 2014,
+      "topic": "area-volume"
+    },
+    {
+      "id": "b31a5175-c246-4356-9537-ea1d40cd8711",
+      "year": 2014,
+      "topic": "algebra-identities"
+    },
+    {
+      "id": "dc464aaf-c4c3-440a-b0f9-5d9254162e22",
+      "year": 2014,
+      "topic": "simple-interest"
+    },
+    {
+      "id": "0ef245b0-b8af-480f-9c11-1704491afd6f",
+      "year": 2014,
+      "topic": "algebra-identities"
+    },
+    {
+      "id": "821fda41-8562-4c40-ab98-f4de16dda100",
+      "year": 2014,
+      "topic": "algebra-identities"
+    },
+    {
+      "id": "b9fddaa6-f3ef-44b3-a93e-f20e766aeac9",
+      "year": 2014,
+      "topic": "number-series"
+    },
+    {
+      "id": "bb17e6ec-41b0-46b3-8fa4-14a1acbbb583",
+      "year": 2014,
+      "topic": "simple-interest"
+    },
+    {
+      "id": "13faaaba-3c0e-4264-ade7-ffdc6692599b",
+      "year": 2014,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "8a4cf4b6-9891-4775-9f72-d528183544b9",
+      "year": 2016,
+      "topic": "simplification"
+    },
+    {
+      "id": "d4dc70f2-2f04-4d98-87fb-589036627754",
+      "year": 2016,
+      "topic": "compound-interest"
+    },
+    {
+      "id": "53091598-482a-484f-a25f-07fc877e2b53",
+      "year": 2016,
+      "topic": "simplification"
+    },
+    {
+      "id": "d07fb3ac-cef8-47c9-9b31-7fe406da4321",
+      "year": 2016,
+      "topic": "statistics-probability"
+    },
+    {
+      "id": "a21a820d-ff3a-451f-9191-d8a299ed9ece",
+      "year": 2016,
+      "topic": "time-work"
+    },
+    {
+      "id": "85d54831-a76c-4f84-84ef-4e972ed1b1e8",
+      "year": 2016,
+      "topic": "area-volume"
+    },
+    {
+      "id": "5ba3d952-1e6f-471d-933d-c5d0376352ff",
+      "year": 2016,
+      "topic": "simplification"
+    },
+    {
+      "id": "65331149-1428-4c72-9086-50e6f39b1ad6",
+      "year": 2016,
+      "topic": "percentage"
+    },
+    {
+      "id": "d79a5360-7420-443a-96ca-fcaa72be06b9",
+      "year": 2016,
+      "topic": "algebra-identities"
+    },
+    {
+      "id": "64ae7123-1239-4cc2-8a6b-b188173a4ae8",
+      "year": 2016,
+      "topic": "simplification"
+    },
+    {
+      "id": "f0c42278-052c-47e9-be84-2292e4a31317",
+      "year": 2016,
+      "topic": "algebra-identities"
+    },
+    {
+      "id": "a45db683-057e-4717-9fe9-2c50c39efb02",
+      "year": 2016,
+      "topic": "number-series"
+    },
+    {
+      "id": "0adb6674-ece1-4d07-87c4-51e476ef51fc",
+      "year": 2016,
+      "topic": "area-volume"
+    },
+    {
+      "id": "d30e73f6-9259-4e8e-bb9a-f8144509ad11",
+      "year": 2016,
+      "topic": "compound-interest"
+    },
+    {
+      "id": "586736d1-9063-4def-8360-6f209d6da56d",
+      "year": 2016,
+      "topic": "area-volume"
+    },
+    {
+      "id": "27502e24-6136-4698-bfc8-e328035fd673",
+      "year": 2016,
+      "topic": "time-work"
+    },
+    {
+      "id": "69073002-33fd-40f2-a976-ee8d888338fd",
+      "year": 2016,
+      "topic": "simplification"
+    },
+    {
+      "id": "63c20388-77f3-4a9a-8259-5b0147e4a675",
+      "year": 2016,
+      "topic": "time-work"
+    },
+    {
+      "id": "1d334a7f-5974-4a67-ac36-da7b28350c21",
+      "year": 2016,
+      "topic": "ratio-proportion"
+    },
+    {
+      "id": "c87a4c6d-6895-4732-b5fc-e1e54a926a26",
+      "year": 2016,
+      "topic": "area-volume"
+    },
+    {
+      "id": "bfb25932-2a55-4796-b6b1-dbc049468c66",
+      "year": 2016,
+      "topic": "simplification"
+    },
+    {
+      "id": "94ff77fe-fc0f-4d67-abaa-79f182b06acf",
+      "year": 2016,
+      "topic": "compound-interest"
+    },
+    {
+      "id": "3321f372-e684-4cbc-abfa-9c3d3275e7a4",
+      "year": 2016,
+      "topic": "area-volume"
+    },
+    {
+      "id": "09c3db27-bb9c-4536-ac1d-5d635bec19e1",
+      "year": 2016,
+      "topic": "percentage"
+    },
+    {
+      "id": "03b95699-bca7-495b-86cf-508349278b13",
+      "year": 2016,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "8d1966ba-3745-41ed-8548-a994eb84a310",
+      "year": 2018,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "5a09d482-701b-4f16-b1f3-7038ec7b8f8c",
+      "year": 2018,
+      "topic": "progressions"
+    },
+    {
+      "id": "a2de20fb-78f2-48dd-ad49-4ee1321f43ba",
+      "year": 2018,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "efac839c-e462-450d-9810-00040487c421",
+      "year": 2018,
+      "topic": "algebra-identities"
+    },
+    {
+      "id": "f01b7b57-51fd-4e3e-9171-13cb89dff7fc",
+      "year": 2018,
+      "topic": "area-volume"
+    },
+    {
+      "id": "a08a9df8-f4e5-4da8-ac83-27cae244e116",
+      "year": 2018,
+      "topic": "simplification"
+    },
+    {
+      "id": "a8e57002-26bb-4f08-9569-431ce3608914",
+      "year": 2018,
+      "topic": "simplification"
+    },
+    {
+      "id": "acefdaaf-a478-4b11-a8c0-50416904bf20",
+      "year": 2018,
+      "topic": "progressions"
+    },
+    {
+      "id": "17323347-e909-47d6-b6ad-e12db2476b1e",
+      "year": 2018,
+      "topic": "percentage"
+    },
+    {
+      "id": "4e5b0bac-2735-41db-9c62-be09eb5e6634",
+      "year": 2018,
+      "topic": "ratio-proportion"
+    },
+    {
+      "id": "ab27c02d-fbc9-40ae-a478-11d9994a6590",
+      "year": 2018,
+      "topic": "progressions"
+    },
+    {
+      "id": "fb8158c1-8ec1-4403-a669-c435dffc618f",
+      "year": 2018,
+      "topic": "ratio-proportion"
+    },
+    {
+      "id": "f6086010-c678-47e0-9aa0-fedca900b61d",
+      "year": 2018,
+      "topic": "progressions"
+    },
+    {
+      "id": "0f79c93b-7f54-45dd-aace-e7622074567e",
+      "year": 2018,
+      "topic": "ratio-proportion"
+    },
+    {
+      "id": "e1ea6689-f14d-4eff-bebf-3f0722f94eed",
+      "year": 2018,
+      "topic": "ratio-proportion"
+    },
+    {
+      "id": "834a12f8-5125-4784-aae7-ef096c27b6f2",
+      "year": 2018,
+      "topic": "progressions"
+    },
+    {
+      "id": "c96ec887-297f-4325-acce-4ca5d3c87735",
+      "year": 2018,
+      "topic": "progressions"
+    },
+    {
+      "id": "b211f372-c975-48f8-b6cc-e3597d82893c",
+      "year": 2018,
+      "topic": "area-volume"
+    },
+    {
+      "id": "6179549c-8e6c-45e6-93ab-58630efb8e2d",
+      "year": 2018,
+      "topic": "ratio-proportion"
+    },
+    {
+      "id": "a0a6fbd3-f66a-4405-84e1-c6869994fc12",
+      "year": 2018,
+      "topic": "ratio-proportion"
+    },
+    {
+      "id": "4151ec38-368c-4d35-b5ce-266419adce61",
+      "year": 2018,
+      "topic": "algebra-identities"
+    },
+    {
+      "id": "63d33a7f-ed82-44e6-b2bc-cba4e66891b4",
+      "year": 2018,
+      "topic": "progressions"
+    },
+    {
+      "id": "9257bbbe-70ba-46d7-b089-07d82eb465db",
+      "year": 2018,
+      "topic": "simplification"
+    },
+    {
+      "id": "933f1248-02c2-4271-8254-62391dd272f8",
+      "year": 2018,
+      "topic": "simple-interest"
+    },
+    {
+      "id": "ba72ac1b-21c4-476d-b88e-a512cb130b0a",
+      "year": 2019,
+      "topic": "statistics-probability"
+    },
+    {
+      "id": "2b7a3170-7b7a-4de6-b4a3-a03b1fc4be54",
+      "year": 2019,
+      "topic": "algebra-identities"
+    },
+    {
+      "id": "fde08947-15e0-4af4-b8aa-a97073bab72d",
+      "year": 2019,
+      "topic": "area-volume"
+    },
+    {
+      "id": "21b7158b-a280-47cf-80c5-7a7e73b83f09",
+      "year": 2019,
+      "topic": "ratio-proportion"
+    },
+    {
+      "id": "cc4aadf9-987f-4a8a-b1bb-3c2f86697d0b",
+      "year": 2019,
+      "topic": "simplification"
+    },
+    {
+      "id": "8ec1d6c8-d2c7-4b87-9638-fec837e3e831",
+      "year": 2019,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "dbf62bc4-90fb-418a-bd6b-4bfefdc00e62",
+      "year": 2019,
+      "topic": "time-work"
+    },
+    {
+      "id": "afbfabc6-354c-416a-a484-238def99070f",
+      "year": 2019,
+      "topic": "time-work"
+    },
+    {
+      "id": "a110405b-d9b4-45bd-bd78-e972be0ce87a",
+      "year": 2019,
+      "topic": "simple-interest"
+    },
+    {
+      "id": "9264d8e3-b743-4a6c-909d-07e719f50ea0",
+      "year": 2019,
+      "topic": "statistics-probability"
+    },
+    {
+      "id": "cf89e5a7-f839-48db-88c5-7ccbf5dd00e9",
+      "year": 2019,
+      "topic": "simplification"
+    },
+    {
+      "id": "fbec21cd-54f3-417b-b94d-a098e676d222",
+      "year": 2019,
+      "topic": "statistics-probability"
+    },
+    {
+      "id": "1825b6a8-d37e-400a-95bf-eef13a16a901",
+      "year": 2019,
+      "topic": "statistics-probability"
+    },
+    {
+      "id": "361e6066-f9be-41ef-8f23-16fbc52b010e",
+      "year": 2019,
+      "topic": "statistics-probability"
+    },
+    {
+      "id": "efe9448f-b06c-4d7a-9982-33a3eb526f13",
+      "year": 2019,
+      "topic": "ratio-proportion"
+    },
+    {
+      "id": "cc3c014a-1792-480b-a521-74b248660d48",
+      "year": 2019,
+      "topic": "simplification"
+    },
+    {
+      "id": "bf74cccf-50b0-4ece-9442-4ead8f881867",
+      "year": 2019,
+      "topic": "area-volume"
+    },
+    {
+      "id": "832e6a4a-22a1-4230-a2c2-621a21380dab",
+      "year": 2019,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "6fc57349-906e-4dfb-be63-72165da171f6",
+      "year": 2019,
+      "topic": "simplification"
+    },
+    {
+      "id": "7154a391-b607-4d8f-be1b-2a2027ed9de6",
+      "year": 2019,
+      "topic": "area-volume"
+    },
+    {
+      "id": "de180b75-0e9e-4a09-9ed8-c0a9b80b5c73",
+      "year": 2019,
+      "topic": "simple-interest"
+    },
+    {
+      "id": "f9925eb7-4b94-47db-a1ea-a6e563e1a2c7",
+      "year": 2019,
+      "topic": "progressions"
+    },
+    {
+      "id": "45401f86-7356-4338-9451-40409d756b01",
+      "year": 2019,
+      "topic": "progressions"
+    },
+    {
+      "id": "04c2a978-fe08-4d37-837e-e4d82bef428c",
+      "year": 2019,
+      "topic": "progressions"
+    },
+    {
+      "id": "afa0b3b9-b713-4bb8-9fbc-eaf3c5e62fd2",
+      "year": 2019,
+      "topic": "progressions"
+    },
+    {
+      "id": "79df4567-aae3-4ea0-a644-9a8fbb9a1183",
+      "year": 2022,
+      "topic": "compound-interest"
+    },
+    {
+      "id": "14153b2f-4190-4c24-8171-0c0fa77d8621",
+      "year": 2022,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "15ed43e2-620b-43ec-a211-56151e10baf2",
+      "year": 2022,
+      "topic": "area-volume"
+    },
+    {
+      "id": "19bfdbcd-7713-47ad-8ece-7c1d8112bba0",
+      "year": 2022,
+      "topic": "statistics-probability"
+    },
+    {
+      "id": "bd7d76bb-f8dc-45ca-a33c-37e1aaadebd5",
+      "year": 2022,
+      "topic": "puzzles-arrangement"
+    },
+    {
+      "id": "2631cd87-1c7a-45fc-b58b-f091581ef6d9",
+      "year": 2022,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "8916c63b-f07b-4511-a5a1-f328ee34a5e5",
+      "year": 2022,
+      "topic": "ratio-proportion"
+    },
+    {
+      "id": "58ac6b2a-8b9f-4b29-b00c-bacc360ea093",
+      "year": 2022,
+      "topic": "coding-decoding"
+    },
+    {
+      "id": "350558a8-d5cf-4668-b388-2ab891e10c18",
+      "year": 2022,
+      "topic": "time-work"
+    },
+    {
+      "id": "96529f57-546e-49ff-90c3-e0d4e9020ae6",
+      "year": 2022,
+      "topic": "progressions"
+    },
+    {
+      "id": "b97ca78c-1af7-458e-8515-e6a8aad82621",
+      "year": 2022,
+      "topic": "progressions"
+    },
+    {
+      "id": "52ab71e0-b429-444c-a149-f83e7c7c2e09",
+      "year": 2022,
+      "topic": "compound-interest"
+    },
+    {
+      "id": "ba3b3781-2439-413d-96d8-791b7b28d744",
+      "year": 2022,
+      "topic": "compound-interest"
+    },
+    {
+      "id": "87305260-800b-43bd-82b1-0566e6ddc643",
+      "year": 2022,
+      "topic": "puzzles-arrangement"
+    },
+    {
+      "id": "3aee573d-4e2b-404c-b3c8-cefa92b23417",
+      "year": 2022,
+      "topic": "dice"
+    },
+    {
+      "id": "ac7c8284-2f3f-4947-af8c-7f8809abc23c",
+      "year": 2022,
+      "topic": "number-series"
+    },
+    {
+      "id": "ca694d8f-9695-45e0-867e-0b0e5e4f6bee",
+      "year": 2022,
+      "topic": "area-volume"
+    },
+    {
+      "id": "fc26d286-5bc8-42b2-b5b4-67c5ed7e5cfa",
+      "year": 2022,
+      "topic": "ratio-proportion"
+    },
+    {
+      "id": "bdbbfc53-93b5-4854-ac92-d3e4be40505a",
+      "year": 2022,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "6c4b9cdd-8811-4b8e-9565-ba944f3990f3",
+      "year": 2022,
+      "topic": "ratio-proportion"
+    },
+    {
+      "id": "70ff7c42-f89d-40c1-bbde-a88c45a614f7",
+      "year": 2022,
+      "topic": "coding-decoding"
+    },
+    {
+      "id": "c62703b8-c202-48c3-b9e2-83678e7eedc4",
+      "year": 2022,
+      "topic": "puzzles-arrangement"
+    },
+    {
+      "id": "18175c56-d098-4d21-9dac-bfa352b2a588",
+      "year": 2022,
+      "topic": "time-work"
+    },
+    {
+      "id": "bd67eb91-5973-4394-89c1-7fd6afb03257",
+      "year": 2022,
+      "topic": "simple-interest"
+    },
+    {
+      "id": "7aec4ed3-8675-44a6-9200-42d81024f70d",
+      "year": 2022,
+      "topic": "simple-interest"
+    },
+    {
+      "id": "7ca1541d-a998-47db-9c47-2cfc41c56502",
+      "year": 2024,
+      "topic": "compound-interest"
+    },
+    {
+      "id": "03703b6f-e46d-4a0a-b5ba-2685f154db3d",
+      "year": 2024,
+      "topic": "area-volume"
+    },
+    {
+      "id": "463f01d1-104c-495e-936d-6204831b62d9",
+      "year": 2024,
+      "topic": "number-series"
+    },
+    {
+      "id": "19d214fe-0d38-48e6-9c46-bc4c9b69ff9e",
+      "year": 2024,
+      "topic": "ratio-proportion"
+    },
+    {
+      "id": "6550d697-ead7-4441-bd69-b16cb1a2812d",
+      "year": 2024,
+      "topic": "percentage"
+    },
+    {
+      "id": "c54baaa2-ba90-4b92-a3fa-123b875c5e87",
+      "year": 2024,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "ff7b9387-2000-4333-9962-c70bb57de4e1",
+      "year": 2024,
+      "topic": "simplification"
+    },
+    {
+      "id": "ddb07198-248b-4be4-9e57-497d0bfebbc5",
+      "year": 2024,
+      "topic": "area-volume"
+    },
+    {
+      "id": "5d08b636-d0ef-4275-81a3-753de250d6fd",
+      "year": 2024,
+      "topic": "ratio-proportion"
+    },
+    {
+      "id": "386fe635-f3f0-49d6-8dce-bf3878a1ba50",
+      "year": 2024,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "dcbe6935-6370-48d2-85ce-010433f46301",
+      "year": 2024,
+      "topic": "puzzles-arrangement"
+    },
+    {
+      "id": "7da128d4-687a-4a87-8c9d-bef75454d5f0",
+      "year": 2024,
+      "topic": "area-volume"
+    },
+    {
+      "id": "c16264d1-1808-4ea9-bdb2-42b13d07511f",
+      "year": 2024,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "fa05975f-4295-4d3a-976b-f60fb49b8236",
+      "year": 2024,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "d2768c6c-34a9-4bcc-8276-6baaa7acd8e9",
+      "year": 2024,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "bd59902b-7e87-48f7-b1f9-e10e6a796390",
+      "year": 2024,
+      "topic": "progressions"
+    },
+    {
+      "id": "f074d895-201d-4b4e-ac8f-ae39fbc74344",
+      "year": 2024,
+      "topic": "number-series"
+    },
+    {
+      "id": "f1662f98-d19f-44e3-bbc4-33d99cec0304",
+      "year": 2024,
+      "topic": "coding-decoding"
+    },
+    {
+      "id": "d92fdf28-f343-4267-8e87-bb4389090db4",
+      "year": 2024,
+      "topic": "puzzles-arrangement"
+    },
+    {
+      "id": "3187bac3-31a6-4338-97f6-5fe7caf495f9",
+      "year": 2024,
+      "topic": "time-work"
+    },
+    {
+      "id": "e678d3ec-1157-4d25-9788-8fe68bb50174",
+      "year": 2024,
+      "topic": "compound-interest"
+    },
+    {
+      "id": "d8665461-c470-43fc-a321-9aa7b95dc43f",
+      "year": 2024,
+      "topic": "simple-interest"
+    },
+    {
+      "id": "7d5d8cb2-4880-4a24-97aa-518323d6b049",
+      "year": 2024,
+      "topic": "simple-interest"
+    },
+    {
+      "id": "de0552d2-9390-418a-a0ae-e2941289ffb9",
+      "year": 2024,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "f089a371-f285-44f3-a1c1-f85dd464d90d",
+      "year": 2024,
+      "topic": "percentage"
+    },
+    {
+      "id": "5e0acb3f-387a-49b6-9961-536412f82915",
+      "year": 2024,
+      "topic": "puzzles-arrangement"
+    },
+    {
+      "id": "6fd3a266-b816-420b-91f4-46d14c806478",
+      "year": 2025,
+      "topic": "time-work"
+    },
+    {
+      "id": "f538fe67-29ba-4f2d-81cd-07017fcf16ce",
+      "year": 2025,
+      "topic": "compound-interest"
+    },
+    {
+      "id": "607be96e-eae2-457e-932c-99d2818e71f0",
+      "year": 2025,
+      "topic": "simple-interest"
+    },
+    {
+      "id": "8a379b5a-4979-4ec1-8ea1-91b24947adb1",
+      "year": 2025,
+      "topic": "ratio-proportion"
+    },
+    {
+      "id": "52ee75c1-a892-40e4-b7d1-d67fe14c99e5",
+      "year": 2025,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "50efcf4f-1e3a-4181-9e60-4432916e9ce4",
+      "year": 2025,
+      "topic": "hcf-lcm"
+    },
+    {
+      "id": "805ffdce-6b6c-42a8-a7ec-6c39386c14bc",
+      "year": 2025,
+      "topic": "percentage"
+    },
+    {
+      "id": "6e57ee64-c99b-41fe-b45a-ce634c8f4de7",
+      "year": 2025,
+      "topic": "percentage"
+    },
+    {
+      "id": "e7380ad9-6297-494b-a1d0-528c9ea5f5ec",
+      "year": 2025,
+      "topic": "progressions"
+    },
+    {
+      "id": "b4f1fb7e-cee2-4080-82e1-0b285066aa04",
+      "year": 2025,
+      "topic": "number-series"
+    },
+    {
+      "id": "fa352ccd-fc76-4ffd-9095-b3f6344e99fc",
+      "year": 2025,
+      "topic": "number-series"
+    },
+    {
+      "id": "eee60516-6c11-4959-9046-808a73f830f1",
+      "year": 2025,
+      "topic": "dice"
+    },
+    {
+      "id": "ff99ed3b-e44e-423b-b178-1b95787ea06a",
+      "year": 2025,
+      "topic": "number-series"
+    }
+  ]
+}
