@@ -21,6 +21,12 @@ html {
   .bottom-nav { display: flex !important; }
 }
 
+@media print {
+  .bottom-nav, .sidebar {
+    display: none !important;
+  }
+}
+
 .settings-menu {
   position: absolute;
   bottom: 60px;
