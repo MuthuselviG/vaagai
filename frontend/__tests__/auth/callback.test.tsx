@@ -9,6 +9,7 @@ const { mockPush, mockGetSession, mockFrom } = vi.hoisted(() => ({
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: mockPush }),
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 vi.mock("@supabase/supabase-js", () => ({
