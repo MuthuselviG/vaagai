@@ -10,6 +10,7 @@ import {
   CAUnitMeta,
 } from "../../../../lib/supabase";
 import { T, shadow } from "../../../../lib/tokens";
+import PdfDownloadButton from "../../../../components/PdfDownloadButton";
 
 export const revalidate = 3600;
 
@@ -114,7 +115,14 @@ export default async function CAMonthlyPage() {
   return (
     <>
       {faqItems.length > 0 && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />}
-      <nav style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: shadow.sm }}>
+      <style>{`
+        @media print {
+          .no-print { display: none !important; }
+          .ca-unit-details > *:not(summary) { display: block !important; }
+          body { background: white; }
+        }
+      `}</style>
+      <nav className="no-print" style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: shadow.sm }}>
         <Link href="/tnpsc-study-materials" style={{ height: 34, borderRadius: 10, background: T.bg, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 6, padding: "0 12px", textDecoration: "none", color: T.text, fontSize: 13, fontWeight: 600 }}>← படிப்பகம்</Link>
         <Link href="/tnpsc-study-materials/current-affairs/june-2026-tamil" style={{ background: T.indigoLight, color: T.indigo, border: `1px solid ${T.indigoMid}`, borderRadius: 20, padding: "5px 12px", fontSize: 12, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" as const }}>
           தமிழில் படிக்க →
@@ -185,7 +193,7 @@ export default async function CAMonthlyPage() {
           const count = getCountForUnit(slug, enCounts);
           const qs: CAQuestion[] = previews[idx] ?? [];
           return (
-            <details key={slug} style={{ background: col.bg, border: `1.5px solid ${col.border}`, borderRadius: 16, marginBottom: 14, overflow: "hidden", boxShadow: shadow.sm }}>
+            <details key={slug} className="ca-unit-details" style={{ background: col.bg, border: `1.5px solid ${col.border}`, borderRadius: 16, marginBottom: 14, overflow: "hidden", boxShadow: shadow.sm }}>
               <summary style={{ padding: 16, display: "flex", alignItems: "center", gap: 12, cursor: "pointer", listStyle: "none" }}>
                 <div style={{ width: 44, height: 44, borderRadius: 12, background: col.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>{label.icon}</div>
                 <div style={{ flex: 1 }}>
@@ -199,7 +207,7 @@ export default async function CAMonthlyPage() {
                   ? <p style={{ fontSize: 13, color: T.textSec, padding: "12px 0" }}>Questions loading — check back soon.</p>
                   : qs.map((q, i) => <QCard key={q.id} q={q} num={i + 1} />)
                 }
-                <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                <div className="no-print" style={{ display: "flex", gap: 8, marginTop: 8 }}>
                   <Link href={`/tnpsc-study-materials/current-affairs/june-2026/${slug}`} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 11, borderRadius: 10, border: `1.5px solid ${col.border}`, background: col.bg, color: col.text, fontSize: 13, fontWeight: 700, textDecoration: "none" }}>
                     📖 Read all {count} →
                   </Link>
@@ -214,7 +222,7 @@ export default async function CAMonthlyPage() {
       </div>
 
       {/* INTERNAL LINKS */}
-      <div style={{ padding: "24px 20px 0" }}>
+      <div className="no-print" style={{ padding: "24px 20px 0" }}>
         <h2 style={{ fontFamily: "serif", fontSize: 18, fontWeight: 700, color: T.text, margin: "0 0 14px 0" }}>Explore More</h2>
         <div style={{ display: "flex", flexDirection: "column" as const, gap: 10, marginBottom: 24 }}>
           {[
@@ -248,13 +256,13 @@ export default async function CAMonthlyPage() {
       </div>
 
       {/* PDF */}
-      <div style={{ margin: "0 20px 24px", background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 16, padding: 16, display: "flex", alignItems: "center", gap: 14, boxShadow: shadow.sm }}>
+      <div className="no-print" style={{ margin: "0 20px 24px", background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 16, padding: 16, display: "flex", alignItems: "center", gap: 14, boxShadow: shadow.sm }}>
         <div style={{ width: 40, height: 40, borderRadius: 10, background: "#FEF3C7", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>📄</div>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: T.text }}>⬇️ Download June 2026 as PDF</div>
-          <div style={{ fontSize: 12, color: T.textSec, marginTop: 2 }}>All {totalCount || "—"} questions with answers. Free with login.</div>
+          <div style={{ fontSize: 12, color: T.textSec, marginTop: 2 }}>All {totalCount || "—"} questions with answers — free, no login needed.</div>
         </div>
-        <Link href="/login?redirect=/tnpsc-study-materials/current-affairs/june-2026?download=pdf" style={{ background: T.indigoLight, color: T.indigo, border: `1px solid ${T.indigoMid}`, borderRadius: 8, padding: "8px 14px", fontSize: 13, fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap" as const }}>Download</Link>
+        <PdfDownloadButton style={{ background: T.indigoLight, color: T.indigo, border: `1px solid ${T.indigoMid}`, borderRadius: 8, padding: "8px 14px", fontSize: 13, fontWeight: 700, whiteSpace: "nowrap" as const }}>Download</PdfDownloadButton>
       </div>
 
       <div style={{ height: 100 }} />
