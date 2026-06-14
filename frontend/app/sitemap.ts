@@ -44,6 +44,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/tnpsc-study-materials`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: `${BASE}/current-affairs`, lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE}/tnpsc-study-materials/current-affairs`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE}/tnpsc-study-materials/ai-tnpsc-group-4-pyq-analysis`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE}/tnpsc-study-materials/ai-tnpsc-group-4-pyq-analysis-tamil`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE}/mock`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
     { url: `${BASE}/experts`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
     ...monthPages,

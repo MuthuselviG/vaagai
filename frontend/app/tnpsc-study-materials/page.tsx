@@ -20,18 +20,20 @@ const COPY = {
     subtitle: "Current affairs, notes & more — Tamil & English.",
     caHeading: "Current Affairs",
     dailyUpdated: "Daily Updated",
-    comingTitle: "PYQ Study Materials",
-    comingDesc: "Year-wise previous year question analysis with topic breakdown and answer keys.",
-    comingSoon: "Coming Soon",
+    pyqEyebrow: "AI PYQ Analysis",
+    pyqTitle: "TNPSC Group 4: which topics actually repeat?",
+    pyqDesc: "9 papers (2012–2025) analyzed — topic-wise question frequency mapped to the 2026 syllabus, with new & rising topics.",
+    pyqCta: "View analysis →",
   },
   ta: {
     title: <>TNPSC <span style={{ color: T.indigo }}>படிப்பகம்</span></>,
     subtitle: "நடப்பு நிகழ்வுகள், குறிப்புகள் மற்றும் பல — தமிழ் & ஆங்கிலம்.",
     caHeading: "நடப்பு நிகழ்வுகள்",
     dailyUpdated: "தினமும் புதுப்பிப்பு",
-    comingTitle: "PYQ படிப்பகம்",
-    comingDesc: "ஆண்டு வாரியான முந்தைய ஆண்டு வினா பகுப்பாய்வு, தலைப்பு பிரிப்பு மற்றும் விடை விசைகள்.",
-    comingSoon: "விரைவில்",
+    pyqEyebrow: "AI வினாத்தாள் பகுப்பாய்வு",
+    pyqTitle: "TNPSC குரூப் 4: எந்த தலைப்புகள் மீண்டும் மீண்டும் வரும்?",
+    pyqDesc: "9 தாள்கள் (2012–2025) பகுப்பாய்வு — தலைப்பு வாரியான வினா அடர்த்தி, 2026 பாடத்திட்டத்துடன் ஒப்பிடப்பட்டது, புதிய & உயரும் தலைப்புகளுடன்.",
+    pyqCta: "பகுப்பாய்வைப் பார்க்க →",
   },
 };
 
@@ -143,24 +145,31 @@ export default async function StudyMaterialsPage() {
       </div>
 
       <div style={{ padding: "20px 16px 0" }}>
-        <div style={{
-          background: T.surface,
-          border: `1.5px dashed ${T.border}`,
-          borderRadius: 16, padding: "20px 16px",
-          textAlign: "center" as const,
-        }}>
-          <span style={{ fontSize: 28, marginBottom: 8, display: "block" }}>📋</span>
-          <div style={{ fontFamily: "serif", fontSize: 16, fontWeight: 700, color: T.text, marginBottom: 6 }}>{c.comingTitle}</div>
-          <div style={{ fontSize: 13, color: T.textSec, lineHeight: 1.5 }}>{c.comingDesc}</div>
-          <span style={{
-            display: "inline-block", background: T.bg,
-            border: `1px solid ${T.border}`, color: T.textTer,
-            fontSize: 11, fontWeight: 600, padding: "4px 12px",
-            borderRadius: 20, marginTop: 10,
-            textTransform: "uppercase" as const, letterSpacing: "0.4px",
-          }}>
-            {c.comingSoon}
-          </span>
+        <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, overflow: "hidden", boxShadow: shadow.sm }}>
+          <div style={{ background: `linear-gradient(135deg, ${T.indigo} 0%, ${T.indigoDark} 100%)`, padding: "14px 16px 12px" }}>
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.6, color: "rgba(255,255,255,0.75)", textTransform: "uppercase" as const, display: "block", marginBottom: 2 }}>
+              {c.pyqEyebrow}
+            </span>
+            <span style={{ fontFamily: "serif", fontSize: 20, fontWeight: 800, color: "white", display: "block", marginBottom: 2 }}>{c.pyqTitle}</span>
+            <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" as const }}>
+              {["9 Papers", "2012–2025"].map((s) => (
+                <span key={s} style={{ background: "rgba(255,255,255,0.15)", borderRadius: 8, padding: "4px 8px", fontSize: 11, color: "white", fontWeight: 600 }}>{s}</span>
+              ))}
+            </div>
+          </div>
+          <div style={{ padding: "12px 16px" }}>
+            <div style={{ fontSize: 13, color: T.textSec, lineHeight: 1.5, marginBottom: 12 }}>{c.pyqDesc}</div>
+            <Link
+              href={lang === "ta" ? "/tnpsc-study-materials/ai-tnpsc-group-4-pyq-analysis-tamil" : "/tnpsc-study-materials/ai-tnpsc-group-4-pyq-analysis"}
+              style={{
+                display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+                background: T.indigo, color: "white", borderRadius: 10, padding: 11,
+                fontSize: 13, fontWeight: 700, textDecoration: "none",
+              }}
+            >
+              {c.pyqCta}
+            </Link>
+          </div>
         </div>
       </div>
 

@@ -25,3 +25,14 @@ export const shadow = {
   indigo: "0 4px 14px rgba(61,82,160,0.35), 0 1px 4px rgba(61,82,160,0.2)",
   green: "0 4px 14px rgba(5,122,85,0.3)"
 } as const;
+
+// Shared font-size scale (px). Use these instead of one-off numbers so
+// text stays consistent — and readable — across pages and languages.
+export const fontSize = {
+  caption: 13,  // badges, stat lines, fine print
+  body: 15,     // standard paragraph/list text
+  bodyLg: 16,   // emphasized body, card titles
+  label: 17,    // sub-headings
+  heading: 19,  // section headings
+  display: 22,  // large headings
+} as const;
