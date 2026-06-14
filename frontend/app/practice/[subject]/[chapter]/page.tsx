@@ -54,7 +54,7 @@ export default function PracticePage() {
 
   useEffect(() => {
     async function loadLang() {
-      if (isCA || isPack || subject === "Tamil") return;
+      if (isCA || subject === "Tamil") return;
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { data } = await supabase
