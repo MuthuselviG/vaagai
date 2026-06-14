@@ -17,7 +17,7 @@ export default function PdfBranding() {
             position: relative;
           }
           .page-watermark {
-            display: block;
+            display: block !important;
             position: absolute;
             inset: 0;
             background-image: url("${WATERMARK_SVG}");
