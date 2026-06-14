@@ -36,8 +36,15 @@ export type Labels = {
   tocMarks: (marks: number) => string;
   breakdownStat: (n: number, papers: number, total: number) => string;
   faqHeading: string;
-  footerCaText: string;
-  footerCaLink: string;
+  exploreHeading: string;
+  explorePractice: string;
+  explorePracticeSub: string;
+  exploreMock: string;
+  exploreMockSub: string;
+  explorePyq: string;
+  explorePyqSub: string;
+  exploreCa: string;
+  exploreCaSub: string;
 };
 
 export const EN_LABELS: Labels = {
@@ -79,8 +86,15 @@ export const EN_LABELS: Labels = {
   tocMarks: (marks) => `(${marks} marks)`,
   breakdownStat: (n, papers, total) => `${n} questions · ${papers} of ${total} papers`,
   faqHeading: "Frequently asked questions",
-  footerCaText: "Looking for current affairs instead? ",
-  footerCaLink: "Browse monthly current affairs →",
+  exploreHeading: "Explore More",
+  explorePractice: "Practice by Subject",
+  explorePracticeSub: "Chapter-wise MCQ practice",
+  exploreMock: "Full Mock Test",
+  exploreMockSub: "200 questions · 3 hours · Free",
+  explorePyq: "Group 4 PYQ Papers",
+  explorePyqSub: "Practice previous year papers",
+  exploreCa: "Current Affairs",
+  exploreCaSub: "Daily updated questions",
 };
 
 export const TA_LABELS: Labels = {
@@ -122,6 +136,13 @@ export const TA_LABELS: Labels = {
   tocMarks: (marks) => `(${marks} மதிப்பெண்கள்)`,
   breakdownStat: (n, papers, total) => `${n} வினாக்கள் · ${total}-இல் ${papers} தாள்களில் கேட்கப்பட்டது`,
   faqHeading: "அடிக்கடி கேட்கப்படும் கேள்விகள்",
-  footerCaText: "நடப்பு நிகழ்வுகளைத் தேடுகிறீர்களா? ",
-  footerCaLink: "மாதாந்திர நடப்பு நிகழ்வுகளைப் பார்க்கவும் →",
+  exploreHeading: "மேலும் பார்க்க",
+  explorePractice: "பாட வாரியாகப் பயிற்சி",
+  explorePracticeSub: "அத்தியாயம் வாரியான MCQ பயிற்சி",
+  exploreMock: "முழு மாதிரித் தேர்வு",
+  exploreMockSub: "200 வினாக்கள் · 3 மணிநேரம் · இலவசம்",
+  explorePyq: "குரூப் 4 பழைய வினாத்தாள்கள்",
+  explorePyqSub: "முந்தைய ஆண்டு வினாத்தாள்களைப் பயிற்சி செய்யுங்கள்",
+  exploreCa: "நடப்பு நிகழ்வுகள்",
+  exploreCaSub: "தினமும் புதுப்பிக்கப்படும் வினாக்கள்",
 };

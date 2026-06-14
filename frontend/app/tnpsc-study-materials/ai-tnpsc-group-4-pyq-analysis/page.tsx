@@ -103,12 +103,29 @@ export default function PyqAnalysisPage() {
           ))}
         </section>
 
-        <p style={{ fontSize: fontSize.caption, color: T.textTer, lineHeight: 1.6, marginTop: 20 }}>
-          {labels.footerCaText}
-          <Link href="/tnpsc-study-materials/current-affairs" style={{ color: T.indigo, fontWeight: 600 }}>
-            {labels.footerCaLink}
-          </Link>
-        </p>
+        {/* Explore More */}
+        <section style={{ marginTop: 20 }}>
+          <h2 style={{ fontFamily: "serif", fontSize: fontSize.heading, fontWeight: 700, color: T.text, margin: "0 0 14px 0" }}>{labels.exploreHeading}</h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {[
+              { href: "/subjects", icon: "📋", bg: "#FEF3C7", title: labels.explorePractice, sub: labels.explorePracticeSub },
+              { href: "/mock", icon: "📝", bg: "#F5F3FF", title: labels.exploreMock, sub: labels.exploreMockSub },
+              { href: "/pyq/group4", icon: "📚", bg: T.indigoLight, title: labels.explorePyq, sub: labels.explorePyqSub },
+              { href: "/tnpsc-study-materials/current-affairs", icon: "📰", bg: T.greenBg, title: labels.exploreCa, sub: labels.exploreCaSub },
+            ].map((link) => (
+              <Link key={link.href} href={link.href} style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 12, padding: "14px 16px", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: shadow.sm }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ width: 36, height: 36, borderRadius: 10, background: link.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>{link.icon}</div>
+                  <div>
+                    <div style={{ fontSize: fontSize.bodyLg, fontWeight: 600, color: T.text }}>{link.title}</div>
+                    <div style={{ fontSize: fontSize.caption, color: T.textSec, marginTop: 1 }}>{link.sub}</div>
+                  </div>
+                </div>
+                <span style={{ color: T.textTer, fontSize: 18 }}>›</span>
+              </Link>
+            ))}
+          </div>
+        </section>
       </div>
 
       <div style={{ height: 100 }} />
