@@ -185,11 +185,12 @@ export async function fetchQuestionsForPYQ(
   return (data as Question[]) ?? [];
 }
 
-export async function fetchQuestionsForPack(packId: string): Promise<Question[]> {
+export async function fetchQuestionsForPack(packId: string, lang: "en" | "ta" = "en"): Promise<Question[]> {
   const { data, error } = await supabase
     .from("questions")
     .select("id, question, lang, options, correct_option, explanation, class, subject, chapter, topic, difficulty, source_type, pack_id, pack_order")
     .eq("pack_id", packId)
+    .eq("lang", lang)
     .order("pack_order", { ascending: true });
   if (error) throw error;
   return (data as Question[]) ?? [];

@@ -108,7 +108,7 @@ function QCard({ q, num, lang }: { q: TVKQuestion; num: number; lang: "en" | "ta
       </div>
       <div style={{ background: T.indigoLight, border: `1px solid ${T.indigoMid}`, borderRadius: 10, padding: "10px 14px" }}>
         <div style={{ fontSize: 11, fontWeight: 700, color: T.indigo, textTransform: "uppercase" as const, letterSpacing: "0.4px", marginBottom: 4 }}>📖 {c.explanationLabel}</div>
-        <div style={{ fontSize: isTa ? 14 : 13, color: T.textSec, lineHeight: 1.55 }}>{q.explanation}</div>
+        <div style={{ fontSize: isTa ? 14 : 13, color: T.textSec, lineHeight: 1.55 }}>{isTa ? q.explanationTa : q.explanationEn}</div>
       </div>
     </div>
   );
