@@ -54,7 +54,7 @@ export default function PracticePage() {
 
   useEffect(() => {
     async function loadLang() {
-      if (isCA || isPack || subject === "Tamil") return;
+      if (isCA || subject === "Tamil") return;
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { data } = await supabase
@@ -128,7 +128,7 @@ export default function PracticePage() {
         .then(qs => { setQuestions(qs); setLoading(false); })
         .catch(() => { setError("Could not load current affairs."); setLoading(false); });
     } else if (isPack && packId) {
-      fetchQuestionsForPack(packId)
+      fetchQuestionsForPack(packId, lang)
         .then(qs => { setQuestions(qs); setLoading(false); })
         .catch(() => { setError("Could not load pack questions."); setLoading(false); });
     } else if (isPYQ) {
