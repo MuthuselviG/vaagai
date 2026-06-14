@@ -11,8 +11,7 @@ import {
 } from "../../../../../lib/supabase";
 import { T, shadow } from "../../../../../lib/tokens";
 import PdfDownloadButton from "../../../../../components/PdfDownloadButton";
-import PdfBranding, { PdfWatermark } from "../../../../../components/PdfBranding";
-import { Fragment } from "react";
+import PdfBranding, { QuestionWatermark } from "../../../../../components/PdfBranding";
 
 export const revalidate = 86400;
 
@@ -58,7 +57,8 @@ export async function generateMetadata({ params }: { params: Promise<{ unit: str
 
 function QCard({ q, num }: { q: CAQuestion; num: number }) {
   return (
-    <div id={q.slug ? q.slug.replace(/\s+/g, "-") : q.id} style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: 18, marginBottom: 14, boxShadow: shadow.sm }}>
+    <div id={q.slug ? q.slug.replace(/\s+/g, "-") : q.id} style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: 18, marginBottom: 14, boxShadow: shadow.sm, position: "relative", overflow: "hidden", zIndex: 0 }}>
+      <QuestionWatermark />
       <div style={{ fontSize: 11, fontWeight: 700, color: T.textTer, textTransform: "uppercase" as const, letterSpacing: "0.5px", marginBottom: 10 }}>வினா {num}</div>
       <p style={{ fontSize: 15, fontWeight: 600, color: T.text, lineHeight: 1.6, marginBottom: 14 }}>{q.question}</p>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 7, marginBottom: 14 }}>
@@ -147,12 +147,7 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
         <div style={{ fontSize: 13, color: T.textSec, marginBottom: 16 }}>அனைத்து வினாக்களும் விடைகளும் விளக்கங்களும். TNPSC குரூப் 4 பாடத்திட்டம் அலகு {numeral}-க்கு ஏற்ப வரிசைப்படுத்தப்பட்டுள்ளது.</div>
         {questions.length === 0
           ? <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 14, padding: 24, textAlign: "center" as const, color: T.textSec }}>இந்த அலகிற்கான வினாக்கள் சேர்க்கப்படுகின்றன — சீக்கிரம் திரும்பி வாருங்கள்.</div>
-          : questions.map((q, i) => (
-              <Fragment key={q.id}>
-                <QCard q={q} num={i + 1} />
-                <PdfWatermark />
-              </Fragment>
-            ))
+          : questions.map((q, i) => <QCard key={q.id} q={q} num={i + 1} />)
         }
       </div>
 
