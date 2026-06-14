@@ -24,6 +24,10 @@ const COPY = {
     pyqTitle: "TNPSC Group 4: which topics actually repeat?",
     pyqDesc: "9 papers (2012–2025) analyzed — topic-wise question frequency mapped to the 2026 syllabus, with new & rising topics.",
     pyqCta: "View analysis →",
+    tvkHeading: "Aptitude Practice Sets",
+    tvkTitle: "TVK Maths Test 01",
+    tvkDesc: "50 solved questions by Er. Thangamuthu — number system, surds, simplification & figure counting.",
+    tvkCta: "View & Practice →",
   },
   ta: {
     title: <>TNPSC <span style={{ color: T.indigo }}>படிப்பகம்</span></>,
@@ -34,6 +38,10 @@ const COPY = {
     pyqTitle: "TNPSC குரூப் 4: எந்த தலைப்புகள் மீண்டும் மீண்டும் வரும்?",
     pyqDesc: "9 தாள்கள் (2012–2025) பகுப்பாய்வு — தலைப்பு வாரியான வினா அடர்த்தி, 2026 பாடத்திட்டத்துடன் ஒப்பிடப்பட்டது, புதிய & உயரும் தலைப்புகளுடன்.",
     pyqCta: "பகுப்பாய்வைப் பார்க்க →",
+    tvkHeading: "Aptitude பயிற்சி தொகுப்புகள்",
+    tvkTitle: "TVK Maths Test 01",
+    tvkDesc: "Er. தங்கமுத்து வழங்கும் 50 தீர்வு கேள்விகள் — எண் அமைப்பு, வர்க்கமூலங்கள், எளிமையாக்கல் & உருவ எண்ணிக்கை.",
+    tvkCta: "பார்க்க & பயிற்சி →",
   },
 };
 
@@ -171,6 +179,21 @@ export default async function StudyMaterialsPage() {
             </Link>
           </div>
         </div>
+      </div>
+
+      <div style={{ padding: "20px 16px 0" }}>
+        <h2 style={{ fontFamily: "serif", fontSize: 18, fontWeight: 700, color: T.text, margin: "0 0 12px 0" }}>{c.tvkHeading}</h2>
+        <Link href="/tnpsc-study-materials/er-thangamuthu/tvk-maths/test-01" style={{
+          display: "block", background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16,
+          padding: "14px 16px", textDecoration: "none", marginBottom: 4, boxShadow: shadow.sm,
+        }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+            <span style={{ fontFamily: "serif", fontSize: 15, fontWeight: 700, color: T.text }}>{c.tvkTitle}</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: T.indigo, background: T.indigoLight, border: `1px solid ${T.indigoMid}`, padding: "3px 10px", borderRadius: 20 }}>50 Qs</span>
+          </div>
+          <p style={{ fontSize: 13, color: T.textSec, margin: "0 0 8px", lineHeight: 1.45 }}>{c.tvkDesc}</p>
+          <span style={{ fontSize: 13, fontWeight: 700, color: T.indigo }}>{c.tvkCta}</span>
+        </Link>
       </div>
 
       <div style={{ height: 100 }} />
