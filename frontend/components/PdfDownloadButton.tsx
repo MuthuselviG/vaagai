@@ -4,6 +4,12 @@ import { CSSProperties, ReactNode, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
 export default function PdfDownloadButton({
   style,
   children,
@@ -18,9 +24,12 @@ export default function PdfDownloadButton({
     const params = new URLSearchParams(window.location.search);
     if (params.get("download") !== "pdf") return;
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) window.print();
+      if (session) {
+        window.gtag?.("event", "pdf_download", { page_path: pathname });
+        window.print();
+      }
     });
-  }, []);
+  }, [pathname]);
 
   async function handleClick() {
     const { data: { session } } = await supabase.auth.getSession();
@@ -28,6 +37,7 @@ export default function PdfDownloadButton({
       router.push(`/login?redirect=${encodeURIComponent(`${pathname}?download=pdf`)}`);
       return;
     }
+    window.gtag?.("event", "pdf_download", { page_path: pathname });
     window.print();
   }
 

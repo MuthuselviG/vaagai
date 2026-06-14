@@ -2,6 +2,9 @@
 
 import { usePathname } from "next/navigation";
 
+const WATERMARK_SVG =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='1131'%3E%3Cg transform='rotate(-25 400 565)' opacity='0.18'%3E%3Cimage href='https://mcqpalagu.in/logo.png' x='270' y='370' width='260' height='173'/%3E%3Ctext x='400' y='620' font-size='60' font-family='sans-serif' font-weight='800' fill='%2310204F' text-anchor='middle'%3Emcqpalagu.in%3C/text%3E%3C/g%3E%3C/svg%3E";
+
 export default function PdfBranding() {
   const pathname = usePathname();
   const url = `mcqpalagu.in${pathname}`;
@@ -10,7 +13,22 @@ export default function PdfBranding() {
     <>
       <style>{`
         @media print {
-          .pdf-header, .pdf-watermark, .pdf-footer {
+          body {
+            position: relative;
+          }
+          .page-watermark {
+            display: block;
+            position: absolute;
+            inset: 0;
+            background-image: url("${WATERMARK_SVG}");
+            background-repeat: repeat;
+            background-size: 800px 1131px;
+            pointer-events: none;
+            z-index: 9999;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          }
+          .pdf-header, .pdf-footer {
             display: flex !important;
           }
           .pdf-header {
@@ -25,25 +43,6 @@ export default function PdfBranding() {
           .pdf-header img {
             height: 26px;
           }
-          .pdf-watermark {
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            opacity: 0.15;
-            padding: 28px 0;
-          }
-          .pdf-watermark img {
-            width: 60vw;
-            max-width: 420px;
-          }
-          .pdf-watermark span {
-            font-size: 42px;
-            font-weight: 800;
-            font-family: sans-serif;
-            color: #10204F;
-            margin-top: 10px;
-            letter-spacing: 2px;
-          }
           .pdf-footer {
             justify-content: center;
             padding: 8px 0;
@@ -54,49 +53,16 @@ export default function PdfBranding() {
             margin-top: 4px;
             margin-bottom: 16px;
           }
-          .pdf-strip {
-            display: flex !important;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
-            padding: 22px 0;
-            margin: 24px 0;
-            border-top: 3px solid #10204F;
-            border-bottom: 3px solid #10204F;
-            background: #E0E7FF;
-          }
-          .pdf-strip img {
-            height: 56px;
-          }
-          .pdf-strip span {
-            font-size: 34px;
-            font-weight: 800;
-            font-family: sans-serif;
-            color: #10204F;
-            letter-spacing: 1.5px;
-          }
         }
       `}</style>
+      <div className="page-watermark" style={{ display: "none" }} />
       <div className="pdf-header" style={{ display: "none" }}>
         <img src="/logo.png" alt="mcqpalagu.in" />
         <span>{url}</span>
-      </div>
-      <div className="pdf-watermark" style={{ display: "none" }}>
-        <img src="/logo.png" alt="" />
-        <span>mcqpalagu.in</span>
       </div>
       <div className="pdf-footer" style={{ display: "none" }}>
         © 2026 mcqpalagu.in — All rights reserved.
       </div>
     </>
-  );
-}
-
-export function PdfBrandingStrip() {
-  return (
-    <div className="pdf-strip" style={{ display: "none" }}>
-      <img src="/logo.png" alt="" />
-      <span>mcqpalagu.in</span>
-    </div>
   );
 }
