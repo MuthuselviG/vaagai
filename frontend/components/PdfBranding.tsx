@@ -2,9 +2,6 @@
 
 import { usePathname } from "next/navigation";
 
-const WATERMARK_SVG =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='1131'%3E%3Cg transform='rotate(-25 400 565)' opacity='0.18'%3E%3Cimage href='https://mcqpalagu.in/logo.png' x='270' y='370' width='260' height='173'/%3E%3Ctext x='400' y='620' font-size='60' font-family='sans-serif' font-weight='800' fill='%2310204F' text-anchor='middle'%3Emcqpalagu.in%3C/text%3E%3C/g%3E%3C/svg%3E";
-
 export default function PdfBranding() {
   const pathname = usePathname();
   const url = `mcqpalagu.in${pathname}`;
@@ -12,13 +9,24 @@ export default function PdfBranding() {
   return (
     <>
       <style>{`
+        body {
+          position: relative;
+        }
+        .page-watermark {
+          display: none;
+        }
         @media print {
-          body {
-            background-image: url("${WATERMARK_SVG}");
-            background-repeat: repeat;
-            background-size: 800px 1131px;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+          .page-watermark {
+            display: block;
+            position: absolute;
+            top: 80px;
+            left: 50px;
+            width: 700px;
+            height: 990px;
+            opacity: 0.18;
+            transform: rotate(-25deg);
+            pointer-events: none;
+            z-index: 9999;
           }
           .pdf-header, .pdf-footer {
             display: flex !important;
@@ -47,6 +55,24 @@ export default function PdfBranding() {
           }
         }
       `}</style>
+      <svg
+        className="page-watermark"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 800 1131"
+      >
+        <image href="/logo.png" x="270" y="370" width="260" height="173" />
+        <text
+          x="400"
+          y="620"
+          fontSize="60"
+          fontFamily="sans-serif"
+          fontWeight="800"
+          fill="#10204F"
+          textAnchor="middle"
+        >
+          mcqpalagu.in
+        </text>
+      </svg>
       <div className="pdf-header" style={{ display: "none" }}>
         <img src="/logo.png" alt="mcqpalagu.in" />
         <span>{url}</span>
