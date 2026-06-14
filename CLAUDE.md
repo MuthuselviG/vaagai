@@ -5,6 +5,7 @@
 - **NEVER run INSERT, UPDATE, or DELETE on Supabase without explicit user approval.** Always show the query first and wait for the user to say "go ahead" or similar before executing. SELECT queries are fine.
 - **NEVER modify existing SEO routes' URLs, slugs, or canonical paths without explicit user approval.** Content/feature changes (e.g. the PDF download fix applied to both May and June 2026 CA pages) are fine once approved — don't restructure routes.
 - **Before any code change, state a short plan and get explicit user approval first.** Don't write or edit code until the user says go ahead.
+- **Every SEO-targeted page (study materials, PYQ analysis, current affairs, etc.) must be linked from `/tnpsc-study-materials` (the study hub).** When adding a new SEO page, add a discoverable link/card for it on the hub (both EN and TA variants) in the same change.
 
 ## What This App Is
 
