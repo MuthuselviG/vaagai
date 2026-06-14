@@ -13,7 +13,8 @@ import {
 } from "../../../../lib/supabase";
 import { T, shadow } from "../../../../lib/tokens";
 import PdfDownloadButton from "../../../../components/PdfDownloadButton";
-import PdfBranding from "../../../../components/PdfBranding";
+import PdfBranding, { PdfWatermark } from "../../../../components/PdfBranding";
+import { Fragment } from "react";
 
 export const revalidate = 86400;
 
@@ -184,7 +185,12 @@ export default async function CAMonthlyTamilPage() {
               <div style={{ padding: "0 16px 16px" }}>
                 {qs.length === 0
                   ? <p style={{ fontSize: 13, color: T.textSec, padding: "12px 0" }}>வினாக்கள் சேர்க்கப்படுகின்றன — சீக்கிரம் திரும்பி வாருங்கள்.</p>
-                  : qs.map((q, i) => <QCard key={q.id} q={q} num={i + 1} />)
+                  : qs.map((q, i) => (
+                      <Fragment key={q.id}>
+                        <QCard q={q} num={i + 1} />
+                        <PdfWatermark />
+                      </Fragment>
+                    ))
                 }
                 <div className="no-print" style={{ display: "flex", gap: 8, marginTop: 8 }}>
                   <Link href={`/tnpsc-study-materials/current-affairs/may-2026-tamil/${slug}`} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 11, borderRadius: 10, border: `1.5px solid ${col.border}`, background: col.bg, color: col.text, fontSize: 13, fontWeight: 700, textDecoration: "none" }}>
