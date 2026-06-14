@@ -58,22 +58,22 @@ export default function PdfBranding() {
             display: flex !important;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            padding: 14px 0;
-            margin: 18px 0;
-            border-top: 2px solid #10204F;
-            border-bottom: 2px solid #10204F;
-            background: #F0F3FF;
+            gap: 16px;
+            padding: 22px 0;
+            margin: 24px 0;
+            border-top: 3px solid #10204F;
+            border-bottom: 3px solid #10204F;
+            background: #E0E7FF;
           }
           .pdf-strip img {
-            height: 36px;
+            height: 56px;
           }
           .pdf-strip span {
-            font-size: 22px;
+            font-size: 34px;
             font-weight: 800;
             font-family: sans-serif;
             color: #10204F;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
           }
         }
       `}</style>
