@@ -147,7 +147,7 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
           : questions.map((q, i) => (
               <div key={q.id}>
                 <QCard q={q} num={i + 1} />
-                {(i + 1) % 4 === 0 && <PdfBrandingStrip />}
+                {(i + 1) % 3 === 0 && <PdfBrandingStrip />}
               </div>
             ))
         }
