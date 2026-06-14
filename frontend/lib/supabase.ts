@@ -190,10 +190,24 @@ export async function fetchQuestionsForPack(packId: string, lang: "en" | "ta" = 
     .from("questions")
     .select("id, question, lang, options, correct_option, explanation, class, subject, chapter, topic, difficulty, source_type, pack_id, pack_order")
     .eq("pack_id", packId)
-    .eq("lang", lang)
     .order("pack_order", { ascending: true });
   if (error) throw error;
-  return (data as Question[]) ?? [];
+  const rows = (data as Question[]) ?? [];
+
+  // Packs may have questions in only one language (older packs) or both
+  // (e.g. TVK). Prefer the requested language per question, falling back
+  // to whichever language is available for that question.
+  const byOrder = new Map<number, Question[]>();
+  for (const row of rows) {
+    const order = row.pack_order ?? 0;
+    const group = byOrder.get(order);
+    if (group) group.push(row);
+    else byOrder.set(order, [row]);
+  }
+
+  return Array.from(byOrder.entries())
+    .sort(([a], [b]) => a - b)
+    .map(([, group]) => group.find((r) => r.lang === lang) ?? group[0]);
 }
 
 export async function fetchQuestionsForCADaily(date: string, lang: "en" | "ta"): Promise<Question[]> {
