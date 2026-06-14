@@ -13,8 +13,7 @@ import {
 } from "../../../../lib/supabase";
 import { T, shadow } from "../../../../lib/tokens";
 import PdfDownloadButton from "../../../../components/PdfDownloadButton";
-import PdfBranding, { PdfWatermark } from "../../../../components/PdfBranding";
-import { Fragment } from "react";
+import PdfBranding, { QuestionWatermark } from "../../../../components/PdfBranding";
 
 export const revalidate = 86400;
 
@@ -50,7 +49,8 @@ function getCountForUnit(unitSlug: string, counts: { subject: string; count: num
 
 function QCard({ q, num }: { q: CAQuestion; num: number }) {
   return (
-    <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 14, padding: 16, marginBottom: 12, boxShadow: shadow.sm }}>
+    <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 14, padding: 16, marginBottom: 12, boxShadow: shadow.sm, position: "relative", overflow: "hidden", zIndex: 0 }}>
+      <QuestionWatermark />
       <div style={{ fontSize: 11, fontWeight: 700, color: T.textTer, textTransform: "uppercase" as const, letterSpacing: "0.5px", marginBottom: 8 }}>Question {num}</div>
       <p style={{ fontSize: 15, fontWeight: 600, color: T.text, lineHeight: 1.5, marginBottom: 12 }}>{q.question}</p>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 12 }}>
@@ -210,12 +210,7 @@ export default async function CAMonthlyPage() {
               <div style={{ padding: "0 16px 16px" }}>
                 {qs.length === 0
                   ? <p style={{ fontSize: 13, color: T.textSec, padding: "12px 0" }}>Questions loading — check back soon.</p>
-                  : qs.map((q, i) => (
-                      <Fragment key={q.id}>
-                        <QCard q={q} num={i + 1} />
-                        <PdfWatermark />
-                      </Fragment>
-                    ))
+                  : qs.map((q, i) => <QCard key={q.id} q={q} num={i + 1} />)
                 }
                 <div className="no-print" style={{ display: "flex", gap: 8, marginTop: 8 }}>
                   <Link href={`/tnpsc-study-materials/current-affairs/may-2026/${slug}`} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 11, borderRadius: 10, border: `1.5px solid ${col.border}`, background: col.bg, color: col.text, fontSize: 13, fontWeight: 700, textDecoration: "none" }}>

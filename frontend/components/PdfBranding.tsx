@@ -9,19 +9,21 @@ export default function PdfBranding() {
   return (
     <>
       <style>{`
-        .pdf-watermark {
+        .q-watermark {
           display: none;
         }
         @media print {
-          .pdf-watermark {
+          .q-watermark {
             display: block;
-            width: 700px;
-            height: 990px;
-            margin: -430px auto;
-            opacity: 0.1;
-            transform: rotate(-25deg);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: auto;
+            transform: translate(-50%, -50%) rotate(-18deg);
+            opacity: 0.18;
             pointer-events: none;
-            z-index: 50;
+            z-index: 5;
           }
           .pdf-header, .pdf-footer {
             display: flex !important;
@@ -61,18 +63,17 @@ export default function PdfBranding() {
   );
 }
 
-export function PdfWatermark() {
+export function QuestionWatermark() {
   return (
     <svg
-      className="pdf-watermark"
+      className="q-watermark"
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 800 1131"
+      viewBox="0 0 300 120"
     >
-      <image href="/logo.png" x="270" y="370" width="260" height="173" />
       <text
-        x="400"
-        y="620"
-        fontSize="60"
+        x="150"
+        y="70"
+        fontSize="40"
         fontFamily="sans-serif"
         fontWeight="800"
         fill="#10204F"

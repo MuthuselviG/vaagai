@@ -11,8 +11,7 @@ import {
 } from "../../../../../lib/supabase";
 import { T, shadow } from "../../../../../lib/tokens";
 import PdfDownloadButton from "../../../../../components/PdfDownloadButton";
-import PdfBranding, { PdfWatermark } from "../../../../../components/PdfBranding";
-import { Fragment } from "react";
+import PdfBranding, { QuestionWatermark } from "../../../../../components/PdfBranding";
 
 export const revalidate = 86400;
 
@@ -59,7 +58,8 @@ export async function generateMetadata({ params }: { params: Promise<{ unit: str
 
 function QCard({ q, num }: { q: CAQuestion; num: number }) {
   return (
-    <div id={q.slug ? q.slug.replace(/\s+/g, "-") : q.id} style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: 18, marginBottom: 14, boxShadow: shadow.sm }}>
+    <div id={q.slug ? q.slug.replace(/\s+/g, "-") : q.id} style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: 18, marginBottom: 14, boxShadow: shadow.sm, position: "relative", overflow: "hidden", zIndex: 0 }}>
+      <QuestionWatermark />
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
         <span style={{ fontSize: 11, fontWeight: 700, color: T.textTer, textTransform: "uppercase" as const, letterSpacing: "0.5px" }}>Question {num}</span>
         {q.topic && <span style={{ fontSize: 11, fontWeight: 600, color: T.indigo, background: T.indigoLight, padding: "3px 8px", borderRadius: 8 }}>{q.topic}</span>}
@@ -151,12 +151,7 @@ export default async function CAUnitPage({ params }: { params: Promise<{ unit: s
         <div style={{ fontSize: 13, color: T.textSec, marginBottom: 16 }}>All questions with answers &amp; explanations. Mapped to TNPSC Group 4 syllabus Unit {numeral}.</div>
         {questions.length === 0
           ? <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 14, padding: 24, textAlign: "center" as const, color: T.textSec }}>Questions for this unit are being added — check back soon.</div>
-          : questions.map((q, i) => (
-              <Fragment key={q.id}>
-                <QCard q={q} num={i + 1} />
-                <PdfWatermark />
-              </Fragment>
-            ))
+          : questions.map((q, i) => <QCard key={q.id} q={q} num={i + 1} />)
         }
       </div>
 
