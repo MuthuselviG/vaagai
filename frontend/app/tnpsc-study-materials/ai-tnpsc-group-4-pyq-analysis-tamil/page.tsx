@@ -111,6 +111,8 @@ export default function PyqAnalysisTamilPage() {
           </Link>
         </p>
       </div>
+
+      <div style={{ height: 100 }} />
     </>
   );
 }

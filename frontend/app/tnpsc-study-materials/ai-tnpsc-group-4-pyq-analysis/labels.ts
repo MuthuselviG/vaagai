@@ -120,7 +120,7 @@ export const TA_LABELS: Labels = {
   breakdownSub: "மேலே உள்ள விளக்கப்படங்களுக்குப் பின்னால் உள்ள தரவுகள், முழுமையாக எழுதப்பட்டுள்ளன.",
   marksSuffix: (marks) => `— ${marks} மதிப்பெண்கள்`,
   tocMarks: (marks) => `(${marks} மதிப்பெண்கள்)`,
-  breakdownStat: (n, papers, total) => `${n} வினாக்கள் · ${total} தாள்களில் ${papers}`,
+  breakdownStat: (n, papers, total) => `${n} வினாக்கள் · ${total}-இல் ${papers} தாள்களில் கேட்கப்பட்டது`,
   faqHeading: "அடிக்கடி கேட்கப்படும் கேள்விகள்",
   footerCaText: "நடப்பு நிகழ்வுகளைத் தேடுகிறீர்களா? ",
   footerCaLink: "மாதாந்திர நடப்பு நிகழ்வுகளைப் பார்க்கவும் →",

@@ -171,7 +171,7 @@ export default function PyqAnalysisClient({ lang, units, rising }: { lang: "en" 
   const ctaHref = "/pyq/group4";
 
   return (
-    <div style={{ background: T.bg, fontFamily: "'Inter', system-ui, sans-serif", color: T.text, paddingBottom: 100 }}>
+    <div style={{ background: T.bg, fontFamily: "'Inter', system-ui, sans-serif", color: T.text, paddingBottom: 20 }}>
       {/* top syllabus strip */}
       <div style={{ background: T.indigoDark, color: "#fff", padding: "10px 16px", fontSize: fontSize.caption, textAlign: "center" }}>
         {labels.syllabusStripPrefix}

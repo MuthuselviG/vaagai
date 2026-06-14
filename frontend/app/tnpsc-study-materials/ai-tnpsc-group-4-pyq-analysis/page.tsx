@@ -110,6 +110,8 @@ export default function PyqAnalysisPage() {
           </Link>
         </p>
       </div>
+
+      <div style={{ height: 100 }} />
     </>
   );
 }
