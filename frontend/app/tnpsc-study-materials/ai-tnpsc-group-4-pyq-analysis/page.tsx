@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { T, shadow } from "../../../lib/tokens";
+import { T, shadow, fontSize } from "../../../lib/tokens";
 import PyqAnalysisClient from "./PyqAnalysisClient";
 import { UNITS, RISING, FAQS, PAPER_COUNT } from "./data";
 import { EN_LABELS } from "./labels";
@@ -43,19 +43,19 @@ export default function PyqAnalysisPage() {
       <div style={{ maxWidth: 460, margin: "0 auto", padding: "0 16px 60px", background: T.bg }}>
         {/* Table of contents */}
         <nav aria-label="Table of contents" style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: 16, marginBottom: 30, boxShadow: shadow.sm }}>
-          <div style={{ fontSize: 13, fontWeight: 800, color: T.textTer, letterSpacing: 0.6, textTransform: "uppercase", marginBottom: 10 }}>
+          <div style={{ fontSize: fontSize.caption, fontWeight: 800, color: T.textTer, letterSpacing: 0.6, textTransform: "uppercase", marginBottom: 10 }}>
             {labels.tocHeading}
           </div>
-          <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
+          <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
             {UNITS.map((u) => (
               <li key={u.key}>
-                <a href={`#${u.key}`} style={{ color: T.indigo, fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
+                <a href={`#${u.key}`} style={{ color: T.indigo, fontSize: fontSize.body, fontWeight: 600, textDecoration: "none" }}>
                   {u.name} {labels.tocMarks(u.marks)}
                 </a>
               </li>
             ))}
             <li>
-              <a href="#faq" style={{ color: T.indigo, fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
+              <a href="#faq" style={{ color: T.indigo, fontSize: fontSize.body, fontWeight: 600, textDecoration: "none" }}>
                 {labels.faqHeading}
               </a>
             </li>
@@ -63,29 +63,29 @@ export default function PyqAnalysisPage() {
         </nav>
 
         {/* Detailed topic-wise breakdown — server-rendered prose, for search & AI crawlers */}
-        <h2 style={{ fontSize: 19, fontWeight: 800, marginBottom: 4 }}>{labels.breakdownHeading}</h2>
-        <p style={{ fontSize: 13.5, color: T.textSec, margin: "0 0 18px" }}>
+        <h2 style={{ fontSize: fontSize.heading, fontWeight: 800, marginBottom: 4 }}>{labels.breakdownHeading}</h2>
+        <p style={{ fontSize: fontSize.body, color: T.textSec, lineHeight: 1.6, margin: "0 0 18px" }}>
           {labels.breakdownSub}
         </p>
 
         {UNITS.map((u) => (
           <section key={u.key} id={u.key} style={{ marginBottom: 28 }}>
-            <h3 style={{ fontSize: 17, fontWeight: 800, color: T.text, marginBottom: 4 }}>
-              {u.name} <span style={{ color: T.textSec, fontWeight: 600, fontSize: 14 }}>{labels.marksSuffix(u.marks)}</span>
+            <h3 style={{ fontSize: fontSize.label, fontWeight: 800, color: T.text, marginBottom: 4 }}>
+              {u.name} <span style={{ color: T.textSec, fontWeight: 600, fontSize: fontSize.body }}>{labels.marksSuffix(u.marks)}</span>
             </h3>
-            <p style={{ fontSize: 14, color: T.textSec, lineHeight: 1.6, marginBottom: 10 }}>{u.intro}</p>
-            <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 6 }}>
+            <p style={{ fontSize: fontSize.body, color: T.textSec, lineHeight: 1.7, marginBottom: 12 }}>{u.intro}</p>
+            <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
               {u.topics.map((t, i) => (
-                <li key={i} style={{ fontSize: 13.5, color: T.text, display: "flex", justifyContent: "space-between", gap: 8, borderBottom: `1px solid ${T.border}`, padding: "6px 0" }}>
-                  <span>
+                <li key={i} style={{ borderBottom: `1px solid ${T.border}`, padding: "8px 0" }}>
+                  <div style={{ fontSize: fontSize.bodyLg, color: T.text, fontWeight: 600, lineHeight: 1.4 }}>
                     {t.label}
                     {t.rising && (
-                      <span style={{ fontSize: 10, background: "#FEF3C7", color: "#B45309", padding: "1px 6px", borderRadius: 6, fontWeight: 700, marginLeft: 6 }}>
+                      <span style={{ fontSize: fontSize.caption, background: "#FEF3C7", color: "#B45309", padding: "2px 8px", borderRadius: 6, fontWeight: 700, marginLeft: 6 }}>
                         {labels.risingBadge}
                       </span>
                     )}
-                  </span>
-                  <span style={{ color: T.textSec, whiteSpace: "nowrap" }}>{labels.breakdownStat(t.n, t.papers, PAPER_COUNT)}</span>
+                  </div>
+                  <div style={{ fontSize: fontSize.caption, color: T.textSec, marginTop: 2 }}>{labels.breakdownStat(t.n, t.papers, PAPER_COUNT)}</div>
                 </li>
               ))}
             </ul>
@@ -94,16 +94,16 @@ export default function PyqAnalysisPage() {
 
         {/* FAQ */}
         <section id="faq" style={{ marginBottom: 10 }}>
-          <h2 style={{ fontSize: 19, fontWeight: 800, marginBottom: 12 }}>{labels.faqHeading}</h2>
+          <h2 style={{ fontSize: fontSize.heading, fontWeight: 800, marginBottom: 12 }}>{labels.faqHeading}</h2>
           {FAQS.map((f, i) => (
             <div key={i} style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 14, padding: 16, marginBottom: 12, boxShadow: shadow.sm }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: T.text, marginBottom: 6 }}>{f.q}</div>
-              <p style={{ fontSize: 13.5, color: T.textSec, lineHeight: 1.6, margin: 0 }}>{f.a}</p>
+              <div style={{ fontSize: fontSize.bodyLg, fontWeight: 700, color: T.text, marginBottom: 6 }}>{f.q}</div>
+              <p style={{ fontSize: fontSize.body, color: T.textSec, lineHeight: 1.6, margin: 0 }}>{f.a}</p>
             </div>
           ))}
         </section>
 
-        <p style={{ fontSize: 12.5, color: T.textTer, lineHeight: 1.6, marginTop: 20 }}>
+        <p style={{ fontSize: fontSize.caption, color: T.textTer, lineHeight: 1.6, marginTop: 20 }}>
           {labels.footerCaText}
           <Link href="/tnpsc-study-materials/current-affairs" style={{ color: T.indigo, fontWeight: 600 }}>
             {labels.footerCaLink}

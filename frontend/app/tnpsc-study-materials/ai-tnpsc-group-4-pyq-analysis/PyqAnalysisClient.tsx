@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { T, shadow } from "../../../lib/tokens";
+import { T, shadow, fontSize } from "../../../lib/tokens";
 import { PAPER_COUNT, MAX_TOPIC_COUNT, TOTAL_MARKS, Unit, RisingTopic } from "./data";
 import { EN_LABELS, TA_LABELS, Labels } from "./labels";
 
@@ -46,7 +46,7 @@ function MarkMap({ units, caption, onPick, active }: { units: Unit[]; caption: s
           );
         })}
       </div>
-      <div style={{ textAlign: "center", marginTop: 12, fontSize: 13, color: T.textSec }}>
+      <div style={{ textAlign: "center", marginTop: 12, fontSize: fontSize.caption, color: T.textSec }}>
         {caption}
       </div>
     </div>
@@ -82,7 +82,7 @@ function Donut({ units, labels, onPick, active }: { units: Unit[]; labels: Label
         );
       })}
       <text x="90" y="84" textAnchor="middle" fontSize="30" fontWeight="800" fill={T.text}>{TOTAL_MARKS}</text>
-      <text x="90" y="104" textAnchor="middle" fontSize="11" fill={T.textSec}>{labels.marksTotal}</text>
+      <text x="90" y="104" textAnchor="middle" fontSize={fontSize.caption} fill={T.textSec}>{labels.marksTotal}</text>
     </svg>
   );
 }
@@ -111,15 +111,15 @@ function UnitCard({ u, labels, open, onToggle }: { u: Unit; labels: Labels; open
           <div style={{ fontSize: 9, opacity: 0.9 }}>{labels.marksUnit}</div>
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontWeight: 700, color: T.text, fontSize: 16 }}>{u.name}</div>
-          <div style={{ fontSize: 13, color: T.textSec }}>{u.tamil}</div>
+          <div style={{ fontWeight: 700, color: T.text, fontSize: fontSize.bodyLg }}>{u.name}</div>
+          <div style={{ fontSize: fontSize.caption, color: T.textSec }}>{u.tamil}</div>
         </div>
         <div style={{ fontSize: 20, color: T.textTer, transform: open ? "rotate(180deg)" : "none", transition: "transform .2s" }}>⌄</div>
       </button>
       {open && (
         <div style={{ padding: "0 18px 18px" }}>
           <div style={{
-            background: u.soft, color: u.color, fontWeight: 600, fontSize: 13.5,
+            background: u.soft, color: u.color, fontWeight: 600, fontSize: fontSize.body,
             padding: "10px 14px", borderRadius: 12, marginBottom: 16,
           }}>
             💡 {u.ease}
@@ -127,18 +127,18 @@ function UnitCard({ u, labels, open, onToggle }: { u: Unit; labels: Labels; open
           {u.topics.map((t, i) => (
             <div key={i} style={{ marginBottom: 13 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 5 }}>
-                <span style={{ fontSize: 14, color: T.text, fontWeight: 500, display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ fontSize: fontSize.body, color: T.text, fontWeight: 500, display: "flex", alignItems: "center", gap: 6 }}>
                   {t.label}
                   {t.rising && (
                     <span style={{
-                      fontSize: 10, background: "#FEF3C7", color: "#B45309",
+                      fontSize: fontSize.caption, background: "#FEF3C7", color: "#B45309",
                       padding: "1px 6px", borderRadius: 6, fontWeight: 700,
                     }}>
                       {labels.risingBadge}
                     </span>
                   )}
                 </span>
-                <span style={{ fontSize: 13, color: T.textSec, fontWeight: 700, whiteSpace: "nowrap", marginLeft: 8 }}>{labels.topicCount(t.n)}</span>
+                <span style={{ fontSize: fontSize.caption, color: T.textSec, fontWeight: 700, whiteSpace: "nowrap", marginLeft: 8 }}>{labels.topicCount(t.n)}</span>
               </div>
               <div style={{ height: 9, background: "#F0F2F8", borderRadius: 6, overflow: "hidden" }}>
                 <div style={{
@@ -146,7 +146,7 @@ function UnitCard({ u, labels, open, onToggle }: { u: Unit; labels: Labels; open
                   borderRadius: 6, transition: "width .6s",
                 }} />
               </div>
-              <div style={{ fontSize: 11, color: T.textTer, marginTop: 3 }}>{labels.papersCaption(t.papers, PAPER_COUNT)}</div>
+              <div style={{ fontSize: fontSize.caption, color: T.textTer, marginTop: 3 }}>{labels.papersCaption(t.papers, PAPER_COUNT)}</div>
             </div>
           ))}
         </div>
@@ -173,7 +173,7 @@ export default function PyqAnalysisClient({ lang, units, rising }: { lang: "en" 
   return (
     <div style={{ background: T.bg, fontFamily: "'Inter', system-ui, sans-serif", color: T.text, paddingBottom: 100 }}>
       {/* top syllabus strip */}
-      <div style={{ background: T.indigoDark, color: "#fff", padding: "10px 16px", fontSize: 13, textAlign: "center" }}>
+      <div style={{ background: T.indigoDark, color: "#fff", padding: "10px 16px", fontSize: fontSize.caption, textAlign: "center" }}>
         {labels.syllabusStripPrefix}
         <Link href="/tnpsc-study-materials" style={{ color: "#fff", textDecoration: "underline", fontWeight: 600 }}>
           {labels.viewSyllabus}
@@ -202,7 +202,7 @@ export default function PyqAnalysisClient({ lang, units, rising }: { lang: "en" 
 
       {/* scope banner */}
       <div style={{ maxWidth: 460, margin: "26px auto 0", padding: "0 16px" }}>
-        <div style={{ background: "#FFF7ED", border: "1px solid #FED7AA", borderRadius: 14, padding: 14, fontSize: 13.5, color: "#9A3412" }}>
+        <div style={{ background: "#FFF7ED", border: "1px solid #FED7AA", borderRadius: 14, padding: 14, fontSize: fontSize.body, color: "#9A3412" }}>
           {labels.scopeBannerLine1}<b>{labels.scopeBannerLine2}</b>{labels.scopeBannerOnly}<br />
           {labels.scopeBannerQuestion}
           <Link href={tamilPaperHref} style={{ color: "#9A3412", textDecoration: "underline", fontWeight: 700 }}>
@@ -213,8 +213,8 @@ export default function PyqAnalysisClient({ lang, units, rising }: { lang: "en" 
 
       {/* donut */}
       <div style={{ maxWidth: 460, margin: "30px auto 0", padding: "0 16px", textAlign: "center" }}>
-        <h2 style={{ fontSize: 19, fontWeight: 800, marginBottom: 4 }}>{labels.donutHeading}</h2>
-        <p style={{ fontSize: 13.5, color: T.textSec, margin: "0 0 14px" }}>{labels.donutSub}</p>
+        <h2 style={{ fontSize: fontSize.heading, fontWeight: 800, marginBottom: 4 }}>{labels.donutHeading}</h2>
+        <p style={{ fontSize: fontSize.body, color: T.textSec, margin: "0 0 14px" }}>{labels.donutSub}</p>
         <Donut units={units} labels={labels} onPick={pick} active={active} />
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "8px 14px", marginTop: 16 }}>
           {units.map((u) => (
@@ -223,7 +223,7 @@ export default function PyqAnalysisClient({ lang, units, rising }: { lang: "en" 
               onClick={() => pick(u.key)}
               style={{
                 border: "none", background: "none", cursor: "pointer",
-                display: "flex", alignItems: "center", gap: 6, fontSize: 12.5,
+                display: "flex", alignItems: "center", gap: 6, fontSize: fontSize.caption,
                 color: active && active !== u.key ? T.textTer : T.text,
               }}
             >
@@ -237,19 +237,19 @@ export default function PyqAnalysisClient({ lang, units, rising }: { lang: "en" 
       {/* rising topics */}
       <div style={{ maxWidth: 460, margin: "34px auto 0", padding: "0 16px" }}>
         <div style={{ background: "linear-gradient(135deg,#1A1A2E,#3D2A5C)", borderRadius: 20, padding: 20, color: "#fff" }}>
-          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, opacity: 0.8, textTransform: "uppercase" }}>{labels.risingEyebrow}</div>
+          <div style={{ fontSize: fontSize.caption, fontWeight: 700, letterSpacing: 1, opacity: 0.8, textTransform: "uppercase" }}>{labels.risingEyebrow}</div>
           <h2 style={{ fontSize: 20, fontWeight: 800, margin: "6px 0 4px", color: "#fff" }}>{labels.risingHeading}</h2>
-          <p style={{ fontSize: 13, opacity: 0.75, margin: "0 0 16px" }}>
+          <p style={{ fontSize: fontSize.body, opacity: 0.75, margin: "0 0 16px" }}>
             {labels.risingSub}
           </p>
           {rising.map((r, i) => (
             <div key={i} style={{ display: "flex", gap: 12, padding: "12px 0", borderTop: i ? "1px solid rgba(255,255,255,.12)" : "none" }}>
               <div style={{ width: 6, borderRadius: 3, background: r.color, flexShrink: 0 }} />
               <div>
-                <div style={{ fontWeight: 700, fontSize: 15 }}>
-                  {r.topic} <span style={{ fontSize: 11, opacity: 0.6, fontWeight: 500 }}>· {r.unit}</span>
+                <div style={{ fontWeight: 700, fontSize: fontSize.bodyLg }}>
+                  {r.topic} <span style={{ fontSize: fontSize.caption, opacity: 0.6, fontWeight: 500 }}>· {r.unit}</span>
                 </div>
-                <div style={{ fontSize: 13, opacity: 0.8, lineHeight: 1.45 }}>{r.note}</div>
+                <div style={{ fontSize: fontSize.body, opacity: 0.8, lineHeight: 1.45 }}>{r.note}</div>
               </div>
             </div>
           ))}
@@ -258,8 +258,8 @@ export default function PyqAnalysisClient({ lang, units, rising }: { lang: "en" 
 
       {/* per-unit cards */}
       <div style={{ maxWidth: 460, margin: "34px auto 0", padding: "0 16px" }}>
-        <h2 style={{ fontSize: 19, fontWeight: 800, marginBottom: 4 }}>{labels.unitsHeading}</h2>
-        <p style={{ fontSize: 13.5, color: T.textSec, margin: "0 0 16px" }}>{labels.unitsSub}</p>
+        <h2 style={{ fontSize: fontSize.heading, fontWeight: 800, marginBottom: 4 }}>{labels.unitsHeading}</h2>
+        <p style={{ fontSize: fontSize.body, color: T.textSec, margin: "0 0 16px" }}>{labels.unitsSub}</p>
         {units.map((u) => (
           <div key={u.key} ref={(el) => { unitRefs.current[u.key] = el; }}>
             <UnitCard u={u} labels={labels} open={open === u.key} onToggle={() => setOpen(open === u.key ? null : u.key)} />
@@ -276,8 +276,8 @@ export default function PyqAnalysisClient({ lang, units, rising }: { lang: "en" 
             boxShadow: shadow.indigo, textDecoration: "none",
           }}
         >
-          <div style={{ fontSize: 19, fontWeight: 800, marginBottom: 6 }}>{labels.ctaHeading}</div>
-          <div style={{ fontSize: 14, opacity: 0.85, marginBottom: 16 }}>{labels.ctaDesc}</div>
+          <div style={{ fontSize: fontSize.heading, fontWeight: 800, marginBottom: 6 }}>{labels.ctaHeading}</div>
+          <div style={{ fontSize: fontSize.body, opacity: 0.85, marginBottom: 16 }}>{labels.ctaDesc}</div>
           <div style={{ background: "#fff", color: T.indigo, fontWeight: 700, padding: "12px 20px", borderRadius: 12, display: "inline-block" }}>
             {labels.ctaButton}
           </div>
