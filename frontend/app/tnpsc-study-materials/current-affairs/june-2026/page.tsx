@@ -11,7 +11,8 @@ import {
 } from "../../../../lib/supabase";
 import { T, shadow } from "../../../../lib/tokens";
 import PdfDownloadButton from "../../../../components/PdfDownloadButton";
-import PdfBranding from "../../../../components/PdfBranding";
+import PdfBranding, { PdfWatermark } from "../../../../components/PdfBranding";
+import { Fragment } from "react";
 
 export const revalidate = 3600;
 
@@ -207,7 +208,12 @@ export default async function CAMonthlyPage() {
               <div style={{ padding: "0 16px 16px" }}>
                 {qs.length === 0
                   ? <p style={{ fontSize: 13, color: T.textSec, padding: "12px 0" }}>Questions loading — check back soon.</p>
-                  : qs.map((q, i) => <QCard key={q.id} q={q} num={i + 1} />)
+                  : qs.map((q, i) => (
+                      <Fragment key={q.id}>
+                        <QCard q={q} num={i + 1} />
+                        <PdfWatermark />
+                      </Fragment>
+                    ))
                 }
                 <div className="no-print" style={{ display: "flex", gap: 8, marginTop: 8 }}>
                   <Link href={`/tnpsc-study-materials/current-affairs/june-2026/${slug}`} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 11, borderRadius: 10, border: `1.5px solid ${col.border}`, background: col.bg, color: col.text, fontSize: 13, fontWeight: 700, textDecoration: "none" }}>

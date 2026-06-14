@@ -11,7 +11,8 @@ import {
 } from "../../../../../lib/supabase";
 import { T, shadow } from "../../../../../lib/tokens";
 import PdfDownloadButton from "../../../../../components/PdfDownloadButton";
-import PdfBranding from "../../../../../components/PdfBranding";
+import PdfBranding, { PdfWatermark } from "../../../../../components/PdfBranding";
+import { Fragment } from "react";
 
 export const revalidate = 86400;
 
@@ -150,7 +151,12 @@ export default async function CAUnitPage({ params }: { params: Promise<{ unit: s
         <div style={{ fontSize: 13, color: T.textSec, marginBottom: 16 }}>All questions with answers &amp; explanations. Mapped to TNPSC Group 4 syllabus Unit {numeral}.</div>
         {questions.length === 0
           ? <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 14, padding: 24, textAlign: "center" as const, color: T.textSec }}>Questions for this unit are being added — check back soon.</div>
-          : questions.map((q, i) => <QCard key={q.id} q={q} num={i + 1} />)
+          : questions.map((q, i) => (
+              <Fragment key={q.id}>
+                <QCard q={q} num={i + 1} />
+                <PdfWatermark />
+              </Fragment>
+            ))
         }
       </div>
 
