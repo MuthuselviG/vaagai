@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { T, shadow } from "../../../lib/tokens";
 import { PAPER_COUNT, MAX_TOPIC_COUNT, TOTAL_MARKS, Unit, RisingTopic } from "./data";
-import { Labels } from "./labels";
+import { EN_LABELS, TA_LABELS, Labels } from "./labels";
 
 /* ---------- Mark Map: 100 tiles that flow into unit blocks ---------- */
 function MarkMap({ units, caption, onPick, active }: { units: Unit[]; caption: string; onPick: (key: string) => void; active: string | null }) {
@@ -155,7 +155,8 @@ function UnitCard({ u, labels, open, onToggle }: { u: Unit; labels: Labels; open
   );
 }
 
-export default function PyqAnalysisClient({ lang, units, rising, labels }: { lang: "en" | "ta"; units: Unit[]; rising: RisingTopic[]; labels: Labels }) {
+export default function PyqAnalysisClient({ lang, units, rising }: { lang: "en" | "ta"; units: Unit[]; rising: RisingTopic[] }) {
+  const labels: Labels = lang === "ta" ? TA_LABELS : EN_LABELS;
   const [active, setActive] = useState<string | null>(null);
   const [open, setOpen] = useState<string | null>(null);
   const unitRefs = useRef<Record<string, HTMLDivElement | null>>({});

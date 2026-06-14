@@ -38,7 +38,7 @@ export default function PyqAnalysisPage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
-      <PyqAnalysisClient lang="en" units={UNITS} rising={RISING} labels={labels} />
+      <PyqAnalysisClient lang="en" units={UNITS} rising={RISING} />
 
       <div style={{ maxWidth: 460, margin: "0 auto", padding: "0 16px 60px", background: T.bg }}>
         {/* Table of contents */}

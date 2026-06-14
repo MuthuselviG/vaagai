@@ -39,7 +39,7 @@ export default function PyqAnalysisTamilPage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
-      <PyqAnalysisClient lang="ta" units={UNITS_TA} rising={RISING_TA} labels={labels} />
+      <PyqAnalysisClient lang="ta" units={UNITS_TA} rising={RISING_TA} />
 
       <div style={{ maxWidth: 460, margin: "0 auto", padding: "0 16px 60px", background: T.bg }}>
         {/* Table of contents */}
