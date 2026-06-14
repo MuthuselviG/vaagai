@@ -3,10 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { T, shadow } from "../../../lib/tokens";
-import { UNITS, RISING, PAPER_COUNT, MAX_TOPIC_COUNT, TOTAL_MARKS, Unit } from "./data";
+import { PAPER_COUNT, MAX_TOPIC_COUNT, TOTAL_MARKS, Unit, RisingTopic } from "./data";
+import { Labels } from "./labels";
 
 /* ---------- Mark Map: 100 tiles that flow into unit blocks ---------- */
-function MarkMap({ onPick, active }: { onPick: (key: string) => void; active: string | null }) {
+function MarkMap({ units, caption, onPick, active }: { units: Unit[]; caption: string; onPick: (key: string) => void; active: string | null }) {
   const [shown, setShown] = useState(0);
   useEffect(() => {
     let i = 0;
@@ -19,7 +20,7 @@ function MarkMap({ onPick, active }: { onPick: (key: string) => void; active: st
   }, []);
 
   const tiles: Unit[] = [];
-  UNITS.forEach((u) => { for (let k = 0; k < u.marks; k++) tiles.push(u); });
+  units.forEach((u) => { for (let k = 0; k < u.marks; k++) tiles.push(u); });
 
   return (
     <div>
@@ -46,21 +47,21 @@ function MarkMap({ onPick, active }: { onPick: (key: string) => void; active: st
         })}
       </div>
       <div style={{ textAlign: "center", marginTop: 12, fontSize: 13, color: T.textSec }}>
-        Each square = 1 mark · tap a colour to jump to that subject
+        {caption}
       </div>
     </div>
   );
 }
 
 /* ---------- Donut (pure SVG) ---------- */
-function Donut({ onPick, active }: { onPick: (key: string) => void; active: string | null }) {
+function Donut({ units, labels, onPick, active }: { units: Unit[]; labels: Labels; onPick: (key: string) => void; active: string | null }) {
   let acc = 0;
   const R = 70;
   const C = 2 * Math.PI * R;
   return (
     <svg viewBox="0 0 180 180" style={{ width: 200, height: 200, display: "block", margin: "0 auto" }}>
       <circle cx="90" cy="90" r={R} fill="none" stroke="#EEF1FA" strokeWidth="26" />
-      {UNITS.map((u) => {
+      {units.map((u) => {
         const frac = u.marks / TOTAL_MARKS;
         const dash = `${frac * C} ${C - frac * C}`;
         const off = -acc * C;
@@ -81,12 +82,12 @@ function Donut({ onPick, active }: { onPick: (key: string) => void; active: stri
         );
       })}
       <text x="90" y="84" textAnchor="middle" fontSize="30" fontWeight="800" fill={T.text}>{TOTAL_MARKS}</text>
-      <text x="90" y="104" textAnchor="middle" fontSize="11" fill={T.textSec}>marks total</text>
+      <text x="90" y="104" textAnchor="middle" fontSize="11" fill={T.textSec}>{labels.marksTotal}</text>
     </svg>
   );
 }
 
-function UnitCard({ u, open, onToggle }: { u: Unit; open: boolean; onToggle: () => void }) {
+function UnitCard({ u, labels, open, onToggle }: { u: Unit; labels: Labels; open: boolean; onToggle: () => void }) {
   return (
     <div
       id={u.key}
@@ -107,7 +108,7 @@ function UnitCard({ u, open, onToggle }: { u: Unit; open: boolean; onToggle: () 
           display: "grid", placeItems: "center", flexShrink: 0, boxShadow: `0 4px 12px ${u.color}55`,
         }}>
           <div style={{ fontSize: 22, fontWeight: 800, lineHeight: 1 }}>{u.marks}</div>
-          <div style={{ fontSize: 9, opacity: 0.9 }}>marks</div>
+          <div style={{ fontSize: 9, opacity: 0.9 }}>{labels.marksUnit}</div>
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontWeight: 700, color: T.text, fontSize: 16 }}>{u.name}</div>
@@ -133,11 +134,11 @@ function UnitCard({ u, open, onToggle }: { u: Unit; open: boolean; onToggle: () 
                       fontSize: 10, background: "#FEF3C7", color: "#B45309",
                       padding: "1px 6px", borderRadius: 6, fontWeight: 700,
                     }}>
-                      RISING
+                      {labels.risingBadge}
                     </span>
                   )}
                 </span>
-                <span style={{ fontSize: 13, color: T.textSec, fontWeight: 700, whiteSpace: "nowrap", marginLeft: 8 }}>{t.n}Q</span>
+                <span style={{ fontSize: 13, color: T.textSec, fontWeight: 700, whiteSpace: "nowrap", marginLeft: 8 }}>{labels.topicCount(t.n)}</span>
               </div>
               <div style={{ height: 9, background: "#F0F2F8", borderRadius: 6, overflow: "hidden" }}>
                 <div style={{
@@ -145,7 +146,7 @@ function UnitCard({ u, open, onToggle }: { u: Unit; open: boolean; onToggle: () 
                   borderRadius: 6, transition: "width .6s",
                 }} />
               </div>
-              <div style={{ fontSize: 11, color: T.textTer, marginTop: 3 }}>asked in {t.papers} of {PAPER_COUNT} papers</div>
+              <div style={{ fontSize: 11, color: T.textTer, marginTop: 3 }}>{labels.papersCaption(t.papers, PAPER_COUNT)}</div>
             </div>
           ))}
         </div>
@@ -154,7 +155,7 @@ function UnitCard({ u, open, onToggle }: { u: Unit; open: boolean; onToggle: () 
   );
 }
 
-export default function PyqAnalysisClient() {
+export default function PyqAnalysisClient({ lang, units, rising, labels }: { lang: "en" | "ta"; units: Unit[]; rising: RisingTopic[]; labels: Labels }) {
   const [active, setActive] = useState<string | null>(null);
   const [open, setOpen] = useState<string | null>(null);
   const unitRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -165,55 +166,57 @@ export default function PyqAnalysisClient() {
     setTimeout(() => unitRefs.current[key]?.scrollIntoView({ behavior: "smooth", block: "center" }), 60);
   };
 
+  const tamilPaperHref = lang === "ta" ? "/pyq/group4" : "/pyq/group4";
+  const ctaHref = "/pyq/group4";
+
   return (
     <div style={{ background: T.bg, fontFamily: "'Inter', system-ui, sans-serif", color: T.text, paddingBottom: 100 }}>
       {/* top syllabus strip */}
       <div style={{ background: T.indigoDark, color: "#fff", padding: "10px 16px", fontSize: 13, textAlign: "center" }}>
-        📋 Based on the latest TNPSC syllabus (revised 2024, for 2026 exam) ·{" "}
+        {labels.syllabusStripPrefix}
         <Link href="/tnpsc-study-materials" style={{ color: "#fff", textDecoration: "underline", fontWeight: 600 }}>
-          View full syllabus →
+          {labels.viewSyllabus}
         </Link>
       </div>
 
       {/* hero */}
       <div style={{ padding: "30px 18px 10px", textAlign: "center", maxWidth: 460, margin: "0 auto" }}>
-        <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, color: T.indigo, textTransform: "uppercase" }}>AI PYQ Analysis</div>
+        <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, color: T.indigo, textTransform: "uppercase" }}>{labels.eyebrow}</div>
         <h1 style={{ fontSize: 27, fontWeight: 800, margin: "8px 0 10px", lineHeight: 1.2 }}>
-          TNPSC Group 4:<br />which topics actually repeat?
+          {labels.h1Line1}<br />{labels.h1Line2}
         </h1>
         <p style={{ fontSize: 15, color: T.textSec, lineHeight: 1.5, margin: "0 0 22px" }}>
-          We read every General Studies &amp; Aptitude question paper from 2012 to 2025 and counted what TNPSC asks again and again,
-          mapped against the latest 2026 syllabus. Study the repeating topics first.
+          {labels.heroDesc}
         </p>
         <div style={{ display: "flex", justifyContent: "center", gap: 22, marginBottom: 26 }}>
-          {[["900", "questions"], ["9", "papers"], ["14", "years"]].map(([n, l]) => (
+          {[["900", labels.statQuestions], ["9", labels.statPapers], ["14", labels.statYears]].map(([n, l]) => (
             <div key={l}>
               <div style={{ fontSize: 26, fontWeight: 800, color: T.indigo }}>{n}</div>
               <div style={{ fontSize: 12, color: T.textSec }}>{l}</div>
             </div>
           ))}
         </div>
-        <MarkMap onPick={pick} active={active} />
+        <MarkMap units={units} caption={labels.markMapCaption} onPick={pick} active={active} />
       </div>
 
       {/* scope banner */}
       <div style={{ maxWidth: 460, margin: "26px auto 0", padding: "0 16px" }}>
         <div style={{ background: "#FFF7ED", border: "1px solid #FED7AA", borderRadius: 14, padding: 14, fontSize: 13.5, color: "#9A3412" }}>
-          This page covers <b>General Studies + Aptitude</b> only.<br />
-          Looking for the Tamil paper (தமிழ்)?{" "}
-          <Link href="/pyq/group4" style={{ color: "#9A3412", textDecoration: "underline", fontWeight: 700 }}>
-            See Tamil paper practice →
+          {labels.scopeBannerLine1}<b>{labels.scopeBannerLine2}</b>{labels.scopeBannerOnly}<br />
+          {labels.scopeBannerQuestion}
+          <Link href={tamilPaperHref} style={{ color: "#9A3412", textDecoration: "underline", fontWeight: 700 }}>
+            {labels.scopeBannerLink}
           </Link>
         </div>
       </div>
 
       {/* donut */}
       <div style={{ maxWidth: 460, margin: "30px auto 0", padding: "0 16px", textAlign: "center" }}>
-        <h2 style={{ fontSize: 19, fontWeight: 800, marginBottom: 4 }}>How the 100 marks are split</h2>
-        <p style={{ fontSize: 13.5, color: T.textSec, margin: "0 0 14px" }}>Tap a slice to explore that subject</p>
-        <Donut onPick={pick} active={active} />
+        <h2 style={{ fontSize: 19, fontWeight: 800, marginBottom: 4 }}>{labels.donutHeading}</h2>
+        <p style={{ fontSize: 13.5, color: T.textSec, margin: "0 0 14px" }}>{labels.donutSub}</p>
+        <Donut units={units} labels={labels} onPick={pick} active={active} />
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "8px 14px", marginTop: 16 }}>
-          {UNITS.map((u) => (
+          {units.map((u) => (
             <button
               key={u.key}
               onClick={() => pick(u.key)}
@@ -233,12 +236,12 @@ export default function PyqAnalysisClient() {
       {/* rising topics */}
       <div style={{ maxWidth: 460, margin: "34px auto 0", padding: "0 16px" }}>
         <div style={{ background: "linear-gradient(135deg,#1A1A2E,#3D2A5C)", borderRadius: 20, padding: 20, color: "#fff" }}>
-          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, opacity: 0.8, textTransform: "uppercase" }}>🔥 New &amp; rising</div>
-          <h2 style={{ fontSize: 20, fontWeight: 800, margin: "6px 0 4px", color: "#fff" }}>Topics TNPSC started asking more</h2>
+          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, opacity: 0.8, textTransform: "uppercase" }}>{labels.risingEyebrow}</div>
+          <h2 style={{ fontSize: 20, fontWeight: 800, margin: "6px 0 4px", color: "#fff" }}>{labels.risingHeading}</h2>
           <p style={{ fontSize: 13, opacity: 0.75, margin: "0 0 16px" }}>
-            The new syllabus added these. They barely appeared before — now they&apos;re regulars. Don&apos;t skip them.
+            {labels.risingSub}
           </p>
-          {RISING.map((r, i) => (
+          {rising.map((r, i) => (
             <div key={i} style={{ display: "flex", gap: 12, padding: "12px 0", borderTop: i ? "1px solid rgba(255,255,255,.12)" : "none" }}>
               <div style={{ width: 6, borderRadius: 3, background: r.color, flexShrink: 0 }} />
               <div>
@@ -254,11 +257,11 @@ export default function PyqAnalysisClient() {
 
       {/* per-unit cards */}
       <div style={{ maxWidth: 460, margin: "34px auto 0", padding: "0 16px" }}>
-        <h2 style={{ fontSize: 19, fontWeight: 800, marginBottom: 4 }}>Every subject, topic by topic</h2>
-        <p style={{ fontSize: 13.5, color: T.textSec, margin: "0 0 16px" }}>Longer bar = asked more often. Start from the top of each list.</p>
-        {UNITS.map((u) => (
+        <h2 style={{ fontSize: 19, fontWeight: 800, marginBottom: 4 }}>{labels.unitsHeading}</h2>
+        <p style={{ fontSize: 13.5, color: T.textSec, margin: "0 0 16px" }}>{labels.unitsSub}</p>
+        {units.map((u) => (
           <div key={u.key} ref={(el) => { unitRefs.current[u.key] = el; }}>
-            <UnitCard u={u} open={open === u.key} onToggle={() => setOpen(open === u.key ? null : u.key)} />
+            <UnitCard u={u} labels={labels} open={open === u.key} onToggle={() => setOpen(open === u.key ? null : u.key)} />
           </div>
         ))}
       </div>
@@ -266,16 +269,16 @@ export default function PyqAnalysisClient() {
       {/* CTA */}
       <div style={{ maxWidth: 460, margin: "30px auto 0", padding: "0 16px" }}>
         <Link
-          href="/pyq/group4"
+          href={ctaHref}
           style={{
             display: "block", background: T.indigo, borderRadius: 20, padding: 24, textAlign: "center", color: "#fff",
             boxShadow: shadow.indigo, textDecoration: "none",
           }}
         >
-          <div style={{ fontSize: 19, fontWeight: 800, marginBottom: 6 }}>Now practice these topics</div>
-          <div style={{ fontSize: 14, opacity: 0.85, marginBottom: 16 }}>Solve real past questions, topic by topic, in Tamil &amp; English.</div>
+          <div style={{ fontSize: 19, fontWeight: 800, marginBottom: 6 }}>{labels.ctaHeading}</div>
+          <div style={{ fontSize: 14, opacity: 0.85, marginBottom: 16 }}>{labels.ctaDesc}</div>
           <div style={{ background: "#fff", color: T.indigo, fontWeight: 700, padding: "12px 20px", borderRadius: 12, display: "inline-block" }}>
-            Start practising →
+            {labels.ctaButton}
           </div>
         </Link>
       </div>
