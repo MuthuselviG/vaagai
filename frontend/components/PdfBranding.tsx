@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 
 const WATERMARK_SVG =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Ctext x='160' y='170' font-size='30' font-family='sans-serif' font-weight='800' fill='%2310204F' fill-opacity='0.08' text-anchor='middle' transform='rotate(-30 160 160)'%3Emcqpalagu.in%3C/text%3E%3C/svg%3E";
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='1131'%3E%3Cg transform='rotate(-25 400 565)' opacity='0.18'%3E%3Cimage href='https://mcqpalagu.in/logo.png' x='270' y='370' width='260' height='173'/%3E%3Ctext x='400' y='620' font-size='60' font-family='sans-serif' font-weight='800' fill='%2310204F' text-anchor='middle'%3Emcqpalagu.in%3C/text%3E%3C/g%3E%3C/svg%3E";
 
 export default function PdfBranding() {
   const pathname = usePathname();
@@ -13,10 +13,18 @@ export default function PdfBranding() {
     <>
       <style>{`
         @media print {
-          html, body {
+          body {
+            position: relative;
+          }
+          .page-watermark {
+            display: block;
+            position: absolute;
+            inset: 0;
             background-image: url("${WATERMARK_SVG}");
             background-repeat: repeat;
-            background-size: 320px 320px;
+            background-size: 800px 1131px;
+            pointer-events: none;
+            z-index: 9999;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
           }
@@ -47,6 +55,7 @@ export default function PdfBranding() {
           }
         }
       `}</style>
+      <div className="page-watermark" style={{ display: "none" }} />
       <div className="pdf-header" style={{ display: "none" }}>
         <img src="/logo.png" alt="mcqpalagu.in" />
         <span>{url}</span>
