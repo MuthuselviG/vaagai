@@ -153,7 +153,7 @@ export default async function CAUnitPage({ params }: { params: Promise<{ unit: s
           : questions.map((q, i) => (
               <div key={q.id}>
                 <QCard q={q} num={i + 1} />
-                {(i + 1) % 4 === 0 && <PdfBrandingStrip />}
+                {(i + 1) % 3 === 0 && <PdfBrandingStrip />}
               </div>
             ))
         }
