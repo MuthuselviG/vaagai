@@ -145,24 +145,32 @@ export default async function StudyMaterialsPage() {
       </div>
 
       <div style={{ padding: "20px 16px 0" }}>
-        <Link
-          href={lang === "ta" ? "/tnpsc-study-materials/ai-tnpsc-group-4-pyq-analysis-tamil" : "/tnpsc-study-materials/ai-tnpsc-group-4-pyq-analysis"}
-          style={{
-            display: "block",
-            background: T.surface,
-            border: `1px solid ${T.border}`,
-            borderRadius: 16, padding: "16px",
-            textDecoration: "none",
-            boxShadow: shadow.sm,
-          }}
-        >
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.6, color: T.indigo, textTransform: "uppercase" as const, marginBottom: 4 }}>
-            {c.pyqEyebrow}
+        <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, overflow: "hidden", boxShadow: shadow.sm }}>
+          <div style={{ background: `linear-gradient(135deg, ${T.indigo} 0%, ${T.indigoDark} 100%)`, padding: "14px 16px 12px" }}>
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.6, color: "rgba(255,255,255,0.75)", textTransform: "uppercase" as const, display: "block", marginBottom: 2 }}>
+              {c.pyqEyebrow}
+            </span>
+            <span style={{ fontFamily: "serif", fontSize: 20, fontWeight: 800, color: "white", display: "block", marginBottom: 2 }}>{c.pyqTitle}</span>
+            <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" as const }}>
+              {["9 Papers", "2012–2025"].map((s) => (
+                <span key={s} style={{ background: "rgba(255,255,255,0.15)", borderRadius: 8, padding: "4px 8px", fontSize: 11, color: "white", fontWeight: 600 }}>{s}</span>
+              ))}
+            </div>
           </div>
-          <div style={{ fontFamily: "serif", fontSize: 16, fontWeight: 700, color: T.text, marginBottom: 6 }}>{c.pyqTitle}</div>
-          <div style={{ fontSize: 13, color: T.textSec, lineHeight: 1.5, marginBottom: 10 }}>{c.pyqDesc}</div>
-          <span style={{ fontSize: 13, fontWeight: 700, color: T.indigo }}>{c.pyqCta}</span>
-        </Link>
+          <div style={{ padding: "12px 16px" }}>
+            <div style={{ fontSize: 13, color: T.textSec, lineHeight: 1.5, marginBottom: 12 }}>{c.pyqDesc}</div>
+            <Link
+              href={lang === "ta" ? "/tnpsc-study-materials/ai-tnpsc-group-4-pyq-analysis-tamil" : "/tnpsc-study-materials/ai-tnpsc-group-4-pyq-analysis"}
+              style={{
+                display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+                background: T.indigo, color: "white", borderRadius: 10, padding: 11,
+                fontSize: 13, fontWeight: 700, textDecoration: "none",
+              }}
+            >
+              {c.pyqCta}
+            </Link>
+          </div>
+        </div>
       </div>
 
       <div style={{ height: 100 }} />

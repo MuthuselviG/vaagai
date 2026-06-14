@@ -182,18 +182,18 @@ export default function PyqAnalysisClient({ lang, units, rising }: { lang: "en" 
 
       {/* hero */}
       <div style={{ padding: "30px 18px 10px", textAlign: "center", maxWidth: 460, margin: "0 auto" }}>
-        <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, color: T.indigo, textTransform: "uppercase" }}>{labels.eyebrow}</div>
-        <h1 style={{ fontSize: 27, fontWeight: 800, margin: "8px 0 10px", lineHeight: 1.2 }}>
+        <div style={{ fontSize: fontSize.caption, fontWeight: 700, letterSpacing: 1, color: T.indigo, textTransform: "uppercase" }}>{labels.eyebrow}</div>
+        <h1 style={{ fontSize: 28, fontWeight: 800, margin: "8px 0 10px", lineHeight: 1.2 }}>
           {labels.h1Line1}<br />{labels.h1Line2}
         </h1>
-        <p style={{ fontSize: 15, color: T.textSec, lineHeight: 1.5, margin: "0 0 22px" }}>
+        <p style={{ fontSize: fontSize.bodyLg, color: T.textSec, lineHeight: 1.5, margin: "0 0 22px" }}>
           {labels.heroDesc}
         </p>
         <div style={{ display: "flex", justifyContent: "center", gap: 22, marginBottom: 26 }}>
           {[["900", labels.statQuestions], ["9", labels.statPapers], ["14", labels.statYears]].map(([n, l]) => (
             <div key={l}>
-              <div style={{ fontSize: 26, fontWeight: 800, color: T.indigo }}>{n}</div>
-              <div style={{ fontSize: 12, color: T.textSec }}>{l}</div>
+              <div style={{ fontSize: 28, fontWeight: 800, color: T.indigo }}>{n}</div>
+              <div style={{ fontSize: fontSize.caption, color: T.textSec }}>{l}</div>
             </div>
           ))}
         </div>
