@@ -26,6 +26,7 @@ const COPY = {
       { n: "4", t: "Figure Counting" },
     ],
     proof: <>40+ aspirants have already attempted this test. Join them 👇</>,
+    videoLabel: "Watch Er.Thangamuthu sir's video",
     practiceAll: "Practice all 50 →",
     readSolutions: "Read solutions",
     introHeading: "About this test",
@@ -54,6 +55,7 @@ const COPY = {
       { n: "4", t: "உருவ எண்ணிக்கை" },
     ],
     proof: <>40+ போட்டியாளர்கள் இந்த தேர்வை ஏற்கனவே முயற்சித்துள்ளனர். நீங்களும் சேருங்கள் 👇</>,
+    videoLabel: "தங்கமுத்து சார் வீடியோவைப் பாருங்கள்",
     practiceAll: "50 கேள்விகளையும் பயிற்சி →",
     readSolutions: "விளக்கங்கள்",
     introHeading: "இந்த தேர்வு பற்றி",
@@ -74,6 +76,7 @@ const COPY = {
 };
 
 const PRACTICE_HREF = `/practice/pack/${TVK_PACK_ID}?pack_id=${TVK_PACK_ID}&label=TVK%20Maths%20Test%2001&creator=${TVK_CREATOR_SLUG}&level=1&offset=0&limit=50`;
+const VIDEO_HREF = "https://youtu.be/LzjO2Ws1oeI";
 
 function QCard({ q, num, lang }: { q: TVKQuestion; num: number; lang: "en" | "ta" }) {
   const isTa = lang === "ta";
@@ -133,8 +136,15 @@ export default async function TVKMathsTest01Page() {
         <h1 style={{ fontFamily: "serif", fontSize: 24, fontWeight: 800, lineHeight: 1.2, letterSpacing: "-0.4px", margin: "14px 0 6px" }}>
           {c.title}
         </h1>
-        <p style={{ fontSize: isTa ? 14 : 13, opacity: 0.85, marginBottom: 18 }}>{c.credit}</p>
-        <div style={{ display: "flex", flexWrap: "wrap" as const, gap: 8, marginTop: 14 }}>
+        <p style={{ fontSize: isTa ? 14 : 13, opacity: 0.85, marginBottom: 10 }}>{c.credit}</p>
+        <a href={VIDEO_HREF} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "rgba(255,255,255,0.14)", border: "1px solid rgba(255,255,255,0.24)", borderRadius: 999, padding: "7px 14px", textDecoration: "none", color: "white", fontSize: 12, fontWeight: 700, marginBottom: 16 }}>
+          <span style={{ width: 18, height: 18, borderRadius: 5, background: "#FF0000", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <span style={{ display: "block", width: 0, height: 0, borderStyle: "solid", borderWidth: "4px 0 4px 6px", borderColor: "transparent transparent transparent white", marginLeft: 1 }} />
+          </span>
+          {c.videoLabel}
+          <span style={{ opacity: 0.8 }}>→</span>
+        </a>
+        <div style={{ display: "flex", flexWrap: "wrap" as const, gap: 8, marginTop: 4 }}>
           {c.topics.map((t) => (
             <div key={t.t} style={{ background: "rgba(255,255,255,0.14)", border: "1px solid rgba(255,255,255,0.22)", padding: "6px 12px", borderRadius: 10, fontSize: 13, fontWeight: 600 }}>
               <span style={{ color: "#FFD24D", fontWeight: 800, marginRight: 4 }}>{t.n}</span>{t.t}
