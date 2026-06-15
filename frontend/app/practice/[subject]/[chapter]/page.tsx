@@ -6,6 +6,7 @@ import { T, shadow } from "../../../../lib/tokens";
 import { fetchQuestionsForLevel, fetchQuestionsForPYQ, fetchQuestionsForPack, fetchQuestionsForCADaily, fetchQuestionsForCAMonthly, supabase, type Question } from "../../../../lib/supabase";
 import { startSession, recordResponse, completeSession } from "../../../../lib/session";
 import QuestionText from "./../../../../components/QuestionText";
+import QuestionImage from "./../../../../components/QuestionImage";
 
 export default function PracticePage() {
   const params = useParams();
@@ -74,6 +75,7 @@ export default function PracticePage() {
   }, [subject, isPYQ, isPack]);
 
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [questionImages, setQuestionImages] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -128,8 +130,25 @@ export default function PracticePage() {
         .then(qs => { setQuestions(qs); setLoading(false); })
         .catch(() => { setError("Could not load current affairs."); setLoading(false); });
     } else if (isPack && packId) {
+      setQuestionImages({});
       fetchQuestionsForPack(packId, lang)
-        .then(qs => { setQuestions(qs); setLoading(false); })
+        .then(qs => {
+          setQuestions(qs);
+          setLoading(false);
+          const ids = qs.map(q => q.id);
+          if (ids.length === 0) return;
+          supabase
+            .from("questions")
+            .select("id, question_image")
+            .in("id", ids)
+            .then(({ data }) => {
+              const images: Record<string, string> = {};
+              for (const row of data ?? []) {
+                if (row.question_image) images[row.id] = row.question_image;
+              }
+              setQuestionImages(images);
+            });
+        })
         .catch(() => { setError("Could not load pack questions."); setLoading(false); });
     } else if (isPYQ) {
       fetchQuestionsForPYQ(pyqYear, pyqGroup, pyqPaper, lang)
@@ -285,6 +304,7 @@ export default function PracticePage() {
             </button>
           </div>
           <QuestionText text={q.question} lang={lang} />
+      <QuestionImage src={questionImages[q.id]} />
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
