@@ -7,6 +7,8 @@
 - **Before any code change, state a short plan and get explicit user approval first.** Don't write or edit code until the user says go ahead.
 - **Every SEO-targeted page (study materials, PYQ analysis, current affairs, etc.) must be linked from `/tnpsc-study-materials` (the study hub).** When adding a new SEO page, add a discoverable link/card for it on the hub (both EN and TA variants) in the same change.
 - **Before building any visual/UI/design change, show the user a screenshot or preview of the design and get explicit approval before writing the final code/commit.** The user is not a designer and can't evaluate a design from a text description — render it and show it first.
+- **Always branch from the latest `main`.** Before starting new work, fetch and create the branch off `origin/main` (not off an old feature branch), so PRs apply cleanly without rebase conflicts.
+- **Every new feature must include unit tests covering it**, added in the same change.
 
 ## What This App Is
 
