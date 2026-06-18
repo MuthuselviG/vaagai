@@ -70,6 +70,21 @@ export default async function RohitKalaiClass6HistoryTerm1Page() {
           </p>
         </section>
 
+        {/* EXPERT INFO */}
+        <Link href="/experts/rohit-kalai" style={{ display: "flex", alignItems: "center", gap: 12, background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: 16, marginTop: 14, textDecoration: "none" }}>
+          <span style={{ flexShrink: 0, width: 46, height: 46, borderRadius: "50%", background: "#7C3AED", color: "white", fontFamily: "serif", fontSize: 18, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            க
+          </span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ fontSize: 15, fontWeight: 700, color: T.text }}>கலையரசன் ரா</span>
+              <span style={{ fontSize: 11, fontWeight: 700, color: T.indigo }}>✓</span>
+            </div>
+            <p style={{ fontSize: 13, color: T.textSec, margin: "2px 0 0", lineHeight: 1.4 }}>🎓 தமிழ மாணவன் தமிழுக்கான மாணவன் 🙏</p>
+          </div>
+          <span style={{ color: T.indigo, fontSize: 18, flexShrink: 0 }}>→</span>
+        </Link>
+
         {/* QUESTIONS */}
         <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "28px 4px 14px" }}>
           <div style={{ fontSize: 13, fontWeight: 800, color: "white", background: T.indigo, width: 26, height: 26, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>Q</div>
