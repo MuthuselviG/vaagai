@@ -16,6 +16,12 @@ const EXAM_LABELS: Record<string, string> = {
   group4: "Group 4", group2: "Group 2", tet: "TET", tnusrb: "TNUSRB",
 };
 
+// Reading-only packs have no MCQ options/correct answers, so they skip the
+// generic practice flow and link straight to their SEO reading page instead.
+const READING_ONLY_PACKS: Record<string, string> = {
+  "a84ca4fc-efe7-45c8-b84d-47647d15cce8": "/tnpsc-study-materials/rohit-kalai/class-6-history-samacheer-kalvi/term-1",
+};
+
 export type PackDetailData = {
   id: string;
   name: string;
@@ -40,8 +46,13 @@ export default function PackDetailClient({ pack }: { pack: PackDetailData }) {
   const gradient = ACCENT_GRADIENTS[creator.accent_color] ?? ACCENT_GRADIENTS.navy;
   const initials = creator.name.charAt(0).toUpperCase();
   const estimatedMins = Math.round((pack.question_count * 30) / 60);
+  const readingHref = READING_ONLY_PACKS[pack.id];
 
   function handleStart() {
+    if (readingHref) {
+      router.push(readingHref);
+      return;
+    }
     router.push(`/practice/pack/${encodeURIComponent(pack.id)}?pack_id=${pack.id}&label=${encodeURIComponent(pack.name)}&creator=${encodeURIComponent(creator.name)}&level=1&offset=0&limit=${pack.question_count}`);
   }
 
@@ -123,7 +134,7 @@ export default function PackDetailClient({ pack }: { pack: PackDetailData }) {
         {/* Start button */}
         <div style={{ padding: "4px 0 48px" }}>
           <button onClick={handleStart} style={{ width: "100%", background: `linear-gradient(135deg, ${T.indigo}, #5062B8)`, border: "none", borderRadius: 16, padding: "17px", color: "#fff", fontSize: 16, fontWeight: 700, cursor: "pointer", boxShadow: shadow.indigo, fontFamily: "inherit" }}>
-            Start Pack →
+            {readingHref ? "Read Q&A →" : "Start Pack →"}
           </button>
         </div>
       </div>
