@@ -62,13 +62,6 @@ export default async function RohitKalaiClass6HistoryTerm1Page() {
       </div>
 
       <div style={{ padding: "0 16px" }}>
-        {/* CTA */}
-        <div style={{ margin: "20px 0 6px" }}>
-          <a href="#q1" style={{ display: "block", textAlign: "center" as const, padding: 15, borderRadius: 14, fontWeight: 800, fontSize: 15, textDecoration: "none", background: T.indigo, color: "white", boxShadow: shadow.indigo }}>
-            படிக்கத் தொடங்கு →
-          </a>
-        </div>
-
         {/* INTRO */}
         <section style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: 18, marginTop: 26 }}>
           <h2 style={{ fontFamily: "serif", fontSize: 19, fontWeight: 700, marginBottom: 8, color: T.indigoDark }}>இந்த தொகுப்பு பற்றி</h2>
