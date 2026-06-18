@@ -28,6 +28,9 @@ const COPY = {
     tvkTitle: "TVK Maths Test 01",
     tvkDesc: "50 solved questions by Er. Thangamuthu — number system, surds, simplification & figure counting.",
     tvkCta: "View & Practice →",
+    historyTitle: "Class 6 History (Samacheer Kalvi) — Term 1",
+    historyDesc: "166 Tamil Q&A by Rohit Kalai, in textbook order — quick revision for TNPSC Group 4.",
+    historyCta: "Read Q&A →",
   },
   ta: {
     title: <>TNPSC <span style={{ color: T.indigo }}>படிப்பகம்</span></>,
@@ -42,6 +45,9 @@ const COPY = {
     tvkTitle: "TVK Maths Test 01",
     tvkDesc: "Er. தங்கமுத்து வழங்கும் 50 தீர்வு கேள்விகள் — எண் அமைப்பு, வர்க்கமூலங்கள், எளிமையாக்கல் & உருவ எண்ணிக்கை.",
     tvkCta: "பார்க்க & பயிற்சி →",
+    historyTitle: "6ஆம் வகுப்பு வரலாறு (சமச்சீர் கல்வி) — Term 1",
+    historyDesc: "கலையரசன் ரா வழங்கும் 166 தமிழ் வினா-விடைகள், பாடப்புத்தக வரிசையில் — TNPSC குரூப் 4க்கு விரைவு திருப்பிப் படிப்பு.",
+    historyCta: "வினா-விடை படிக்க →",
   },
 };
 
@@ -193,6 +199,18 @@ export default async function StudyMaterialsPage() {
           </div>
           <p style={{ fontSize: 13, color: T.textSec, margin: "0 0 8px", lineHeight: 1.45 }}>{c.tvkDesc}</p>
           <span style={{ fontSize: 13, fontWeight: 700, color: T.indigo }}>{c.tvkCta}</span>
+        </Link>
+
+        <Link href="/tnpsc-study-materials/rohit-kalai/class-6-history-samacheer-kalvi/term-1" style={{
+          display: "block", background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16,
+          padding: "14px 16px", textDecoration: "none", marginBottom: 4, boxShadow: shadow.sm,
+        }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+            <span style={{ fontFamily: "serif", fontSize: 15, fontWeight: 700, color: T.text }}>{c.historyTitle}</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: T.indigo, background: T.indigoLight, border: `1px solid ${T.indigoMid}`, padding: "3px 10px", borderRadius: 20 }}>166 Q&A</span>
+          </div>
+          <p style={{ fontSize: 13, color: T.textSec, margin: "0 0 8px", lineHeight: 1.45 }}>{c.historyDesc}</p>
+          <span style={{ fontSize: 13, fontWeight: 700, color: T.indigo }}>{c.historyCta}</span>
         </Link>
       </div>
 
