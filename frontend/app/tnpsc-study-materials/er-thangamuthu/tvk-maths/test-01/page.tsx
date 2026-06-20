@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { T, shadow } from "../../../../../lib/tokens";
 import HomeLangToggle from "../../../../../components/HomeLangToggle";
+import WhatsAppShareButton from "../../../../../components/WhatsAppShareButton";
 import { TVK_TEST01_QUESTIONS, TVK_PACK_ID, TVK_CREATOR_SLUG, TVKQuestion } from "./data";
 
 export const metadata: Metadata = {
@@ -125,6 +126,7 @@ export default async function TVKMathsTest01Page() {
 
   return (
     <>
+      <WhatsAppShareButton title={c.title} context="Er. Thangamuthu" floating />
       {/* HERO */}
       <div style={{ background: `linear-gradient(135deg, ${T.indigo} 0%, ${T.indigoDark} 100%)`, color: "white", borderRadius: "0 0 28px 28px", padding: "16px 16px 34px", position: "relative", overflow: "hidden" }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 10 }}>

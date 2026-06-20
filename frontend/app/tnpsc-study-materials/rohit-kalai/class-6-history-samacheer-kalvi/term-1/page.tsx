@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Metadata } from "next";
 import { T, shadow } from "../../../../../lib/tokens";
+import WhatsAppShareButton from "../../../../../components/WhatsAppShareButton";
 import { fetchRohitKalaiClass6HistoryTerm1, ReadingQA } from "../../../../../lib/supabase";
 
 export const metadata: Metadata = {
@@ -41,6 +42,7 @@ export default async function RohitKalaiClass6HistoryTerm1Page() {
 
   return (
     <>
+      <WhatsAppShareButton title={`வரலாறு 6th Term 1 — ${questions.length} வினா & விடை`} context="கலையரசன் ரா" floating />
       {/* HERO */}
       <div style={{ background: `linear-gradient(135deg, ${T.indigo} 0%, ${T.indigoDark} 100%)`, color: "white", borderRadius: "0 0 28px 28px", padding: "16px 16px 34px", position: "relative", overflow: "hidden" }}>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(255,255,255,0.16)", padding: "5px 12px", borderRadius: 999, fontSize: 11, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase" as const }}>

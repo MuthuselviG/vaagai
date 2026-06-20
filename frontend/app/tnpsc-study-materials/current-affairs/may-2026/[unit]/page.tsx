@@ -12,6 +12,7 @@ import {
 import { T, shadow } from "../../../../../lib/tokens";
 import PdfDownloadButton from "../../../../../components/PdfDownloadButton";
 import PdfBranding, { QuestionWatermark } from "../../../../../components/PdfBranding";
+import WhatsAppShareButton from "../../../../../components/WhatsAppShareButton";
 
 export const revalidate = 86400;
 
@@ -112,6 +113,7 @@ export default async function CAUnitPage({ params }: { params: Promise<{ unit: s
         }
       `}</style>
       <PdfBranding />
+      <WhatsAppShareButton title={`TNPSC ${label.en} Current Affairs May 2026 MCQ`} floating />
       <nav className="no-print" style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: shadow.sm }}>
         <Link href="/tnpsc-study-materials/current-affairs/may-2026" style={{ height: 34, borderRadius: 10, background: T.bg, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 6, padding: "0 12px", textDecoration: "none", color: T.text, fontSize: 13, fontWeight: 600 }}>← படிப்பகம்</Link>
         <Link href={`/tnpsc-study-materials/current-affairs/may-2026-tamil/${unit}`} style={{ background: col.bg, color: col.text, border: `1px solid ${col.border}`, borderRadius: 20, padding: "5px 12px", fontSize: 12, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" as const }}>

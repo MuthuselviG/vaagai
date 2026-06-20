@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { T, shadow, fontSize } from "../../../lib/tokens";
+import WhatsAppShareButton from "../../../components/WhatsAppShareButton";
 import { PAPER_COUNT, MAX_TOPIC_COUNT, TOTAL_MARKS, Unit, RisingTopic } from "./data";
 import { EN_LABELS, TA_LABELS, Labels } from "./labels";
 
@@ -172,6 +173,7 @@ export default function PyqAnalysisClient({ lang, units, rising }: { lang: "en" 
 
   return (
     <div style={{ background: T.bg, fontFamily: "'Inter', system-ui, sans-serif", color: T.text, paddingBottom: 20 }}>
+      <WhatsAppShareButton title={`${labels.h1Line1} ${labels.h1Line2}`} floating />
       {/* top syllabus strip */}
       <div style={{ background: T.indigoDark, color: "#fff", padding: "10px 16px", fontSize: fontSize.caption, textAlign: "center" }}>
         {labels.syllabusStripPrefix}

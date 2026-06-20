@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { T, shadow } from "../../../lib/tokens";
 import { slugify } from "../../../lib/slugify";
+import WhatsAppShareButton from "../../../components/WhatsAppShareButton";
 
 const ACCENT_GRADIENTS: Record<string, string> = {
   yellow: "linear-gradient(135deg, #FFD93D, #FF9500)",
@@ -81,6 +82,7 @@ export default function CreatorProfileClient({ creator, packs }: { creator: Crea
 
   return (
     <div style={{ background: T.bg, maxWidth: 600, margin: "0 auto", width: "100%", minHeight: "100vh" }}>
+      <WhatsAppShareButton title={creator.name} floating />
 
       {/* Top nav */}
       <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "14px 16px", display: "flex", alignItems: "center", gap: 10 }}>
