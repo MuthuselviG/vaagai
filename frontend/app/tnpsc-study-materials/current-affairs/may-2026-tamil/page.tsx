@@ -13,6 +13,7 @@ import {
 } from "../../../../lib/supabase";
 import { T, shadow } from "../../../../lib/tokens";
 import PdfDownloadButton from "../../../../components/PdfDownloadButton";
+import WhatsAppShareButton from "../../../../components/WhatsAppShareButton";
 import PdfBranding, { QuestionWatermark } from "../../../../components/PdfBranding";
 
 export const revalidate = 86400;
@@ -119,9 +120,12 @@ export default async function CAMonthlyTamilPage() {
           <span>›</span>
           <span>மே 2026</span>
         </div>
-        <h1 style={{ fontFamily: "serif", fontSize: 24, fontWeight: 800, color: T.text, lineHeight: 1.25, letterSpacing: "-0.3px", marginBottom: 10 }}>
-          TNPSC Current Affairs May 2026 MCQ in Tamil <span style={{ color: T.indigo }}>(மே நடப்பு நிகழ்வுகள்)</span>
-        </h1>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
+          <h1 style={{ fontFamily: "serif", fontSize: 24, fontWeight: 800, color: T.text, lineHeight: 1.25, letterSpacing: "-0.3px", marginBottom: 10 }}>
+            TNPSC Current Affairs May 2026 MCQ in Tamil <span style={{ color: T.indigo }}>(மே நடப்பு நிகழ்வுகள்)</span>
+          </h1>
+          <WhatsAppShareButton title="TNPSC Current Affairs May 2026 MCQ in Tamil (மே நடப்பு நிகழ்வுகள்)" style={{ marginTop: 2 }} />
+        </div>
         <div style={{ display: "flex", gap: 10, fontSize: 13, color: T.textSec, marginBottom: 20, flexWrap: "wrap" as const }}>
           <span>📅 மே 1–31, 2026</span><span>✅ தினமும் புதுப்பிக்கப்படும்</span><span>🎯 குரூப் 4 &amp; குரூப் 2</span>
         </div>

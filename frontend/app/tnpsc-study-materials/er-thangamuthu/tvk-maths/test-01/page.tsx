@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { T, shadow } from "../../../../../lib/tokens";
 import HomeLangToggle from "../../../../../components/HomeLangToggle";
+import WhatsAppShareButton from "../../../../../components/WhatsAppShareButton";
 import { TVK_TEST01_QUESTIONS, TVK_PACK_ID, TVK_CREATOR_SLUG, TVKQuestion } from "./data";
 
 export const metadata: Metadata = {
@@ -131,7 +132,10 @@ export default async function TVKMathsTest01Page() {
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(255,255,255,0.16)", padding: "5px 12px", borderRadius: 999, fontSize: 11, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase" as const }}>
             {c.eyebrow}
           </span>
-          <HomeLangToggle initialLang={lang} />
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+            <WhatsAppShareButton title={c.title} context="Er. Thangamuthu" size={32} />
+            <HomeLangToggle initialLang={lang} />
+          </div>
         </div>
         <h1 style={{ fontFamily: "serif", fontSize: 24, fontWeight: 800, lineHeight: 1.2, letterSpacing: "-0.4px", margin: "14px 0 6px" }}>
           {c.title}

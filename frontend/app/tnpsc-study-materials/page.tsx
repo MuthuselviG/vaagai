@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { T, shadow } from "../../lib/tokens";
 import HomeLangToggle from "../../components/HomeLangToggle";
+import WhatsAppShareButton from "../../components/WhatsAppShareButton";
 import { fetchCAAvailableMonths } from "../../lib/supabase";
 
 export const metadata: Metadata = {
@@ -94,7 +95,10 @@ export default async function StudyMaterialsPage() {
           <h1 style={{ fontFamily: "serif", fontSize: 24, fontWeight: 800, color: T.text, lineHeight: 1.15, letterSpacing: "-0.5px", margin: 0 }}>
             {c.title}
           </h1>
-          <HomeLangToggle initialLang={lang} />
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+            <WhatsAppShareButton title={lang === "ta" ? "TNPSC படிப்பகம்" : "TNPSC Study Materials"} size={32} />
+            <HomeLangToggle initialLang={lang} />
+          </div>
         </div>
         <p style={{ fontSize: 13, color: T.textSec, lineHeight: 1.45, margin: 0 }}>
           {c.subtitle}

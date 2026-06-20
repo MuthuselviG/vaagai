@@ -12,6 +12,7 @@ import {
 import { T, shadow } from "../../../../lib/tokens";
 import PdfDownloadButton from "../../../../components/PdfDownloadButton";
 import PdfBranding, { QuestionWatermark } from "../../../../components/PdfBranding";
+import WhatsAppShareButton from "../../../../components/WhatsAppShareButton";
 
 export const revalidate = 3600;
 
@@ -139,9 +140,12 @@ export default async function CAMonthlyPage() {
           <span>›</span>
           <span>June 2026</span>
         </div>
-        <h1 style={{ fontFamily: "serif", fontSize: 26, fontWeight: 800, color: T.text, lineHeight: 1.2, letterSpacing: "-0.5px", marginBottom: 10 }}>
-          TNPSC Current Affairs <span style={{ color: T.indigo }}>June 2026</span> MCQ Questions
-        </h1>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
+          <h1 style={{ fontFamily: "serif", fontSize: 26, fontWeight: 800, color: T.text, lineHeight: 1.2, letterSpacing: "-0.5px", marginBottom: 10 }}>
+            TNPSC Current Affairs <span style={{ color: T.indigo }}>June 2026</span> MCQ Questions
+          </h1>
+          <WhatsAppShareButton title="TNPSC Current Affairs June 2026 MCQ Questions" style={{ marginTop: 2 }} />
+        </div>
         <div style={{ display: "flex", gap: 10, fontSize: 13, color: T.textSec, marginBottom: 20, flexWrap: "wrap" as const }}>
           <span>📅 June 1–30, 2026</span><span>✅ Daily Updated</span><span>🎯 Group 4 &amp; Group 2</span>
         </div>

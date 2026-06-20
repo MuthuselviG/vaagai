@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { T, shadow, fontSize } from "../../../lib/tokens";
+import WhatsAppShareButton from "../../../components/WhatsAppShareButton";
 import { PAPER_COUNT, MAX_TOPIC_COUNT, TOTAL_MARKS, Unit, RisingTopic } from "./data";
 import { EN_LABELS, TA_LABELS, Labels } from "./labels";
 
@@ -182,7 +183,10 @@ export default function PyqAnalysisClient({ lang, units, rising }: { lang: "en" 
 
       {/* hero */}
       <div style={{ padding: "30px 18px 10px", textAlign: "center", maxWidth: 460, margin: "0 auto" }}>
-        <div style={{ fontSize: fontSize.caption, fontWeight: 700, letterSpacing: 1, color: T.indigo, textTransform: "uppercase" }}>{labels.eyebrow}</div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+          <div style={{ fontSize: fontSize.caption, fontWeight: 700, letterSpacing: 1, color: T.indigo, textTransform: "uppercase" }}>{labels.eyebrow}</div>
+          <WhatsAppShareButton title={`${labels.h1Line1} ${labels.h1Line2}`} size={32} />
+        </div>
         <h1 style={{ fontSize: 28, fontWeight: 800, margin: "8px 0 10px", lineHeight: 1.2 }}>
           {labels.h1Line1}<br />{labels.h1Line2}
         </h1>

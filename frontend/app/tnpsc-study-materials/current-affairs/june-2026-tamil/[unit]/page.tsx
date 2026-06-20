@@ -10,6 +10,7 @@ import {
 import { T, shadow } from "../../../../../lib/tokens";
 import PdfDownloadButton from "../../../../../components/PdfDownloadButton";
 import PdfBranding, { QuestionWatermark } from "../../../../../components/PdfBranding";
+import WhatsAppShareButton from "../../../../../components/WhatsAppShareButton";
 
 export const revalidate = 3600;
 
@@ -124,9 +125,12 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
         <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: col.bg, border: `1px solid ${col.border}`, color: col.text, fontSize: 11, fontWeight: 700, padding: "4px 12px", borderRadius: 20, marginBottom: 12, textTransform: "uppercase" as const, letterSpacing: "0.4px" }}>
           {label.icon} அலகு {numeral}
         </div>
-        <h1 style={{ fontFamily: "serif", fontSize: 22, fontWeight: 800, color: T.text, lineHeight: 1.25, letterSpacing: "-0.3px", marginBottom: 10 }}>
-          TNPSC <span style={{ color: col.text }}>{label.ta}</span> நடப்பு நிகழ்வுகள் ஜூன் 2026 MCQ
-        </h1>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
+          <h1 style={{ fontFamily: "serif", fontSize: 22, fontWeight: 800, color: T.text, lineHeight: 1.25, letterSpacing: "-0.3px", marginBottom: 10 }}>
+            TNPSC <span style={{ color: col.text }}>{label.ta}</span> நடப்பு நிகழ்வுகள் ஜூன் 2026 MCQ
+          </h1>
+          <WhatsAppShareButton title={`TNPSC ${label.ta} நடப்பு நிகழ்வுகள் ஜூன் 2026 MCQ`} style={{ marginTop: 2 }} />
+        </div>
         <div style={{ display: "flex", gap: 10, fontSize: 13, color: T.textSec, marginBottom: 20, flexWrap: "wrap" as const }}>
           <span>📅 ஜூன் 2026</span><span>🎯 குரூப் 4 &amp; குரூப் 2</span>
         </div>

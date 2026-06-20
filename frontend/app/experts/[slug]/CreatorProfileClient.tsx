@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { T, shadow } from "../../../lib/tokens";
 import { slugify } from "../../../lib/slugify";
+import WhatsAppShareButton from "../../../components/WhatsAppShareButton";
 
 const ACCENT_GRADIENTS: Record<string, string> = {
   yellow: "linear-gradient(135deg, #FFD93D, #FF9500)",
@@ -110,7 +111,10 @@ export default function CreatorProfileClient({ creator, packs }: { creator: Crea
                 )}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 18, fontWeight: 900, color: T.text, letterSpacing: "-0.3px", lineHeight: 1.2 }}>{creator.name}</div>
+                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
+                  <div style={{ fontSize: 18, fontWeight: 900, color: T.text, letterSpacing: "-0.3px", lineHeight: 1.2 }}>{creator.name}</div>
+                  <WhatsAppShareButton title={creator.name} />
+                </div>
                 <div style={{ fontSize: 12, fontWeight: 600, color: T.textSec, marginTop: 3 }}>
                   {creator.type === "academy" ? "Academy" : "வழிகாட்டி"}
                 </div>
