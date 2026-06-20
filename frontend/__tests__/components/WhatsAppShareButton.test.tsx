@@ -55,4 +55,29 @@ describe("WhatsAppShareButton", () => {
     );
     openSpy.mockRestore();
   });
+
+  it("defaults to a 36px circle when not floating", () => {
+    render(<WhatsAppShareButton title="Pack" />);
+    const button = screen.getByRole("button", { name: "Share on WhatsApp" });
+    expect(button).toHaveStyle({ width: "36px", height: "36px" });
+  });
+
+  it("defaults to a 64px fixed circle pinned to the bottom-right when floating", () => {
+    render(<WhatsAppShareButton title="Pack" floating />);
+    const button = screen.getByRole("button", { name: "Share on WhatsApp" });
+    expect(button).toHaveStyle({
+      width: "64px",
+      height: "64px",
+      position: "fixed",
+      bottom: "22px",
+      right: "18px",
+      zIndex: 1000,
+    });
+  });
+
+  it("lets an explicit size override the floating default", () => {
+    render(<WhatsAppShareButton title="Pack" floating size={48} />);
+    const button = screen.getByRole("button", { name: "Share on WhatsApp" });
+    expect(button).toHaveStyle({ width: "48px", height: "48px", position: "fixed" });
+  });
 });

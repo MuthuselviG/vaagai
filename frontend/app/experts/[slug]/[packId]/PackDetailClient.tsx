@@ -48,6 +48,7 @@ export default function PackDetailClient({ pack }: { pack: PackDetailData }) {
 
   return (
     <div style={{ background: T.bg, maxWidth: 600, margin: "0 auto", width: "100%" }}>
+      <WhatsAppShareButton title={pack.name} context={creator.name} floating />
 
       {/* Top nav */}
       <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "14px 16px", display: "flex", alignItems: "center", gap: 10 }}>
@@ -69,10 +70,7 @@ export default function PackDetailClient({ pack }: { pack: PackDetailData }) {
             <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#FFD93D" }} />
             {pack.subject ?? "General"}{pack.exams && pack.exams.length > 0 ? ` · ${EXAM_LABELS[pack.exams[0]] ?? pack.exams[0]}` : ""}
           </div>
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 14, position: "relative", zIndex: 1 }}>
-            <div style={{ fontSize: 20, fontWeight: 900, color: "#fff", lineHeight: 1.3 }}>{pack.name}</div>
-            <WhatsAppShareButton title={pack.name} context={creator.name} style={{ marginTop: 2 }} />
-          </div>
+          <div style={{ fontSize: 20, fontWeight: 900, color: "#fff", lineHeight: 1.3, marginBottom: 14, position: "relative", zIndex: 1 }}>{pack.name}</div>
           <div style={{ display: "flex", gap: 10, position: "relative", zIndex: 1 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 5, background: "rgba(255,255,255,0.1)", borderRadius: 10, padding: "6px 12px", fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.85)" }}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="2.5" strokeLinecap="round"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>

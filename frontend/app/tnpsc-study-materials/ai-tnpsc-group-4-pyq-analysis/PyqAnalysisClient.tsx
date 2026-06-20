@@ -173,6 +173,7 @@ export default function PyqAnalysisClient({ lang, units, rising }: { lang: "en" 
 
   return (
     <div style={{ background: T.bg, fontFamily: "'Inter', system-ui, sans-serif", color: T.text, paddingBottom: 20 }}>
+      <WhatsAppShareButton title={`${labels.h1Line1} ${labels.h1Line2}`} floating />
       {/* top syllabus strip */}
       <div style={{ background: T.indigoDark, color: "#fff", padding: "10px 16px", fontSize: fontSize.caption, textAlign: "center" }}>
         {labels.syllabusStripPrefix}
@@ -183,10 +184,7 @@ export default function PyqAnalysisClient({ lang, units, rising }: { lang: "en" 
 
       {/* hero */}
       <div style={{ padding: "30px 18px 10px", textAlign: "center", maxWidth: 460, margin: "0 auto" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-          <div style={{ fontSize: fontSize.caption, fontWeight: 700, letterSpacing: 1, color: T.indigo, textTransform: "uppercase" }}>{labels.eyebrow}</div>
-          <WhatsAppShareButton title={`${labels.h1Line1} ${labels.h1Line2}`} size={32} />
-        </div>
+        <div style={{ fontSize: fontSize.caption, fontWeight: 700, letterSpacing: 1, color: T.indigo, textTransform: "uppercase" }}>{labels.eyebrow}</div>
         <h1 style={{ fontSize: 28, fontWeight: 800, margin: "8px 0 10px", lineHeight: 1.2 }}>
           {labels.h1Line1}<br />{labels.h1Line2}
         </h1>

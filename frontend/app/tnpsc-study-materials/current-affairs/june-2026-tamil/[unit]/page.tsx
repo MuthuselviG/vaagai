@@ -107,6 +107,7 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
         }
       `}</style>
       <PdfBranding />
+      <WhatsAppShareButton title={`TNPSC ${label.ta} நடப்பு நிகழ்வுகள் ஜூன் 2026 MCQ`} floating />
       <nav className="no-print" style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: shadow.sm }}>
         <Link href="/tnpsc-study-materials/current-affairs/june-2026-tamil" style={{ height: 34, borderRadius: 10, background: T.bg, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 6, padding: "0 12px", textDecoration: "none", color: T.text, fontSize: 13, fontWeight: 600 }}>← படிப்பகம்</Link>
         <Link href={`/tnpsc-study-materials/current-affairs/june-2026/${unit}`} style={{ background: T.greenBg, color: T.green, border: `1px solid ${T.greenBorder}`, borderRadius: 20, padding: "5px 12px", fontSize: 12, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" as const }}>
@@ -125,12 +126,9 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
         <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: col.bg, border: `1px solid ${col.border}`, color: col.text, fontSize: 11, fontWeight: 700, padding: "4px 12px", borderRadius: 20, marginBottom: 12, textTransform: "uppercase" as const, letterSpacing: "0.4px" }}>
           {label.icon} அலகு {numeral}
         </div>
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
-          <h1 style={{ fontFamily: "serif", fontSize: 22, fontWeight: 800, color: T.text, lineHeight: 1.25, letterSpacing: "-0.3px", marginBottom: 10 }}>
-            TNPSC <span style={{ color: col.text }}>{label.ta}</span> நடப்பு நிகழ்வுகள் ஜூன் 2026 MCQ
-          </h1>
-          <WhatsAppShareButton title={`TNPSC ${label.ta} நடப்பு நிகழ்வுகள் ஜூன் 2026 MCQ`} style={{ marginTop: 2 }} />
-        </div>
+        <h1 style={{ fontFamily: "serif", fontSize: 22, fontWeight: 800, color: T.text, lineHeight: 1.25, letterSpacing: "-0.3px", marginBottom: 10 }}>
+          TNPSC <span style={{ color: col.text }}>{label.ta}</span> நடப்பு நிகழ்வுகள் ஜூன் 2026 MCQ
+        </h1>
         <div style={{ display: "flex", gap: 10, fontSize: 13, color: T.textSec, marginBottom: 20, flexWrap: "wrap" as const }}>
           <span>📅 ஜூன் 2026</span><span>🎯 குரூப் 4 &amp; குரூப் 2</span>
         </div>

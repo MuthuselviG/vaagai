@@ -126,16 +126,14 @@ export default async function TVKMathsTest01Page() {
 
   return (
     <>
+      <WhatsAppShareButton title={c.title} context="Er. Thangamuthu" floating />
       {/* HERO */}
       <div style={{ background: `linear-gradient(135deg, ${T.indigo} 0%, ${T.indigoDark} 100%)`, color: "white", borderRadius: "0 0 28px 28px", padding: "16px 16px 34px", position: "relative", overflow: "hidden" }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 10 }}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(255,255,255,0.16)", padding: "5px 12px", borderRadius: 999, fontSize: 11, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase" as const }}>
             {c.eyebrow}
           </span>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-            <WhatsAppShareButton title={c.title} context="Er. Thangamuthu" size={32} />
-            <HomeLangToggle initialLang={lang} />
-          </div>
+          <HomeLangToggle initialLang={lang} />
         </div>
         <h1 style={{ fontFamily: "serif", fontSize: 24, fontWeight: 800, lineHeight: 1.2, letterSpacing: "-0.4px", margin: "14px 0 6px" }}>
           {c.title}

@@ -103,6 +103,7 @@ export default async function CAMonthlyTamilPage() {
         }
       `}</style>
       <PdfBranding />
+      <WhatsAppShareButton title="TNPSC Current Affairs June 2026 MCQ in Tamil (ஜூன் நடப்பு நிகழ்வுகள்)" floating />
       <nav className="no-print" style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: shadow.sm }}>
         <Link href="/tnpsc-study-materials" style={{ height: 34, borderRadius: 10, background: T.bg, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 6, padding: "0 12px", textDecoration: "none", color: T.text, fontSize: 13, fontWeight: 600 }}>← படிப்பகம்</Link>
         <Link href="/tnpsc-study-materials/current-affairs/june-2026" style={{ background: T.greenBg, color: T.green, border: `1px solid ${T.greenBorder}`, borderRadius: 20, padding: "5px 12px", fontSize: 12, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" as const }}>
@@ -118,12 +119,9 @@ export default async function CAMonthlyTamilPage() {
           <span>›</span>
           <span>ஜூன் 2026</span>
         </div>
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
-          <h1 style={{ fontFamily: "serif", fontSize: 24, fontWeight: 800, color: T.text, lineHeight: 1.25, letterSpacing: "-0.3px", marginBottom: 10 }}>
-            TNPSC Current Affairs June 2026 MCQ in Tamil <span style={{ color: T.indigo }}>(ஜூன் நடப்பு நிகழ்வுகள்)</span>
-          </h1>
-          <WhatsAppShareButton title="TNPSC Current Affairs June 2026 MCQ in Tamil (ஜூன் நடப்பு நிகழ்வுகள்)" style={{ marginTop: 2 }} />
-        </div>
+        <h1 style={{ fontFamily: "serif", fontSize: 24, fontWeight: 800, color: T.text, lineHeight: 1.25, letterSpacing: "-0.3px", marginBottom: 10 }}>
+          TNPSC Current Affairs June 2026 MCQ in Tamil <span style={{ color: T.indigo }}>(ஜூன் நடப்பு நிகழ்வுகள்)</span>
+        </h1>
         <div style={{ display: "flex", gap: 10, fontSize: 13, color: T.textSec, marginBottom: 20, flexWrap: "wrap" as const }}>
           <span>📅 ஜூன் 1–30, 2026</span><span>✅ தினமும் புதுப்பிக்கப்படும்</span><span>🎯 குரூப் 4 &amp; குரூப் 2</span>
         </div>

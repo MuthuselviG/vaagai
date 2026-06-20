@@ -125,6 +125,7 @@ export default async function CAMonthlyPage() {
         }
       `}</style>
       <PdfBranding />
+      <WhatsAppShareButton title="TNPSC Current Affairs June 2026 MCQ Questions" floating />
       <nav className="no-print" style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: shadow.sm }}>
         <Link href="/tnpsc-study-materials" style={{ height: 34, borderRadius: 10, background: T.bg, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 6, padding: "0 12px", textDecoration: "none", color: T.text, fontSize: 13, fontWeight: 600 }}>← படிப்பகம்</Link>
         <Link href="/tnpsc-study-materials/current-affairs/june-2026-tamil" style={{ background: T.indigoLight, color: T.indigo, border: `1px solid ${T.indigoMid}`, borderRadius: 20, padding: "5px 12px", fontSize: 12, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" as const }}>
@@ -140,12 +141,9 @@ export default async function CAMonthlyPage() {
           <span>›</span>
           <span>June 2026</span>
         </div>
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
-          <h1 style={{ fontFamily: "serif", fontSize: 26, fontWeight: 800, color: T.text, lineHeight: 1.2, letterSpacing: "-0.5px", marginBottom: 10 }}>
-            TNPSC Current Affairs <span style={{ color: T.indigo }}>June 2026</span> MCQ Questions
-          </h1>
-          <WhatsAppShareButton title="TNPSC Current Affairs June 2026 MCQ Questions" style={{ marginTop: 2 }} />
-        </div>
+        <h1 style={{ fontFamily: "serif", fontSize: 26, fontWeight: 800, color: T.text, lineHeight: 1.2, letterSpacing: "-0.5px", marginBottom: 10 }}>
+          TNPSC Current Affairs <span style={{ color: T.indigo }}>June 2026</span> MCQ Questions
+        </h1>
         <div style={{ display: "flex", gap: 10, fontSize: 13, color: T.textSec, marginBottom: 20, flexWrap: "wrap" as const }}>
           <span>📅 June 1–30, 2026</span><span>✅ Daily Updated</span><span>🎯 Group 4 &amp; Group 2</span>
         </div>

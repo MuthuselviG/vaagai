@@ -42,17 +42,15 @@ export default async function RohitKalaiClass6HistoryTerm1Page() {
 
   return (
     <>
+      <WhatsAppShareButton title={`வரலாறு 6th Term 1 — ${questions.length} வினா & விடை`} context="கலையரசன் ரா" floating />
       {/* HERO */}
       <div style={{ background: `linear-gradient(135deg, ${T.indigo} 0%, ${T.indigoDark} 100%)`, color: "white", borderRadius: "0 0 28px 28px", padding: "16px 16px 34px", position: "relative", overflow: "hidden" }}>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(255,255,255,0.16)", padding: "5px 12px", borderRadius: 999, fontSize: 11, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase" as const }}>
           🏺 கலையரசன் ரா · Class 6 History
         </span>
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, margin: "14px 0 6px" }}>
-          <h1 style={{ fontFamily: "serif", fontSize: 24, fontWeight: 800, lineHeight: 1.2, letterSpacing: "-0.4px", margin: 0 }}>
-            வரலாறு 6th Term 1 — {questions.length} வினா & விடை
-          </h1>
-          <WhatsAppShareButton title={`வரலாறு 6th Term 1 — ${questions.length} வினா & விடை`} context="கலையரசன் ரா" size={32} style={{ marginTop: 2 }} />
-        </div>
+        <h1 style={{ fontFamily: "serif", fontSize: 24, fontWeight: 800, lineHeight: 1.2, letterSpacing: "-0.4px", margin: "14px 0 6px" }}>
+          வரலாறு 6th Term 1 — {questions.length} வினா & விடை
+        </h1>
         <p style={{ fontSize: 14, opacity: 0.85, marginBottom: 16 }}>
           வழங்குபவர்: <b style={{ color: "#FFD24D" }}>கலையரசன் ரா</b> · Samacheer Kalvi
         </p>

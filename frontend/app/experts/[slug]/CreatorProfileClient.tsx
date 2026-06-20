@@ -82,6 +82,7 @@ export default function CreatorProfileClient({ creator, packs }: { creator: Crea
 
   return (
     <div style={{ background: T.bg, maxWidth: 600, margin: "0 auto", width: "100%", minHeight: "100vh" }}>
+      <WhatsAppShareButton title={creator.name} floating />
 
       {/* Top nav */}
       <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "14px 16px", display: "flex", alignItems: "center", gap: 10 }}>
@@ -111,10 +112,7 @@ export default function CreatorProfileClient({ creator, packs }: { creator: Crea
                 )}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
-                  <div style={{ fontSize: 18, fontWeight: 900, color: T.text, letterSpacing: "-0.3px", lineHeight: 1.2 }}>{creator.name}</div>
-                  <WhatsAppShareButton title={creator.name} />
-                </div>
+                <div style={{ fontSize: 18, fontWeight: 900, color: T.text, letterSpacing: "-0.3px", lineHeight: 1.2 }}>{creator.name}</div>
                 <div style={{ fontSize: 12, fontWeight: 600, color: T.textSec, marginTop: 3 }}>
                   {creator.type === "academy" ? "Academy" : "வழிகாட்டி"}
                 </div>

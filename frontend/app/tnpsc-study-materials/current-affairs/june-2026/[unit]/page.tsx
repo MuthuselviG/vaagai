@@ -111,6 +111,7 @@ export default async function CAUnitPage({ params }: { params: Promise<{ unit: s
         }
       `}</style>
       <PdfBranding />
+      <WhatsAppShareButton title={`TNPSC ${label.en} Current Affairs June 2026 MCQ`} floating />
       <nav className="no-print" style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: shadow.sm }}>
         <Link href="/tnpsc-study-materials/current-affairs/june-2026" style={{ height: 34, borderRadius: 10, background: T.bg, border: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 6, padding: "0 12px", textDecoration: "none", color: T.text, fontSize: 13, fontWeight: 600 }}>← June 2026</Link>
         <Link href={`/tnpsc-study-materials/current-affairs/june-2026-tamil/${unit}`} style={{ background: col.bg, color: col.text, border: `1px solid ${col.border}`, borderRadius: 20, padding: "5px 12px", fontSize: 12, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" as const }}>
@@ -129,12 +130,9 @@ export default async function CAUnitPage({ params }: { params: Promise<{ unit: s
         <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: col.bg, border: `1px solid ${col.border}`, color: col.text, fontSize: 11, fontWeight: 700, padding: "4px 12px", borderRadius: 20, marginBottom: 12, textTransform: "uppercase" as const, letterSpacing: "0.4px" }}>
           {label.icon} Unit {numeral}
         </div>
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
-          <h1 style={{ fontFamily: "serif", fontSize: 24, fontWeight: 800, color: T.text, lineHeight: 1.2, letterSpacing: "-0.4px", marginBottom: 10 }}>
-            TNPSC <span style={{ color: col.text }}>{label.en}</span> Current Affairs June 2026 MCQ
-          </h1>
-          <WhatsAppShareButton title={`TNPSC ${label.en} Current Affairs June 2026 MCQ`} style={{ marginTop: 2 }} />
-        </div>
+        <h1 style={{ fontFamily: "serif", fontSize: 24, fontWeight: 800, color: T.text, lineHeight: 1.2, letterSpacing: "-0.4px", marginBottom: 10 }}>
+          TNPSC <span style={{ color: col.text }}>{label.en}</span> Current Affairs June 2026 MCQ
+        </h1>
         <div style={{ display: "flex", gap: 10, fontSize: 13, color: T.textSec, marginBottom: 20, flexWrap: "wrap" as const }}>
           <span>📅 June 2026</span><span>🎯 Group 4 &amp; Group 2</span>
         </div>
