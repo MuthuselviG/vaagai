@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import CreatorProfileClient, { type CreatorData, type PackData } from "./CreatorProfileClient";
 
+export const dynamic = "force-dynamic";
+
 function makeSupabase() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

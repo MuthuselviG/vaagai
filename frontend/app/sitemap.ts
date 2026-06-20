@@ -49,6 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/mock`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
     { url: `${BASE}/experts`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
     { url: `${BASE}/tnpsc-study-materials/er-thangamuthu/tvk-maths/test-01`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+    { url: `${BASE}/tnpsc-study-materials/daily-gk-thoughts/june-2026`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     ...monthPages,
   ];
 }
