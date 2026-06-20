@@ -68,13 +68,6 @@ export default async function DailyGKThoughtsJune2026Page() {
         <p style={{ fontSize: 14, opacity: 0.85, marginBottom: 16 }}>
           வழங்குபவர்: <b style={{ color: "#FFD24D" }}>Daily GK Thoughts</b> · தினசரி பொது அறிவு
         </p>
-        <div style={{ display: "flex", flexWrap: "wrap" as const, gap: 8, marginTop: 4 }}>
-          {["ஜூன் 2026", `${questions.length} Q&A`, "முக்கிய தினங்கள்"].map((s) => (
-            <div key={s} style={{ background: "rgba(255,255,255,0.14)", border: "1px solid rgba(255,255,255,0.22)", padding: "6px 12px", borderRadius: 10, fontSize: 13, fontWeight: 600 }}>
-              {s}
-            </div>
-          ))}
-        </div>
       </div>
 
       <div style={{ padding: "0 16px" }}>
