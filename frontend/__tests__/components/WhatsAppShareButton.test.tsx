@@ -62,12 +62,12 @@ describe("WhatsAppShareButton", () => {
     expect(button).toHaveStyle({ width: "36px", height: "36px" });
   });
 
-  it("defaults to a 64px fixed circle pinned to the vertical center of the right edge when floating", () => {
+  it("defaults to a 56px fixed circle pinned to the vertical center of the right edge when floating", () => {
     render(<WhatsAppShareButton title="Pack" floating />);
     const button = screen.getByRole("button", { name: "Share on WhatsApp" });
     expect(button).toHaveStyle({
-      width: "64px",
-      height: "64px",
+      width: "56px",
+      height: "56px",
       position: "fixed",
       top: "50%",
       right: "18px",

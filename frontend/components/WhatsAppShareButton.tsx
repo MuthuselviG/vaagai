@@ -34,7 +34,7 @@ export default function WhatsAppShareButton({
   floating?: boolean;
   style?: CSSProperties;
 }) {
-  const resolvedSize = size ?? (floating ? 64 : 36);
+  const resolvedSize = size ?? (floating ? 56 : 36);
 
   function handleClick() {
     const shareUrl = buildWhatsAppShareUrl({ title, context, url: window.location.href });
