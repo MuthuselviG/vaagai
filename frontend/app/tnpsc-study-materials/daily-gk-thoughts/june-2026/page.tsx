@@ -7,9 +7,9 @@ const PACK_ID = "02d15d29-ac1f-419b-bdce-5dd5e743e96b";
 const CREATOR_SLUG = "daily-gk-thoughts";
 
 export const metadata: Metadata = {
-  title: "Daily GK Thoughts — June 2026 — 85 Q&A | TNPSC GK Practice",
+  title: "Daily GK Thoughts — June 2026 Edition | TNPSC GK Practice",
   description:
-    "Daily GK Thoughts (June 2026) — 85 Tamil general knowledge questions & answers on important days and key facts, by Daily GK Thoughts. Free TNPSC Group 4 practice with answers and explanations.",
+    "Daily GK Thoughts (June 2026) — Tamil general knowledge questions & answers on important days and key facts, by Daily GK Thoughts. Free TNPSC Group 4 practice with answers and explanations.",
   alternates: {
     canonical: "https://mcqpalagu.in/tnpsc-study-materials/daily-gk-thoughts/june-2026",
   },
