@@ -31,6 +31,9 @@ const COPY = {
     historyTitle: "Class 6 History (Samacheer Kalvi) — Term 1",
     historyDesc: "166 Tamil Q&A by Rohit Kalai, in textbook order — quick revision for TNPSC Group 4.",
     historyCta: "Read Q&A →",
+    gkTitle: "Daily GK Thoughts — June 2026",
+    gkDesc: "85 Tamil GK Q&A by Daily GK Thoughts — important days, facts & more, with practice mode.",
+    gkCta: "Read & Practice →",
   },
   ta: {
     title: <>TNPSC <span style={{ color: T.indigo }}>படிப்பகம்</span></>,
@@ -48,6 +51,9 @@ const COPY = {
     historyTitle: "6ஆம் வகுப்பு வரலாறு (சமச்சீர் கல்வி) — Term 1",
     historyDesc: "கலையரசன் ரா வழங்கும் 166 தமிழ் வினா-விடைகள், பாடப்புத்தக வரிசையில் — TNPSC குரூப் 4க்கு விரைவு திருப்பிப் படிப்பு.",
     historyCta: "வினா-விடை படிக்க →",
+    gkTitle: "Daily GK Thoughts — ஜூன் 2026",
+    gkDesc: "Daily GK Thoughts வழங்கும் 85 தமிழ் பொது அறிவு வினா-விடைகள் — முக்கிய தினங்கள், தகவல்கள் மற்றும் பயிற்சி முறையுடன்.",
+    gkCta: "படிக்க & பயிற்சி →",
   },
 };
 
@@ -211,6 +217,18 @@ export default async function StudyMaterialsPage() {
           </div>
           <p style={{ fontSize: 13, color: T.textSec, margin: "0 0 8px", lineHeight: 1.45 }}>{c.historyDesc}</p>
           <span style={{ fontSize: 13, fontWeight: 700, color: T.indigo }}>{c.historyCta}</span>
+        </Link>
+
+        <Link href="/tnpsc-study-materials/daily-gk-thoughts/june-2026" style={{
+          display: "block", background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16,
+          padding: "14px 16px", textDecoration: "none", marginBottom: 4, boxShadow: shadow.sm,
+        }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+            <span style={{ fontFamily: "serif", fontSize: 15, fontWeight: 700, color: T.text }}>{c.gkTitle}</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: T.indigo, background: T.indigoLight, border: `1px solid ${T.indigoMid}`, padding: "3px 10px", borderRadius: 20 }}>85 Q&A</span>
+          </div>
+          <p style={{ fontSize: 13, color: T.textSec, margin: "0 0 8px", lineHeight: 1.45 }}>{c.gkDesc}</p>
+          <span style={{ fontSize: 13, fontWeight: 700, color: T.indigo }}>{c.gkCta}</span>
         </Link>
       </div>
 
