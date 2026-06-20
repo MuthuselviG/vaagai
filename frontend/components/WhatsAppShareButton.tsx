@@ -42,7 +42,7 @@ export default function WhatsAppShareButton({
   }
 
   const floatingStyle: CSSProperties = floating
-    ? { position: "fixed", bottom: 22, right: 18, zIndex: 1000 }
+    ? { position: "fixed", top: "50%", right: 18, transform: "translateY(-50%)", zIndex: 1000 }
     : {};
 
   return (
