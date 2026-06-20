@@ -63,7 +63,7 @@ export default async function DailyGKThoughtsJune2026Page() {
           💡 Daily GK Thoughts · ஜூன் 2026
         </span>
         <h1 style={{ fontFamily: "serif", fontSize: 24, fontWeight: 800, lineHeight: 1.2, letterSpacing: "-0.4px", margin: "14px 0 6px" }}>
-          Daily GK Thoughts — வினா & விடை
+          Daily GK Thoughts — ஜூன் 2026 பதிப்பு
         </h1>
         <p style={{ fontSize: 14, opacity: 0.85, margin: 0 }}>
           வழங்குபவர்: <b style={{ color: "#FFD24D" }}>Daily GK Thoughts</b> · தினசரி பொது அறிவு
