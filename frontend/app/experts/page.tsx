@@ -2,6 +2,8 @@ import { createClient } from "@supabase/supabase-js";
 import ExpertsClient, { type CreatorRow } from "./ExpertsClient";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "TNPSC Experts & Guides | MCQ Palagu",
   description: "Learn from verified TNPSC coaches, academy teachers, and study buddies. Browse question packs curated by top scorers and educators.",
