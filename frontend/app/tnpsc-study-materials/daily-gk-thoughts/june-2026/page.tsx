@@ -58,14 +58,14 @@ export default async function DailyGKThoughtsJune2026Page() {
   return (
     <>
       {/* HERO */}
-      <div style={{ background: `linear-gradient(135deg, ${T.indigo} 0%, ${T.indigoDark} 100%)`, color: "white", borderRadius: "0 0 28px 28px", padding: "16px 16px 34px", position: "relative", overflow: "hidden" }}>
+      <div style={{ background: `linear-gradient(135deg, ${T.indigo} 0%, ${T.indigoDark} 100%)`, color: "white", borderRadius: "0 0 28px 28px", padding: "16px 16px 18px", position: "relative", overflow: "hidden" }}>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(255,255,255,0.16)", padding: "5px 12px", borderRadius: 999, fontSize: 11, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase" as const }}>
           💡 Daily GK Thoughts · ஜூன் 2026
         </span>
         <h1 style={{ fontFamily: "serif", fontSize: 24, fontWeight: 800, lineHeight: 1.2, letterSpacing: "-0.4px", margin: "14px 0 6px" }}>
-          Daily GK Thoughts — {questions.length} வினா & விடை
+          Daily GK Thoughts — வினா & விடை
         </h1>
-        <p style={{ fontSize: 14, opacity: 0.85, marginBottom: 16 }}>
+        <p style={{ fontSize: 14, opacity: 0.85, margin: 0 }}>
           வழங்குபவர்: <b style={{ color: "#FFD24D" }}>Daily GK Thoughts</b> · தினசரி பொது அறிவு
         </p>
       </div>
