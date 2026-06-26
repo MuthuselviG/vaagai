@@ -234,14 +234,18 @@ export async function fetchQuestionsForCADaily(date: string, lang: "en" | "ta"):
   }));
 }
 
-export async function fetchQuestionsForCAMonthly(month: string, lang: "en" | "ta"): Promise<Question[]> {
+export async function fetchQuestionsForCAMonthly(month: string, lang: "en" | "ta", unitSlug?: string): Promise<Question[]> {
+  const subjects = unitSlug ? CA_UNIT_SUBJECTS[unitSlug] : undefined;
+  if (unitSlug && !subjects) return [];
   const { start, endExclusive } = monthRange(month);
-  const { data, error } = await supabase
+  let query = supabase
     .from("current_affairs")
     .select("id, question, options, correct_option, explanation, topic, published_date")
     .gte("published_date", start)
     .lt("published_date", endExclusive)
-    .eq("lang", lang)
+    .eq("lang", lang);
+  if (subjects) query = query.in("subject", subjects);
+  const { data, error } = await query
     .order("published_date", { ascending: true })
     .order("created_at", { ascending: true });
   if (error) throw error;
