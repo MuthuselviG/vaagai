@@ -203,7 +203,7 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
       <div style={{ height: 140 }} />
 
       <div className="no-print" style={{ position: "fixed", bottom: 60, left: 0, right: 0, background: T.surface, borderTop: `1px solid ${T.border}`, padding: "12px 20px", display: "flex", gap: 10, boxShadow: "0 -2px 10px rgba(0,0,0,0.07)", zIndex: 90 }}>
-        <Link href={`/practice/current-affairs/${unit}?month=june-2026&lang=ta`} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 13, borderRadius: 10, background: T.indigo, color: "white", fontSize: 15, fontWeight: 700, textDecoration: "none", boxShadow: shadow.indigo }}>
+        <Link href={`/practice/current-affairs/${unit}?month=${MONTH}&lang=ta`} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 13, borderRadius: 10, background: T.indigo, color: "white", fontSize: 15, fontWeight: 700, textDecoration: "none", boxShadow: shadow.indigo }}>
           🎯 தேர்வு எழுது — {questions.length} வினாக்கள்
         </Link>
         <PdfDownloadButton style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "13px 12px", borderRadius: 10, background: T.bg, color: T.textSec, border: `1px solid ${T.border}`, fontSize: 13, fontWeight: 600, whiteSpace: "nowrap" as const }}>

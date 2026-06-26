@@ -234,14 +234,18 @@ export async function fetchQuestionsForCADaily(date: string, lang: "en" | "ta"):
   }));
 }
 
-export async function fetchQuestionsForCAMonthly(month: string, lang: "en" | "ta"): Promise<Question[]> {
+export async function fetchQuestionsForCAMonthly(month: string, lang: "en" | "ta", unitSlug?: string): Promise<Question[]> {
+  const subjects = unitSlug ? CA_UNIT_SUBJECTS[unitSlug] : undefined;
+  if (unitSlug && !subjects) return [];
   const { start, endExclusive } = monthRange(month);
-  const { data, error } = await supabase
+  let query = supabase
     .from("current_affairs")
     .select("id, question, options, correct_option, explanation, topic, published_date")
     .gte("published_date", start)
     .lt("published_date", endExclusive)
-    .eq("lang", lang)
+    .eq("lang", lang);
+  if (subjects) query = query.in("subject", subjects);
+  const { data, error } = await query
     .order("published_date", { ascending: true })
     .order("created_at", { ascending: true });
   if (error) throw error;
@@ -487,24 +491,42 @@ export async function verifyCreator(creatorId: string): Promise<void> {
 }
 
 export async function fetchCAAvailableMonths(): Promise<string[]> {
-  const { data, error } = await supabase
-    .from("current_affairs")
-    .select("published_date")
-    .order("published_date", { ascending: false });
-  if (error) throw error;
-  const months = [...new Set((data ?? []).map((r: any) =>
-    r.published_date.slice(0, 7)
-  ))];
+  // We only need the date range, not the rows themselves: fetch the single
+  // earliest and single latest published_date, then derive every month in
+  // between in JS. Avoids Supabase's 1000-row-per-request cap entirely (a
+  // plain unbounded select would only ever see the most recent month once
+  // it alone exceeds that cap, hiding older months).
+  const [
+    { data: earliest, error: earliestError },
+    { data: latest, error: latestError },
+  ] = await Promise.all([
+    supabase.from("current_affairs").select("published_date").order("published_date", { ascending: true }).limit(1),
+    supabase.from("current_affairs").select("published_date").order("published_date", { ascending: false }).limit(1),
+  ]);
+  if (earliestError) throw earliestError;
+  if (latestError) throw latestError;
+  if (!earliest?.length || !latest?.length) return [];
+
   const MONTH_NAMES: Record<string, string> = {
     "01": "january", "02": "february", "03": "march",
     "04": "april", "05": "may", "06": "june",
     "07": "july", "08": "august", "09": "september",
     "10": "october", "11": "november", "12": "december",
   };
-  return months.map((m) => {
-    const [year, month] = m.split("-");
-    return `${MONTH_NAMES[month]}-${year}`;
-  });
+
+  const [minYear, minMonth] = earliest[0].published_date.slice(0, 7).split("-").map(Number);
+  let [year, month] = latest[0].published_date.slice(0, 7).split("-").map(Number);
+
+  const months: string[] = [];
+  while (year > minYear || (year === minYear && month >= minMonth)) {
+    months.push(`${MONTH_NAMES[String(month).padStart(2, "0")]}-${year}`);
+    month -= 1;
+    if (month === 0) {
+      month = 12;
+      year -= 1;
+    }
+  }
+  return months;
 }
 
 // ─── ROHIT KALAI: CLASS 6 HISTORY (SAMACHEER KALVI), TERM 1 ────

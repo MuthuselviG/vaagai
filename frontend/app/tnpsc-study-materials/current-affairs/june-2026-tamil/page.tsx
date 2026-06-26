@@ -191,7 +191,7 @@ export default async function CAMonthlyTamilPage() {
                   <Link href={`/tnpsc-study-materials/current-affairs/june-2026-tamil/${slug}`} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 11, borderRadius: 10, border: `1.5px solid ${col.border}`, background: col.bg, color: col.text, fontSize: 13, fontWeight: 700, textDecoration: "none" }}>
                     📖 {count} வினாக்களை படிக்கவும் →
                   </Link>
-                  <Link href={`/practice/current-affairs/${slug}?month=june-2026&lang=ta`} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 11, borderRadius: 10, background: col.btn, color: "white", fontSize: 13, fontWeight: 700, textDecoration: "none", border: "none" }}>
+                  <Link href={`/practice/current-affairs/${slug}?month=${MONTH}&lang=ta`} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 11, borderRadius: 10, background: col.btn, color: "white", fontSize: 13, fontWeight: 700, textDecoration: "none", border: "none" }}>
                     🎯 தேர்வு எழுது
                   </Link>
                 </div>
