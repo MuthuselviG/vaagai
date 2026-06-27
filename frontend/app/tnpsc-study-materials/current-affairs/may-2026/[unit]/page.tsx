@@ -203,7 +203,7 @@ export default async function CAUnitPage({ params }: { params: Promise<{ unit: s
         <Link href={`/practice/current-affairs/${unit}?month=${MONTH}`} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 13, borderRadius: 10, background: T.indigo, color: "white", fontSize: 15, fontWeight: 700, textDecoration: "none", boxShadow: shadow.indigo }}>
           🎯 Test Yourself — {questions.length} Questions
         </Link>
-        <PdfDownloadButton style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "13px 12px", borderRadius: 10, background: T.bg, color: T.textSec, border: `1px solid ${T.border}`, fontSize: 13, fontWeight: 600, whiteSpace: "nowrap" as const }}>
+        <PdfDownloadButton style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "13px 12px", borderRadius: 10, background: T.green, color: "white", border: "none", fontSize: 13, fontWeight: 700, whiteSpace: "nowrap" as const, boxShadow: shadow.green }}>
           ⬇️ Download as PDF
         </PdfDownloadButton>
       </div>

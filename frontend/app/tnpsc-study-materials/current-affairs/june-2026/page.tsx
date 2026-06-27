@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   fetchCAMonthlyUnitCounts,
   fetchCAMonthlyPreview,
+  fetchCAForUnit,
   CA_UNIT_ORDER,
   CA_UNIT_LABELS,
   CA_UNIT_SUBJECTS,
@@ -48,7 +49,8 @@ function getCountForUnit(unitSlug: string, counts: { subject: string; count: num
 
 function QCard({ q, num }: { q: CAQuestion; num: number }) {
   return (
-    <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 14, padding: 16, marginBottom: 12, boxShadow: shadow.sm }}>
+    <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 14, padding: 16, marginBottom: 12, boxShadow: shadow.sm, position: "relative", overflow: "hidden", zIndex: 0 }}>
+      <QuestionWatermark />
       <div style={{ fontSize: 11, fontWeight: 700, color: T.textTer, textTransform: "uppercase" as const, letterSpacing: "0.5px", marginBottom: 8 }}>Question {num}</div>
       <p style={{ fontSize: 15, fontWeight: 600, color: T.text, lineHeight: 1.5, marginBottom: 12 }}>{q.question}</p>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 12 }}>
@@ -74,8 +76,9 @@ function QCard({ q, num }: { q: CAQuestion; num: number }) {
 }
 
 export default async function CAMonthlyPage() {
-  const [enCounts, ...previews] = await Promise.all([
+  const [enCounts, fullQuestions, ...previews] = await Promise.all([
     fetchCAMonthlyUnitCounts(MONTH, "en").catch((): CAUnitMeta[] => []),
+    Promise.all(CA_UNIT_ORDER.map((slug) => fetchCAForUnit(MONTH, slug, "en").catch((): CAQuestion[] => []))),
     ...CA_UNIT_ORDER.map((slug) => fetchCAMonthlyPreview(MONTH, slug, "en").catch((): CAQuestion[] => [])),
   ]);
 
@@ -118,9 +121,10 @@ export default async function CAMonthlyPage() {
     <>
       {faqItems.length > 0 && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />}
       <style>{`
+        .pdf-only { display: none; }
         @media print {
           .no-print { display: none !important; }
-          .ca-unit-details > *:not(summary) { display: block !important; }
+          .pdf-only { display: block !important; }
           body { background: white; }
         }
       `}</style>
@@ -197,8 +201,8 @@ export default async function CAMonthlyPage() {
           const count = getCountForUnit(slug, enCounts);
           const qs: CAQuestion[] = previews[idx] ?? [];
           return (
-            <details key={slug} className="ca-unit-details" style={{ background: col.bg, border: `1.5px solid ${col.border}`, borderRadius: 16, marginBottom: 14, overflow: "hidden", boxShadow: shadow.sm }}>
-              <summary style={{ padding: 16, display: "flex", alignItems: "center", gap: 12, cursor: "pointer", listStyle: "none" }}>
+            <details key={slug} style={{ background: col.bg, border: `1.5px solid ${col.border}`, borderRadius: 16, marginBottom: 14, overflow: "hidden", boxShadow: shadow.sm }}>
+              <summary className="no-print" style={{ padding: 16, display: "flex", alignItems: "center", gap: 12, cursor: "pointer", listStyle: "none" }}>
                 <div style={{ width: 44, height: 44, borderRadius: 12, background: col.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>{label.icon}</div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 16, fontWeight: 700, color: T.text }}>Unit {UNIT_NUMERALS[idx]} — {label.en}</div>
@@ -206,7 +210,7 @@ export default async function CAMonthlyPage() {
                 </div>
                 <div style={{ width: 28, height: 28, borderRadius: 8, border: `1px solid ${col.border}`, display: "flex", alignItems: "center", justifyContent: "center", color: col.text, fontSize: 14 }}>›</div>
               </summary>
-              <div style={{ padding: "0 16px 16px" }}>
+              <div className="no-print" style={{ padding: "0 16px 16px" }}>
                 {qs.length === 0
                   ? <p style={{ fontSize: 13, color: T.textSec, padding: "12px 0" }}>Questions loading — check back soon.</p>
                   : qs.map((q, i) => <QCard key={q.id} q={q} num={i + 1} />)
@@ -221,6 +225,22 @@ export default async function CAMonthlyPage() {
                 </div>
               </div>
             </details>
+          );
+        })}
+      </div>
+
+      {/* FULL CONTENT — PRINT ONLY */}
+      <div className="pdf-only" style={{ padding: "24px 20px 0" }}>
+        {CA_UNIT_ORDER.map((slug, idx) => {
+          const label = CA_UNIT_LABELS[slug];
+          const qs = fullQuestions[idx] ?? [];
+          return (
+            <div key={slug}>
+              <h2 style={{ fontFamily: "serif", fontSize: 18, fontWeight: 700, color: T.text, margin: "20px 0 12px 0" }}>
+                {label.icon} Unit {UNIT_NUMERALS[idx]} — {label.en}
+              </h2>
+              {qs.map((q, i) => <QCard key={q.id} q={q} num={i + 1} />)}
+            </div>
           );
         })}
       </div>
@@ -266,7 +286,7 @@ export default async function CAMonthlyPage() {
           <div style={{ fontSize: 14, fontWeight: 700, color: T.text }}>⬇️ Download June 2026 as PDF</div>
           <div style={{ fontSize: 12, color: T.textSec, marginTop: 2 }}>All {totalCount || "—"} questions with answers. Free with login.</div>
         </div>
-        <PdfDownloadButton style={{ background: T.indigoLight, color: T.indigo, border: `1px solid ${T.indigoMid}`, borderRadius: 8, padding: "8px 14px", fontSize: 13, fontWeight: 700, whiteSpace: "nowrap" as const }}>Download</PdfDownloadButton>
+        <PdfDownloadButton style={{ background: T.green, color: "white", border: "none", borderRadius: 8, padding: "8px 14px", fontSize: 13, fontWeight: 700, whiteSpace: "nowrap" as const, boxShadow: shadow.green }}>Download</PdfDownloadButton>
       </div>
 
       <div style={{ height: 100 }} />
