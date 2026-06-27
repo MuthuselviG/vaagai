@@ -8,14 +8,16 @@ import {
   fetchCAForUnit,
   CA_UNIT_ORDER,
   CA_UNIT_LABELS,
-  CA_UNIT_SUBJECTS,
   CAQuestion,
   CAUnitMeta,
 } from "../../../../lib/supabase";
 import { T, shadow } from "../../../../lib/tokens";
 import PdfDownloadButton from "../../../../components/PdfDownloadButton";
 import WhatsAppShareButton from "../../../../components/WhatsAppShareButton";
-import PdfBranding, { QuestionWatermark } from "../../../../components/PdfBranding";
+import PdfBranding from "../../../../components/PdfBranding";
+import { UNIT_COLORS, UNIT_NUMERALS, getCountForUnit } from "@/lib/caUnits";
+import CAQuestionCard from "@/components/CAQuestionCard";
+import CAPrintStyles from "@/components/CAPrintStyles";
 
 export const revalidate = 86400;
 
@@ -32,50 +34,6 @@ export const metadata: Metadata = {
     },
   },
 };
-
-const UNIT_COLORS: Record<string, { bg: string; border: string; text: string; btn: string }> = {
-  "general-science":     { bg: T.indigoLight, border: T.indigoMid,   text: T.indigo,  btn: T.indigo },
-  "geography":           { bg: T.greenBg,     border: T.greenBorder, text: T.green,   btn: T.green },
-  "indian-history":      { bg: "#FEF3C7",     border: "#FCD34D",     text: "#B45309", btn: "#B45309" },
-  "indian-polity":       { bg: "#F5F3FF",     border: "#DDD6FE",     text: "#7C3AED", btn: "#7C3AED" },
-  "welfare-schemes":     { bg: T.redBg,       border: T.redBorder,   text: T.red,     btn: T.red },
-  "archaeology-updates": { bg: "#E0F7FA",     border: "#A5D8E3",     text: "#0E7490", btn: "#0E7490" },
-};
-
-const UNIT_NUMERALS = ["I", "II", "III", "IV", "V", "VI"];
-
-function getCountForUnit(unitSlug: string, counts: { subject: string; count: number }[]): number {
-  const subjects = CA_UNIT_SUBJECTS[unitSlug] ?? [];
-  return counts.filter((c) => subjects.includes(c.subject)).reduce((sum, c) => sum + c.count, 0);
-}
-
-function QCard({ q, num }: { q: CAQuestion; num: number }) {
-  return (
-    <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 14, padding: 16, marginBottom: 12, boxShadow: shadow.sm, position: "relative", overflow: "hidden", zIndex: 0 }}>
-      <QuestionWatermark />
-      <div style={{ fontSize: 11, fontWeight: 700, color: T.textTer, textTransform: "uppercase" as const, letterSpacing: "0.5px", marginBottom: 8 }}>Question {num}</div>
-      <p style={{ fontSize: 15, fontWeight: 600, color: T.text, lineHeight: 1.5, marginBottom: 12 }}>{q.question}</p>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 12 }}>
-        {q.options.map((opt, i) => (
-          <div key={i} style={{ background: T.bg, border: `1px solid ${T.border}`, borderRadius: 8, padding: "8px 10px", fontSize: 13, color: T.textSec, display: "flex", alignItems: "flex-start", gap: 7, lineHeight: 1.4 }}>
-            <span style={{ width: 20, height: 20, borderRadius: "50%", background: T.indigoLight, color: T.indigo, fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 }}>{String.fromCharCode(65 + i)}</span>
-            {opt}
-          </div>
-        ))}
-      </div>
-      <div style={{ background: T.greenBg, border: `1px solid ${T.greenBorder}`, borderRadius: 10, padding: "10px 14px", marginBottom: 8 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: T.green, textTransform: "uppercase" as const, letterSpacing: "0.4px", marginBottom: 3 }}>✅ Correct Answer</div>
-        <div style={{ fontSize: 15, fontWeight: 700, color: T.green }}>{q.correct_option}</div>
-      </div>
-      {q.explanation && (
-        <div style={{ background: T.indigoLight, border: `1px solid ${T.indigoMid}`, borderRadius: 10, padding: "10px 14px" }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: T.indigo, textTransform: "uppercase" as const, letterSpacing: "0.4px", marginBottom: 3 }}>📖 Explanation</div>
-          <div style={{ fontSize: 13, color: T.textSec, lineHeight: 1.5 }}>{q.explanation}</div>
-        </div>
-      )}
-    </div>
-  );
-}
 
 export default async function CAMonthlyPage() {
   const [enCounts, fullQuestions, ...previews] = await Promise.all([
@@ -122,14 +80,7 @@ export default async function CAMonthlyPage() {
   return (
     <>
       {faqItems.length > 0 && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />}
-      <style>{`
-        .pdf-only { display: none; }
-        @media print {
-          .no-print { display: none !important; }
-          .pdf-only { display: block !important; }
-          body { background: white; }
-        }
-      `}</style>
+      <CAPrintStyles variant="hub" />
       <PdfBranding />
       <WhatsAppShareButton title="TNPSC Current Affairs May 2026 MCQ Questions" floating />
       <nav className="no-print" style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: shadow.sm }}>
@@ -215,7 +166,7 @@ export default async function CAMonthlyPage() {
               <div className="no-print" style={{ padding: "0 16px 16px" }}>
                 {qs.length === 0
                   ? <p style={{ fontSize: 13, color: T.textSec, padding: "12px 0" }}>Questions loading — check back soon.</p>
-                  : qs.map((q, i) => <QCard key={q.id} q={q} num={i + 1} />)
+                  : qs.map((q, i) => <CAQuestionCard key={q.id} q={q} num={i + 1} lang="en" variant="hub" />)
                 }
                 <div className="no-print" style={{ display: "flex", gap: 8, marginTop: 8 }}>
                   <Link href={`/tnpsc-study-materials/current-affairs/may-2026/${slug}`} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 11, borderRadius: 10, border: `1.5px solid ${col.border}`, background: col.bg, color: col.text, fontSize: 13, fontWeight: 700, textDecoration: "none" }}>
@@ -241,7 +192,7 @@ export default async function CAMonthlyPage() {
               <h2 style={{ fontFamily: "serif", fontSize: 18, fontWeight: 700, color: T.text, margin: "20px 0 12px 0" }}>
                 {label.icon} Unit {UNIT_NUMERALS[idx]} — {label.en}
               </h2>
-              {qs.map((q, i) => <QCard key={q.id} q={q} num={i + 1} />)}
+              {qs.map((q, i) => <CAQuestionCard key={q.id} q={q} num={i + 1} lang="en" variant="hub" />)}
             </div>
           );
         })}

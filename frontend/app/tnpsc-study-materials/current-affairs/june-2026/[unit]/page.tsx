@@ -8,9 +8,12 @@ import {
   CAQuestion,
 } from "../../../../../lib/supabase";
 import { T, shadow } from "../../../../../lib/tokens";
-import PdfDownloadButton from "../../../../../components/PdfDownloadButton";
-import PdfBranding, { QuestionWatermark } from "../../../../../components/PdfBranding";
+import PdfBranding from "../../../../../components/PdfBranding";
 import WhatsAppShareButton from "../../../../../components/WhatsAppShareButton";
+import { UNIT_COLORS, UNIT_NUMERALS } from "@/lib/caUnits";
+import CAQuestionCard from "@/components/CAQuestionCard";
+import CAPrintStyles from "@/components/CAPrintStyles";
+import CAUnitActionBar from "@/components/CAUnitActionBar";
 
 export const revalidate = 3600;
 
@@ -25,17 +28,6 @@ const UNIT_SEO: Record<string, { title: string; description: string }> = {
   "welfare-schemes":     { title: "TNPSC Public Administration Unit 5 June 2026 | Welfare Schemes MCQ", description: "High-yield June 2026 Tamil Nadu welfare schemes and socio-economic development MCQs. Mapped to Unit V blueprint." },
   "archaeology-updates": { title: "Keeladi Excavations TNPSC Questions June 2026 | Unit VI Free MCQ", description: "Practice June 2026 archaeological discoveries, Keeladi excavations, and Tamil culture MCQs for Group 4." },
 };
-
-const UNIT_COLORS: Record<string, { bg: string; border: string; text: string; btn: string }> = {
-  "general-science":     { bg: T.indigoLight, border: T.indigoMid,   text: T.indigo,  btn: T.indigo },
-  "geography":           { bg: T.greenBg,     border: T.greenBorder, text: T.green,   btn: T.green },
-  "indian-history":      { bg: "#FEF3C7",     border: "#FCD34D",     text: "#B45309", btn: "#B45309" },
-  "indian-polity":       { bg: "#F5F3FF",     border: "#DDD6FE",     text: "#7C3AED", btn: "#7C3AED" },
-  "welfare-schemes":     { bg: T.redBg,       border: T.redBorder,   text: T.red,     btn: T.red },
-  "archaeology-updates": { bg: "#E0F7FA",     border: "#A5D8E3",     text: "#0E7490", btn: "#0E7490" },
-};
-
-const UNIT_NUMERALS = ["I", "II", "III", "IV", "V", "VI"];
 
 export async function generateStaticParams() {
   return CA_UNIT_ORDER.map((unit) => ({ unit }));
@@ -55,40 +47,6 @@ export async function generateMetadata({ params }: { params: Promise<{ unit: str
   };
 }
 
-function QCard({ q, num }: { q: CAQuestion; num: number }) {
-  return (
-    <div id={q.slug ? q.slug.replace(/\s+/g, "-") : q.id} style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: 18, marginBottom: 14, boxShadow: shadow.sm, position: "relative", overflow: "hidden", zIndex: 0 }}>
-      <QuestionWatermark />
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-        <span style={{ fontSize: 11, fontWeight: 700, color: T.textTer, textTransform: "uppercase" as const, letterSpacing: "0.5px" }}>Question {num}</span>
-        {q.topic && <span style={{ fontSize: 11, fontWeight: 600, color: T.indigo, background: T.indigoLight, padding: "3px 8px", borderRadius: 8 }}>{q.topic}</span>}
-      </div>
-      <p style={{ fontSize: 15, fontWeight: 600, color: T.text, lineHeight: 1.55, marginBottom: 14 }}>{q.question}</p>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 7, marginBottom: 14 }}>
-        {q.options.map((opt, i) => {
-          const isCorrect = opt === q.correct_option;
-          return (
-            <div key={i} style={{ background: isCorrect ? T.greenBg : T.bg, border: `1px solid ${isCorrect ? T.greenBorder : T.border}`, borderRadius: 9, padding: "9px 10px", fontSize: 13, color: isCorrect ? T.green : T.textSec, display: "flex", alignItems: "flex-start", gap: 7, lineHeight: 1.4 }}>
-              <span style={{ width: 20, height: 20, borderRadius: "50%", background: isCorrect ? T.green : T.indigoLight, color: isCorrect ? "white" : T.indigo, fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 }}>{String.fromCharCode(65 + i)}</span>
-              {opt}
-            </div>
-          );
-        })}
-      </div>
-      <div style={{ background: T.greenBg, border: `1px solid ${T.greenBorder}`, borderRadius: 10, padding: "10px 14px", marginBottom: 10 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: T.green, textTransform: "uppercase" as const, letterSpacing: "0.4px", marginBottom: 3 }}>✅ Correct Answer</div>
-        <div style={{ fontSize: 15, fontWeight: 700, color: T.green, lineHeight: 1.4 }}>{q.correct_option}</div>
-      </div>
-      {q.explanation && (
-        <div style={{ background: T.indigoLight, border: `1px solid ${T.indigoMid}`, borderRadius: 10, padding: "10px 14px" }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: T.indigo, textTransform: "uppercase" as const, letterSpacing: "0.4px", marginBottom: 4 }}>📖 Explanation</div>
-          <div style={{ fontSize: 13, color: T.textSec, lineHeight: 1.55 }}>{q.explanation}</div>
-        </div>
-      )}
-    </div>
-  );
-}
-
 export default async function CAUnitPage({ params }: { params: Promise<{ unit: string }> }) {
   const { unit } = await params;
   if (!CA_UNIT_ORDER.includes(unit)) notFound();
@@ -104,12 +62,7 @@ export default async function CAUnitPage({ params }: { params: Promise<{ unit: s
 
   return (
     <>
-      <style>{`
-        @media print {
-          .no-print { display: none !important; }
-          body { background: white; }
-        }
-      `}</style>
+      <CAPrintStyles variant="unit" />
       <PdfBranding />
       <WhatsAppShareButton title={`TNPSC ${label.en} Current Affairs June 2026 MCQ`} floating />
       <nav className="no-print" style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: shadow.sm }}>
@@ -151,7 +104,7 @@ export default async function CAUnitPage({ params }: { params: Promise<{ unit: s
         <div style={{ fontSize: 13, color: T.textSec, marginBottom: 16 }}>All questions with answers &amp; explanations. Mapped to TNPSC Group 4 syllabus Unit {numeral}.</div>
         {questions.length === 0
           ? <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 14, padding: 24, textAlign: "center" as const, color: T.textSec }}>Questions for this unit are being added — check back soon.</div>
-          : questions.map((q, i) => <QCard key={q.id} q={q} num={i + 1} />)
+          : questions.map((q, i) => <CAQuestionCard key={q.id} q={q} num={i + 1} lang="en" variant="unit" />)
         }
       </div>
 
@@ -207,14 +160,7 @@ export default async function CAUnitPage({ params }: { params: Promise<{ unit: s
 
       <div style={{ height: 140 }} />
 
-      <div className="no-print" style={{ position: "fixed", bottom: 60, left: 0, right: 0, background: T.surface, borderTop: `1px solid ${T.border}`, padding: "12px 20px", display: "flex", gap: 10, boxShadow: "0 -2px 10px rgba(0,0,0,0.07)", zIndex: 90 }}>
-        <Link href={`/practice/current-affairs/${unit}?month=${MONTH}`} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 13, borderRadius: 10, background: T.indigo, color: "white", fontSize: 15, fontWeight: 700, textDecoration: "none", boxShadow: shadow.indigo }}>
-          🎯 Test Yourself — {questions.length} Questions
-        </Link>
-        <PdfDownloadButton style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "13px 12px", borderRadius: 10, background: T.green, color: "white", border: "none", fontSize: 13, fontWeight: 700, whiteSpace: "nowrap" as const, boxShadow: shadow.green }}>
-          ⬇️ Download as PDF
-        </PdfDownloadButton>
-      </div>
+      <CAUnitActionBar lang="en" unit={unit} month={MONTH} questionCount={questions.length} />
     </>
   );
 }
