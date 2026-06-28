@@ -126,7 +126,7 @@ export default function PracticePage() {
         .then(qs => { setQuestions(qs); setLoading(false); })
         .catch(() => { setError("Could not load current affairs."); setLoading(false); });
     } else if (isCA && caMonth) {
-      fetchQuestionsForCAMonthly(caMonth, lang)
+      fetchQuestionsForCAMonthly(caMonth, lang, chapter !== "monthly" ? chapter : undefined)
         .then(qs => { setQuestions(qs); setLoading(false); })
         .catch(() => { setError("Could not load current affairs."); setLoading(false); });
     } else if (isPack && packId) {
