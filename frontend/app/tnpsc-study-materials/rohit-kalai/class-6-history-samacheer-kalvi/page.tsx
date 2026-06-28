@@ -3,21 +3,24 @@ import { Metadata } from "next";
 import { T, shadow } from "@/lib/tokens";
 import WhatsAppShareButton from "@/components/WhatsAppShareButton";
 import BookCover from "@/components/BookCover";
-import { fetchRohitKalaiClass6HistoryTerm1 } from "@/lib/supabase";
+import { fetchRohitKalaiClass6HistoryTerm1, fetchRohitKalaiClass6HistoryTerm2Units } from "@/lib/supabase";
 
 const BASE = "https://mcqpalagu.in";
 const PAGE_PATH = "/tnpsc-study-materials/rohit-kalai/class-6-history-samacheer-kalvi";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "Class 6 History (Samacheer Kalvi) — Rohit Kalai | TNPSC Study Materials",
   description:
-    "Browse Rohit Kalai's Class 6 Samacheer Kalvi History Q&A by term — Term 1 (166 Tamil questions) is ready, Term 2 is being compiled. Free TNPSC Group 4 study material.",
+    "Browse Rohit Kalai's Class 6 Samacheer Kalvi History Q&A by term, organised unit by unit. Free TNPSC Group 4 study material.",
   alternates: {
     canonical: `${BASE}${PAGE_PATH}`,
   },
 };
 
 const RELATED = [
+  { href: `${PAGE_PATH}/term-1`, icon: "📄", title: "Term 1 — ஒரே பக்கத்தில் படிக்க", sub: "அனைத்து வினா-விடைகளும் ஒரே பக்கத்தில்" },
   { href: "/subjects", icon: "📋", title: "TNPSC குரூப் 4 PYQ பயிற்சி", sub: "முந்தைய ஆண்டு வினாத்தாள்கள்" },
   { href: "/current-affairs", icon: "📰", title: "தினசரி நடப்பு நிகழ்வுகள்", sub: "தினமும் புதுப்பிக்கப்படும் MCQ" },
   { href: "/tnpsc-study-materials", icon: "📚", title: "TNPSC படிப்பு பொருட்கள்", sub: "குறிப்புகள், நடப்பு நிகழ்வுகள் மற்றும் பல" },
@@ -26,6 +29,8 @@ const RELATED = [
 export default async function RohitKalaiClass6HistoryBookshelfPage() {
   const term1Questions = await fetchRohitKalaiClass6HistoryTerm1();
   const term1Count = term1Questions.length;
+  const term2Units = await fetchRohitKalaiClass6HistoryTerm2Units();
+  const term2Count = term2Units.reduce((sum, u) => sum + u.questions.length, 0);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -67,10 +72,17 @@ export default async function RohitKalaiClass6HistoryBookshelfPage() {
               label={<>Term<br />1</>}
               status="available"
               plate={`${term1Count} Q&A · தயார்`}
-              href={`${PAGE_PATH}/term-1`}
+              href={`${PAGE_PATH}/term-1/units`}
               ariaLabel={`Term 1 — ${term1Count} Q&A, தயார்`}
             />
-            <BookCover emoji="📕" label={<>Term<br />2</>} status="locked" />
+            <BookCover
+              emoji="📕"
+              label={<>Term<br />2</>}
+              status="available"
+              plate={`${term2Count} Q&A · தயார்`}
+              href={`${PAGE_PATH}/term-2/units`}
+              ariaLabel={`Term 2 — ${term2Count} Q&A, தயார்`}
+            />
           </div>
           <div style={{ position: "absolute", left: -16, right: -16, bottom: 0, height: 14, background: "linear-gradient(180deg, #DCD3C4 0%, #C7B89E 100%)", boxShadow: "0 6px 10px -2px rgba(0,0,0,0.18)", zIndex: 1 }} />
         </div>
@@ -81,8 +93,8 @@ export default async function RohitKalaiClass6HistoryBookshelfPage() {
             <div style={{ fontSize: 11, color: T.textTer, marginTop: 1 }}>தட் செய்து படிக்க</div>
           </div>
           <div style={{ width: 142, flexShrink: 0 }}>
-            <div style={{ fontSize: 12.5, fontWeight: 700, color: T.textTer }}>Term 2</div>
-            <div style={{ fontSize: 11, color: T.textTer, marginTop: 1 }}>தொகுக்கப்படுகிறது</div>
+            <div style={{ fontSize: 12.5, fontWeight: 700, color: T.text }}>{term2Count} வினா</div>
+            <div style={{ fontSize: 11, color: T.textTer, marginTop: 1 }}>தட் செய்து படிக்க</div>
           </div>
         </div>
 

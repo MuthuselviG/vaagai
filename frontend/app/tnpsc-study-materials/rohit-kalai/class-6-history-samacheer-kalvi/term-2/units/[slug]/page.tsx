@@ -5,6 +5,8 @@ import { fetchRohitKalaiClass6HistoryTerm2Units } from "@/lib/supabase";
 
 const BASE_PATH = "/tnpsc-study-materials/rohit-kalai/class-6-history-samacheer-kalvi/term-2/units";
 
+export const revalidate = 60;
+
 export async function generateStaticParams() {
   const units = await fetchRohitKalaiClass6HistoryTerm2Units();
   return units.map((u) => ({ slug: u.slug }));

@@ -4,6 +4,8 @@ import { fetchRohitKalaiClass6HistoryTerm1Units } from "@/lib/supabase";
 
 const PAGE_PATH = "/tnpsc-study-materials/rohit-kalai/class-6-history-samacheer-kalvi/term-1/units";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "Class 6 History Samacheer Kalvi Term 1 — Unit-wise Q&A | Rohit Kalai | TNPSC",
   description:
