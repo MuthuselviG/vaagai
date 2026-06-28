@@ -10,9 +10,12 @@ import {
   CAQuestion,
 } from "../../../../../lib/supabase";
 import { T, shadow } from "../../../../../lib/tokens";
-import PdfDownloadButton from "../../../../../components/PdfDownloadButton";
-import PdfBranding, { QuestionWatermark } from "../../../../../components/PdfBranding";
+import PdfBranding from "../../../../../components/PdfBranding";
 import WhatsAppShareButton from "../../../../../components/WhatsAppShareButton";
+import { UNIT_COLORS, UNIT_NUMERALS } from "@/lib/caUnits";
+import CAQuestionCard from "@/components/CAQuestionCard";
+import CAPrintStyles from "@/components/CAPrintStyles";
+import CAUnitActionBar from "@/components/CAUnitActionBar";
 
 export const revalidate = 86400;
 
@@ -26,17 +29,6 @@ const UNIT_SEO_TA: Record<string, { title: string; description: string }> = {
   "welfare-schemes":     { title: "TNPSC May 2026 Welfare Schemes MCQ in Tamil | Free Test", description: "மே 2026 தமிழக அரசு நலத்திட்டங்கள் மற்றும் வளர்ச்சி நிர்வாகம் சார்ந்த முக்கிய வினாக்கள். சமச்சீர் அலகு 5 பாடத்திட்ட விளக்கங்களுடன்." },
   "archaeology-updates": { title: "TNPSC May 2026 Archaeology & Culture MCQ in Tamil", description: "மே 2026 கீழடி அகழ்வாராய்ச்சி மற்றும் தமிழ்நாடு வரலாறு, பண்பாடு சார்ந்த முக்கிய வினாக்கள். அலகு 6 தேர்வு ஆன்லைன் பயிற்சி." },
 };
-
-const UNIT_COLORS: Record<string, { bg: string; border: string; text: string; btn: string }> = {
-  "general-science":     { bg: T.indigoLight, border: T.indigoMid,   text: T.indigo,  btn: T.indigo },
-  "geography":           { bg: T.greenBg,     border: T.greenBorder, text: T.green,   btn: T.green },
-  "indian-history":      { bg: "#FEF3C7",     border: "#FCD34D",     text: "#B45309", btn: "#B45309" },
-  "indian-polity":       { bg: "#F5F3FF",     border: "#DDD6FE",     text: "#7C3AED", btn: "#7C3AED" },
-  "welfare-schemes":     { bg: T.redBg,       border: T.redBorder,   text: T.red,     btn: T.red },
-  "archaeology-updates": { bg: "#E0F7FA",     border: "#A5D8E3",     text: "#0E7490", btn: "#0E7490" },
-};
-
-const UNIT_NUMERALS = ["I", "II", "III", "IV", "V", "VI"];
 
 export async function generateStaticParams() {
   return CA_UNIT_ORDER.map((unit) => ({ unit }));
@@ -56,37 +48,6 @@ export async function generateMetadata({ params }: { params: Promise<{ unit: str
   };
 }
 
-function QCard({ q, num }: { q: CAQuestion; num: number }) {
-  return (
-    <div id={q.slug ? q.slug.replace(/\s+/g, "-") : q.id} style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: 18, marginBottom: 14, boxShadow: shadow.sm, position: "relative", overflow: "hidden", zIndex: 0 }}>
-      <QuestionWatermark />
-      <div style={{ fontSize: 11, fontWeight: 700, color: T.textTer, textTransform: "uppercase" as const, letterSpacing: "0.5px", marginBottom: 10 }}>வினா {num}</div>
-      <p style={{ fontSize: 15, fontWeight: 600, color: T.text, lineHeight: 1.6, marginBottom: 14 }}>{q.question}</p>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 7, marginBottom: 14 }}>
-        {q.options.map((opt, i) => {
-          const isCorrect = opt === q.correct_option;
-          return (
-            <div key={i} style={{ background: isCorrect ? T.greenBg : T.bg, border: `1px solid ${isCorrect ? T.greenBorder : T.border}`, borderRadius: 9, padding: "9px 10px", fontSize: 13, color: isCorrect ? T.green : T.textSec, display: "flex", alignItems: "flex-start", gap: 7, lineHeight: 1.4 }}>
-              <span style={{ width: 20, height: 20, borderRadius: "50%", background: isCorrect ? T.green : T.indigoLight, color: isCorrect ? "white" : T.indigo, fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 }}>{["அ","ஆ","இ","ஈ"][i]}</span>
-              {opt}
-            </div>
-          );
-        })}
-      </div>
-      <div style={{ background: T.greenBg, border: `1px solid ${T.greenBorder}`, borderRadius: 10, padding: "10px 14px", marginBottom: 10 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: T.green, textTransform: "uppercase" as const, letterSpacing: "0.4px", marginBottom: 3 }}>✅ சரியான விடை</div>
-        <div style={{ fontSize: 15, fontWeight: 700, color: T.green, lineHeight: 1.4 }}>{q.correct_option}</div>
-      </div>
-      {q.explanation && (
-        <div style={{ background: T.indigoLight, border: `1px solid ${T.indigoMid}`, borderRadius: 10, padding: "10px 14px" }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: T.indigo, textTransform: "uppercase" as const, letterSpacing: "0.4px", marginBottom: 4 }}>📖 விளக்கம்</div>
-          <div style={{ fontSize: 13, color: T.textSec, lineHeight: 1.6 }}>{q.explanation}</div>
-        </div>
-      )}
-    </div>
-  );
-}
-
 export default async function CAUnitTamilPage({ params }: { params: Promise<{ unit: string }> }) {
   const { unit } = await params;
   if (!CA_UNIT_ORDER.includes(unit)) notFound();
@@ -102,12 +63,7 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
 
   return (
     <>
-      <style>{`
-        @media print {
-          .no-print { display: none !important; }
-          body { background: white; }
-        }
-      `}</style>
+      <CAPrintStyles variant="unit" />
       <PdfBranding />
       <WhatsAppShareButton title={`TNPSC ${label.ta} நடப்பு நிகழ்வுகள் மே 2026 MCQ`} floating />
       <nav className="no-print" style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "0 16px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: shadow.sm }}>
@@ -149,7 +105,7 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
         <div style={{ fontSize: 13, color: T.textSec, marginBottom: 16 }}>அனைத்து வினாக்களும் விடைகளும் விளக்கங்களும். TNPSC குரூப் 4 பாடத்திட்டம் அலகு {numeral}-க்கு ஏற்ப வரிசைப்படுத்தப்பட்டுள்ளது.</div>
         {questions.length === 0
           ? <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 14, padding: 24, textAlign: "center" as const, color: T.textSec }}>இந்த அலகிற்கான வினாக்கள் சேர்க்கப்படுகின்றன — சீக்கிரம் திரும்பி வாருங்கள்.</div>
-          : questions.map((q, i) => <QCard key={q.id} q={q} num={i + 1} />)
+          : questions.map((q, i) => <CAQuestionCard key={q.id} q={q} num={i + 1} lang="ta" variant="unit" />)
         }
       </div>
 
@@ -194,14 +150,7 @@ export default async function CAUnitTamilPage({ params }: { params: Promise<{ un
 
       <div style={{ height: 140 }} />
 
-      <div className="no-print" style={{ position: "fixed", bottom: 60, left: 0, right: 0, background: T.surface, borderTop: `1px solid ${T.border}`, padding: "12px 20px", display: "flex", gap: 10, boxShadow: "0 -2px 10px rgba(0,0,0,0.07)", zIndex: 90 }}>
-        <Link href={`/practice/current-affairs/${unit}?month=${MONTH}&lang=ta`} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 13, borderRadius: 10, background: T.indigo, color: "white", fontSize: 15, fontWeight: 700, textDecoration: "none", boxShadow: shadow.indigo }}>
-          🎯 தேர்வு எழுது — {questions.length} வினாக்கள்
-        </Link>
-        <PdfDownloadButton style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "13px 12px", borderRadius: 10, background: T.bg, color: T.textSec, border: `1px solid ${T.border}`, fontSize: 13, fontWeight: 600, whiteSpace: "nowrap" as const }}>
-          ⬇️ PDF பதிவிறக்கம்
-        </PdfDownloadButton>
-      </div>
+      <CAUnitActionBar lang="ta" unit={unit} month={MONTH} questionCount={questions.length} />
     </>
   );
 }
