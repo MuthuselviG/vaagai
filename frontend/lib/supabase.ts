@@ -668,6 +668,12 @@ function groupByTopic(rows: (ReadingQA & { topic: string | null })[]): ReadingUn
   return order.map((topic) => ({ topic, slug: slugify(topic), questions: groups.get(topic)! }));
 }
 
+// Next.js passes dynamic route params percent-encoded, unlike URLSearchParams —
+// decode before comparing against a slug derived straight from `topic` text.
+export function findUnitBySlug(units: ReadingUnit[], rawSlug: string): ReadingUnit | undefined {
+  return units.find((u) => u.slug === decodeURIComponent(rawSlug));
+}
+
 export async function fetchRohitKalaiClass6HistoryTerm1Units(): Promise<ReadingUnit[]> {
   const { data, error } = await supabase
     .from("questions")

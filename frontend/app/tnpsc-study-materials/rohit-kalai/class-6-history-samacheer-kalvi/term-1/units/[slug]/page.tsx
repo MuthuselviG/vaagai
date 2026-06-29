@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ReadingList from "@/components/ReadingList";
-import { fetchRohitKalaiClass6HistoryTerm1Units } from "@/lib/supabase";
+import { fetchRohitKalaiClass6HistoryTerm1Units, findUnitBySlug } from "@/lib/supabase";
 
 const BASE_PATH = "/tnpsc-study-materials/rohit-kalai/class-6-history-samacheer-kalvi/term-1/units";
 
@@ -15,7 +15,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const units = await fetchRohitKalaiClass6HistoryTerm1Units();
-  const unit = units.find((u) => u.slug === slug);
+  const unit = findUnitBySlug(units, slug);
   if (!unit) return {};
   return {
     title: `${unit.topic} — Class 6 History Term 1 Q&A | Rohit Kalai | TNPSC`,
@@ -29,9 +29,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function RohitKalaiClass6HistoryTerm1UnitPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const units = await fetchRohitKalaiClass6HistoryTerm1Units();
-  const unitIndex = units.findIndex((u) => u.slug === slug);
-  if (unitIndex === -1) notFound();
-  const unit = units[unitIndex];
+  const unit = findUnitBySlug(units, slug);
+  if (!unit) notFound();
+  const unitIndex = units.indexOf(unit);
 
   const faqItems = unit.questions
     .filter((q) => q.explanation.trim().length > 0)

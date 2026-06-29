@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { sortByIdOrder } from "@/lib/supabase";
+import { sortByIdOrder, findUnitBySlug } from "@/lib/supabase";
+import type { ReadingUnit } from "@/lib/supabase";
 
 describe("sortByIdOrder", () => {
   it("sorts rows according to the given id order", () => {
@@ -22,6 +23,26 @@ describe("sortByIdOrder", () => {
 
   it("returns an empty array when given no rows", () => {
     expect(sortByIdOrder([], ["a", "b"])).toEqual([]);
+  });
+});
+
+describe("findUnitBySlug", () => {
+  const units: ReadingUnit[] = [
+    { topic: "மனிதர்களின் பரிணாம வளர்ச்சி", slug: "மனிதர்களின்-பரிணாம-வளர்ச்சி", questions: [] },
+    { topic: "எகிப்திய நாகரிகம்", slug: "எகிப்திய-நாகரிகம்", questions: [] },
+  ];
+
+  it("matches when the slug arrives percent-encoded, as Next.js passes route params", () => {
+    const rawSlug = encodeURIComponent("மனிதர்களின்-பரிணாம-வளர்ச்சி");
+    expect(findUnitBySlug(units, rawSlug)?.topic).toBe("மனிதர்களின் பரிணாம வளர்ச்சி");
+  });
+
+  it("matches when the slug is already decoded", () => {
+    expect(findUnitBySlug(units, "எகிப்திய-நாகரிகம்")?.topic).toBe("எகிப்திய நாகரிகம்");
+  });
+
+  it("returns undefined when no unit matches", () => {
+    expect(findUnitBySlug(units, "no-such-unit")).toBeUndefined();
   });
 });
 
