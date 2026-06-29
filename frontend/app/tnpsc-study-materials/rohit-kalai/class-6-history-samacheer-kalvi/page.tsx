@@ -87,17 +87,6 @@ export default async function RohitKalaiClass6HistoryBookshelfPage() {
           <div style={{ position: "absolute", left: -16, right: -16, bottom: 0, height: 14, background: "linear-gradient(180deg, #DCD3C4 0%, #C7B89E 100%)", boxShadow: "0 6px 10px -2px rgba(0,0,0,0.18)", zIndex: 1 }} />
         </div>
 
-        <div style={{ display: "flex", gap: 18, marginTop: 12 }}>
-          <div style={{ width: 142, flexShrink: 0 }}>
-            <div style={{ fontSize: 12.5, fontWeight: 700, color: T.text }}>{term1Count} வினா</div>
-            <div style={{ fontSize: 11, color: T.textTer, marginTop: 1 }}>தட் செய்து படிக்க</div>
-          </div>
-          <div style={{ width: 142, flexShrink: 0 }}>
-            <div style={{ fontSize: 12.5, fontWeight: 700, color: T.text }}>{term2Count} வினா</div>
-            <div style={{ fontSize: 11, color: T.textTer, marginTop: 1 }}>தட் செய்து படிக்க</div>
-          </div>
-        </div>
-
         {/* ABOUT */}
         <section style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: 18, marginTop: 26 }}>
           <h2 style={{ fontFamily: "Georgia, 'Noto Serif Tamil', serif", fontSize: 19, fontWeight: 700, marginBottom: 8, color: T.indigoDark }}>இந்த புத்தகம் பற்றி</h2>
