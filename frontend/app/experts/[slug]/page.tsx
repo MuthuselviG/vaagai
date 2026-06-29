@@ -57,10 +57,22 @@ export default async function CreatorProfilePage({ params }: { params: Promise<{
     .not("id", "in", `(${READING_ONLY_PACK_IDS.join(",")})`)
     .order("created_at", { ascending: false });
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: creator.name,
+    url: `https://mcqpalagu.in/experts/${slug}`,
+    ...(creator.bio || creator.tagline ? { description: creator.bio ?? creator.tagline } : {}),
+    ...(creator.photo_url ? { image: creator.photo_url } : {}),
+  };
+
   return (
-    <CreatorProfileClient
-      creator={creator as CreatorData}
-      packs={(packs ?? []) as PackData[]}
-    />
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <CreatorProfileClient
+        creator={creator as CreatorData}
+        packs={(packs ?? []) as PackData[]}
+      />
+    </>
   );
 }

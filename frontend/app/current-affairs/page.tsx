@@ -143,11 +143,11 @@ export default function CurrentAffairsPage() {
         </div>
 
         {/* title */}
-        <div style={{ color: "white", fontSize: 22, fontWeight: 800, lineHeight: 1.2, marginBottom: 2 }}>
+        <h1 style={{ color: "white", fontSize: 22, fontWeight: 800, lineHeight: 1.2, marginTop: 0, marginBottom: 2 }}>
           {lang === "ta"
             ? <span>இன்றைய <span style={{ color: "#FDE68A" }}>நடப்பு நிகழ்வுகள்</span></span>
             : <span>Today's <span style={{ color: "#FDE68A" }}>Current Affairs</span></span>}
-        </div>
+        </h1>
         <div style={{ color: "rgba(255,255,255,0.55)", fontSize: 13, marginBottom: 16 }}>
           {lang === "ta" ? "Today's Current Affairs" : "நடப்பு நிகழ்வுகள்"} · TNPSC Group 4
         </div>

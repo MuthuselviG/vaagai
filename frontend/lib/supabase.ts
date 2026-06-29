@@ -480,6 +480,12 @@ export async function fetchAllCreators(): Promise<Creator[]> {
   return (data as Creator[]) ?? [];
 }
 
+export async function fetchVerifiedCreatorSlugs(): Promise<string[]> {
+  const { data, error } = await supabase.from("creators").select("slug").eq("verified", true).not("slug", "is", null);
+  if (error) throw error;
+  return (data ?? []).map((row) => row.slug as string);
+}
+
 export async function fetchAllPacks(): Promise<(Pack & { creator_name: string })[]> {
   const { data, error } = await supabase.from("packs").select("*, creators(name)").order("created_at", { ascending: false });
   if (error) throw error;

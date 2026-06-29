@@ -248,9 +248,9 @@ export default function SubjectsPage() {
             }
           }} />
         </div>
-        <h2 style={{ color: T.text, fontSize: 20, fontWeight: 800, marginTop: 14, letterSpacing: -0.4 }}>
+        <h1 style={{ color: T.text, fontSize: 20, fontWeight: 800, marginTop: 14, marginBottom: 0, letterSpacing: -0.4 }}>
           {lang === "ta" ? "பாடங்கள்" : "Subjects"}
-        </h2>
+        </h1>
         <p style={{ color: T.textSec, fontSize: 12, marginTop: 3 }}>
           {loading ? "Loading…" : `${ACTIVE_SUBJECTS.length} subjects · ${totalChapters} chapters · ${totalQ.toLocaleString()} questions`}
         </p>

@@ -66,7 +66,7 @@ export default function UnitPath({ termTag, title, subtitle, backHref, backLabel
         <span style={{ position: "relative", zIndex: 2, display: "inline-flex", alignItems: "center", gap: 6, background: "linear-gradient(180deg, #F2C14E 0%, #D4A92B 100%)", color: "#2D3E7A", fontSize: 11, fontWeight: 800, letterSpacing: "0.04em", textTransform: "uppercase", padding: "4px 10px", borderRadius: 6 }}>
           {termTag}
         </span>
-        <h1 style={{ position: "relative", zIndex: 2, fontFamily: "Georgia, 'Noto Serif Tamil', serif", fontSize: 22, fontWeight: 800, color: "#fff", marginTop: 8 }}>{title}</h1>
+        <h1 style={{ position: "relative", zIndex: 2, fontFamily: "Georgia, 'Noto Serif Tamil', serif", fontSize: 22, fontWeight: 800, color: "#fff", marginTop: 8, marginBottom: 0 }}>{title}</h1>
         <div style={{ position: "relative", zIndex: 2, fontSize: 12, color: "rgba(255,255,255,0.75)", marginTop: 2 }}>{subtitle}</div>
       </div>
 
