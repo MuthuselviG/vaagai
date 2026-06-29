@@ -30,11 +30,14 @@ const RIGHT_X = 299;
 const VIEW_WIDTH = 390;
 
 export default function UnitPath({ termTag, title, subtitle, backHref, backLabel, basePath, units, countLabel }: UnitPathProps) {
-  const points = units.map((_, i) => ({
-    x: i % 2 === 0 ? LEFT_X : RIGHT_X,
-    top: NODE_TOP_START + i * NODE_GAP_Y,
-    y: NODE_TOP_START + i * NODE_GAP_Y + CONNECT_OFFSET,
-  }));
+  const points = units.map((_, i) => {
+    const rowFromBottom = units.length - 1 - i;
+    return {
+      x: i % 2 === 0 ? LEFT_X : RIGHT_X,
+      top: NODE_TOP_START + rowFromBottom * NODE_GAP_Y,
+      y: NODE_TOP_START + rowFromBottom * NODE_GAP_Y + CONNECT_OFFSET,
+    };
+  });
 
   const pathD = points
     .slice(1)
@@ -106,6 +109,8 @@ export default function UnitPath({ termTag, title, subtitle, backHref, backLabel
           })}
         </div>
       )}
+
+      <div style={{ height: 90 }} />
     </>
   );
 }

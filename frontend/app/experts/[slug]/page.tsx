@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import CreatorProfileClient, { type CreatorData, type PackData } from "./CreatorProfileClient";
+import { READING_ONLY_PACK_IDS } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
@@ -53,6 +54,7 @@ export default async function CreatorProfilePage({ params }: { params: Promise<{
     .select("id, name, description, subject, exams, question_count, is_free")
     .eq("creator_id", creator.id)
     .eq("is_published", true)
+    .not("id", "in", `(${READING_ONLY_PACK_IDS.join(",")})`)
     .order("created_at", { ascending: false });
 
   return (

@@ -538,6 +538,11 @@ export type ReadingUnit = { topic: string; slug: string; questions: ReadingQA[] 
 const ROHIT_KALAI_HISTORY_T1_PACK_ID = "a84ca4fc-efe7-45c8-b84d-47647d15cce8";
 const ROHIT_KALAI_HISTORY_T2_PACK_ID = "7fd3ce12-6147-40cb-8b64-9cef49236935";
 
+// Reading-only Q&A packs (no real MCQ options) — kept out of any generic
+// practice/MCQ surface (homepage carousel, creator profile, pack detail).
+// They're reachable only through the dedicated reading-list pages.
+export const READING_ONLY_PACK_IDS = [ROHIT_KALAI_HISTORY_T1_PACK_ID, ROHIT_KALAI_HISTORY_T2_PACK_ID];
+
 // pack_order is unpopulated for this pack; this list captures the original
 // insertion sequence (matches the source textbook order) via ctid so the
 // reading page stays in order even though individual rows may be edited later.

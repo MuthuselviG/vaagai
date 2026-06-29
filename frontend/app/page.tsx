@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { T, shadow } from "../lib/tokens";
 import { slugify } from "../lib/slugify";
+import { READING_ONLY_PACK_IDS } from "../lib/supabase";
 import HomeLangToggle from "../components/HomeLangToggle";
 import HomeLoginButton from "../components/HomeLoginButton";
 
@@ -74,6 +75,7 @@ async function FeaturedPacksSection({ lang }: { lang: "en" | "ta" }) {
     .from("packs")
     .select("id, name, subject, exams, question_count, is_free, creators(name, slug, verified, accent_color, section)")
     .eq("is_published", true)
+    .not("id", "in", `(${READING_ONLY_PACK_IDS.join(",")})`)
     .order("created_at", { ascending: false })
     .limit(5);
 
