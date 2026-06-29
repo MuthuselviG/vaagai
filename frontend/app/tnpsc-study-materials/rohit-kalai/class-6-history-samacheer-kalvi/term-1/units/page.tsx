@@ -18,16 +18,35 @@ export const metadata: Metadata = {
 export default async function RohitKalaiClass6HistoryTerm1UnitsPage() {
   const units = await fetchRohitKalaiClass6HistoryTerm1Units();
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://mcqpalagu.in/" },
+      { "@type": "ListItem", position: 2, name: "TNPSC Study Materials", item: "https://mcqpalagu.in/tnpsc-study-materials" },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Class 6 History — Rohit Kalai",
+        item: "https://mcqpalagu.in/tnpsc-study-materials/rohit-kalai/class-6-history-samacheer-kalvi",
+      },
+      { "@type": "ListItem", position: 4, name: "Term 1 Units", item: `https://mcqpalagu.in${PAGE_PATH}` },
+    ],
+  };
+
   return (
-    <UnitPath
-      termTag="Term 1"
-      title="வரலாறு — அலகுகள்"
-      subtitle={`கலையரசன் ரா · ${units.length} அலகுகள்`}
-      backHref="/tnpsc-study-materials/rohit-kalai/class-6-history-samacheer-kalvi"
-      backLabel="← புத்தக அடைப்பு"
-      basePath={PAGE_PATH}
-      units={units.map((u) => ({ slug: u.slug, topic: u.topic, count: u.questions.length }))}
-      countLabel={(count) => `${count} வினா & விடை`}
-    />
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <UnitPath
+        termTag="Term 1"
+        title="வரலாறு — அலகுகள்"
+        subtitle={`கலையரசன் ரா · ${units.length} அலகுகள்`}
+        backHref="/tnpsc-study-materials/rohit-kalai/class-6-history-samacheer-kalvi"
+        backLabel="← புத்தக அடைப்பு"
+        basePath={PAGE_PATH}
+        units={units.map((u) => ({ slug: u.slug, topic: u.topic, count: u.questions.length }))}
+        countLabel={(count) => `${count} வினா & விடை`}
+      />
+    </>
   );
 }
