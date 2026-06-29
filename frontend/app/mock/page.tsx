@@ -24,7 +24,7 @@ export default function MockLandingPage() {
       <div style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, padding: "14px 16px", display: "flex", alignItems: "center", gap: 10, boxShadow: shadow.sm, flexShrink: 0 }}>
         <button onClick={() => router.back()} style={iconBtnStyle}>‹</button>
         <div>
-          <div style={{ fontSize: 15, fontWeight: 700, color: T.text }}>Mock Tests</div>
+          <h1 style={{ fontSize: 15, fontWeight: 700, color: T.text, margin: 0 }}>Mock Tests</h1>
           <div style={{ fontSize: 11, color: T.textSec }}>TNPSC Group 4 · 200 questions · 3 hours</div>
         </div>
       </div>

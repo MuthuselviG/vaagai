@@ -112,7 +112,7 @@ export default function CreatorProfileClient({ creator, packs }: { creator: Crea
                 )}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 18, fontWeight: 900, color: T.text, letterSpacing: "-0.3px", lineHeight: 1.2 }}>{creator.name}</div>
+                <h1 style={{ fontSize: 18, fontWeight: 900, color: T.text, letterSpacing: "-0.3px", lineHeight: 1.2, margin: 0 }}>{creator.name}</h1>
                 <div style={{ fontSize: 12, fontWeight: 600, color: T.textSec, marginTop: 3 }}>
                   {creator.type === "academy" ? "Academy" : "வழிகாட்டி"}
                 </div>

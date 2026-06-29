@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 };
 
 const RELATED = [
+  { href: "/tnpsc-study-materials/rohit-kalai/class-6-history-samacheer-kalvi", icon: "📚", title: "புத்தக அடைப்புக்குத் திரும்ப", sub: "மற்ற Terms-ஐப் பார்க்க" },
   { href: "/subjects", icon: "📋", title: "TNPSC குரூப் 4 PYQ பயிற்சி", sub: "முந்தைய ஆண்டு வினாத்தாள்கள்" },
   { href: "/current-affairs", icon: "📰", title: "தினசரி நடப்பு நிகழ்வுகள்", sub: "தினமும் புதுப்பிக்கப்படும் MCQ" },
   { href: "/tnpsc-study-materials", icon: "📚", title: "TNPSC படிப்பு பொருட்கள்", sub: "குறிப்புகள், நடப்பு நிகழ்வுகள் மற்றும் பல" },
@@ -40,8 +41,24 @@ function QCard({ q, num }: { q: ReadingQA; num: number }) {
 export default async function RohitKalaiClass6HistoryTerm1Page() {
   const questions = await fetchRohitKalaiClass6HistoryTerm1();
 
+  const faqItems = questions
+    .filter((q) => q.explanation.trim().length > 0)
+    .slice(0, 8)
+    .map((q) => ({
+      "@type": "Question",
+      name: q.question,
+      acceptedAnswer: { "@type": "Answer", text: q.explanation },
+    }));
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems,
+  };
+
   return (
     <>
+      {faqItems.length > 0 && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />}
       <WhatsAppShareButton title={`வரலாறு 6th Term 1 — ${questions.length} வினா & விடை`} context="கலையரசன் ரா" floating />
       {/* HERO */}
       <div style={{ background: `linear-gradient(135deg, ${T.indigo} 0%, ${T.indigoDark} 100%)`, color: "white", borderRadius: "0 0 28px 28px", padding: "16px 16px 34px", position: "relative", overflow: "hidden" }}>

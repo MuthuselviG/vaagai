@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import PackDetailClient, { type PackDetailData } from "./PackDetailClient";
 import { slugify } from "../../../../lib/slugify";
+import { READING_ONLY_PACK_IDS } from "../../../../lib/supabase";
 
 function makeSupabase() {
   return createClient(
@@ -26,7 +27,8 @@ const findPack = cache(async function findPack(creatorSlug: string, packNameSlug
     .from("packs")
     .select("id, name, description, subject, exams, question_count, is_free")
     .eq("creator_id", creator.id)
-    .eq("is_published", true);
+    .eq("is_published", true)
+    .not("id", "in", `(${READING_ONLY_PACK_IDS.join(",")})`);
   if (!packs) return null;
 
   let decodedSlug = packNameSlug;

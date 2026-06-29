@@ -29,9 +29,9 @@ const COPY = {
     tvkTitle: "TVK Maths Test 01",
     tvkDesc: "50 solved questions by Er. Thangamuthu — number system, surds, simplification & figure counting.",
     tvkCta: "View & Practice →",
-    historyTitle: "Class 6 History (Samacheer Kalvi) — Term 1",
-    historyDesc: "166 Tamil Q&A by Rohit Kalai, in textbook order — quick revision for TNPSC Group 4.",
-    historyCta: "Read Q&A →",
+    historyTitle: "Class 6 History (Samacheer Kalvi)",
+    historyDesc: "166 Tamil Q&A by Rohit Kalai — Term 1 ready now, Term 2 coming soon, term by term.",
+    historyCta: "Browse book →",
     gkTitle: "Daily GK Thoughts — June 2026",
     gkDesc: "Tamil GK Q&A by Daily GK Thoughts — important days, facts & more, with practice mode.",
     gkCta: "Read & Practice →",
@@ -49,9 +49,9 @@ const COPY = {
     tvkTitle: "TVK Maths Test 01",
     tvkDesc: "Er. தங்கமுத்து வழங்கும் 50 தீர்வு கேள்விகள் — எண் அமைப்பு, வர்க்கமூலங்கள், எளிமையாக்கல் & உருவ எண்ணிக்கை.",
     tvkCta: "பார்க்க & பயிற்சி →",
-    historyTitle: "6ஆம் வகுப்பு வரலாறு (சமச்சீர் கல்வி) — Term 1",
-    historyDesc: "கலையரசன் ரா வழங்கும் 166 தமிழ் வினா-விடைகள், பாடப்புத்தக வரிசையில் — TNPSC குரூப் 4க்கு விரைவு திருப்பிப் படிப்பு.",
-    historyCta: "வினா-விடை படிக்க →",
+    historyTitle: "6ஆம் வகுப்பு வரலாறு (சமச்சீர் கல்வி)",
+    historyDesc: "கலையரசன் ரா வழங்கும் 166 தமிழ் வினா-விடைகள் — Term 1 தயார், Term 2 டெர்ம் வாரியாக விரைவில்.",
+    historyCta: "புத்தகத்தைப் பார்க்க →",
     gkTitle: "Daily GK Thoughts — ஜூன் 2026",
     gkDesc: "Daily GK Thoughts வழங்கும் தமிழ் பொது அறிவு வினா-விடைகள் — முக்கிய தினங்கள், தகவல்கள் மற்றும் பயிற்சி முறையுடன்.",
     gkCta: "படிக்க & பயிற்சி →",
@@ -209,7 +209,7 @@ export default async function StudyMaterialsPage() {
           <span style={{ fontSize: 13, fontWeight: 700, color: T.indigo }}>{c.tvkCta}</span>
         </Link>
 
-        <Link href="/tnpsc-study-materials/rohit-kalai/class-6-history-samacheer-kalvi/term-1" style={{
+        <Link href="/tnpsc-study-materials/rohit-kalai/class-6-history-samacheer-kalvi" style={{
           display: "block", background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16,
           padding: "14px 16px", textDecoration: "none", marginBottom: 4, boxShadow: shadow.sm,
         }}>

@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { slugify } from "./slugify";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -479,6 +480,12 @@ export async function fetchAllCreators(): Promise<Creator[]> {
   return (data as Creator[]) ?? [];
 }
 
+export async function fetchVerifiedCreatorSlugs(): Promise<string[]> {
+  const { data, error } = await supabase.from("creators").select("slug").eq("verified", true).not("slug", "is", null);
+  if (error) throw error;
+  return (data ?? []).map((row) => row.slug as string);
+}
+
 export async function fetchAllPacks(): Promise<(Pack & { creator_name: string })[]> {
   const { data, error } = await supabase.from("packs").select("*, creators(name)").order("created_at", { ascending: false });
   if (error) throw error;
@@ -529,11 +536,18 @@ export async function fetchCAAvailableMonths(): Promise<string[]> {
   return months;
 }
 
-// ─── ROHIT KALAI: CLASS 6 HISTORY (SAMACHEER KALVI), TERM 1 ────
+// ─── ROHIT KALAI: CLASS 6 HISTORY (SAMACHEER KALVI) ────
 
 export type ReadingQA = { id: string; question: string; explanation: string };
+export type ReadingUnit = { topic: string; slug: string; questions: ReadingQA[] };
 
 const ROHIT_KALAI_HISTORY_T1_PACK_ID = "a84ca4fc-efe7-45c8-b84d-47647d15cce8";
+const ROHIT_KALAI_HISTORY_T2_PACK_ID = "7fd3ce12-6147-40cb-8b64-9cef49236935";
+
+// Reading-only Q&A packs (no real MCQ options) — kept out of any generic
+// practice/MCQ surface (homepage carousel, creator profile, pack detail).
+// They're reachable only through the dedicated reading-list pages.
+export const READING_ONLY_PACK_IDS = [ROHIT_KALAI_HISTORY_T1_PACK_ID, ROHIT_KALAI_HISTORY_T2_PACK_ID];
 
 // pack_order is unpopulated for this pack; this list captures the original
 // insertion sequence (matches the source textbook order) via ctid so the
@@ -642,4 +656,53 @@ export async function fetchRohitKalaiClass6HistoryTerm1(): Promise<ReadingQA[]> 
     .eq("status", "approved");
   if (error) throw error;
   return sortByIdOrder((data ?? []) as ReadingQA[], ROHIT_KALAI_HISTORY_T1_ORDER);
+}
+
+// Groups already-ordered rows by their `topic` column, preserving first-seen
+// order. Rows with no topic are dropped — a unit only exists once it's tagged.
+function groupByTopic(rows: (ReadingQA & { topic: string | null })[]): ReadingUnit[] {
+  const order: string[] = [];
+  const groups = new Map<string, ReadingQA[]>();
+  for (const { topic, ...q } of rows) {
+    if (!topic) continue;
+    if (!groups.has(topic)) {
+      order.push(topic);
+      groups.set(topic, []);
+    }
+    groups.get(topic)!.push(q);
+  }
+  return order.map((topic) => ({ topic, slug: slugify(topic), questions: groups.get(topic)! }));
+}
+
+// Next.js passes dynamic route params percent-encoded, unlike URLSearchParams —
+// decode before comparing against a slug derived straight from `topic` text.
+export function findUnitBySlug(units: ReadingUnit[], rawSlug: string): ReadingUnit | undefined {
+  return units.find((u) => u.slug === decodeURIComponent(rawSlug));
+}
+
+export async function fetchRohitKalaiClass6HistoryTerm1Units(): Promise<ReadingUnit[]> {
+  const { data, error } = await supabase
+    .from("questions")
+    .select("id, question, explanation, topic")
+    .eq("pack_id", ROHIT_KALAI_HISTORY_T1_PACK_ID)
+    .eq("lang", "ta")
+    .eq("status", "approved");
+  if (error) throw error;
+  const sorted = sortByIdOrder(
+    (data ?? []) as (ReadingQA & { topic: string | null })[],
+    ROHIT_KALAI_HISTORY_T1_ORDER
+  );
+  return groupByTopic(sorted);
+}
+
+export async function fetchRohitKalaiClass6HistoryTerm2Units(): Promise<ReadingUnit[]> {
+  const { data, error } = await supabase
+    .from("questions")
+    .select("id, question, explanation, topic")
+    .eq("pack_id", ROHIT_KALAI_HISTORY_T2_PACK_ID)
+    .eq("lang", "ta")
+    .eq("status", "approved")
+    .order("pack_order", { ascending: true });
+  if (error) throw error;
+  return groupByTopic((data ?? []) as (ReadingQA & { topic: string | null })[]);
 }
