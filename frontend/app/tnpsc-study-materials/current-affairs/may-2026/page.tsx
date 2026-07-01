@@ -205,6 +205,7 @@ export default async function CAMonthlyPage() {
           {[
             { href: "/current-affairs", icon: "📰", bg: T.greenBg, title: "Today's Current Affairs", sub: "Daily updated questions" },
             { href: "/pyq/group4", icon: "📋", bg: "#FEF3C7", title: "Group 4 PYQ Practice", sub: "Previous Year Question Papers" },
+            { href: "/tnpsc-study-materials/ai-tnpsc-group-4-pyq-analysis", icon: "📊", bg: T.redBg, title: "AI PYQ Analysis", sub: "Which topics actually repeat?" },
             { href: "/tnpsc-study-materials/syllabus/group-4", icon: "📚", bg: T.indigoLight, title: "TNPSC Group 4 Syllabus", sub: "Full unit-wise syllabus breakdown" },
             { href: "/tnpsc-study-materials/current-affairs/may-2026-tamil", icon: "🔤", bg: "#F5F3FF", title: "தமிழில் படிக்க", sub: "Read May 2026 in Tamil" },
           ].map((link) => (

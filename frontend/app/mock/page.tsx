@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { T, shadow } from "@/lib/tokens";
 
 const PYQ_YEARS = [
@@ -56,6 +57,19 @@ export default function MockLandingPage() {
             </div>
           </div>
         </div>
+
+        {/* PYQ Analysis CTA */}
+        <Link
+          href="/tnpsc-study-materials/ai-tnpsc-group-4-pyq-analysis"
+          style={{ background: T.surface, border: `1.5px solid ${T.indigoMid}`, borderRadius: 20, padding: 16, display: "flex", alignItems: "center", gap: 12, textDecoration: "none", boxShadow: shadow.sm }}
+        >
+          <div style={{ width: 44, height: 44, borderRadius: 13, background: T.indigoLight, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>📊</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 800, color: T.text }}>Which topics actually repeat?</div>
+            <div style={{ fontSize: 11, color: T.textSec, marginTop: 2 }}>AI-analyzed PYQ patterns · 9 papers · 2012–2025</div>
+          </div>
+          <div style={{ background: T.indigo, color: "#fff", borderRadius: 10, padding: "8px 12px", fontSize: 12, fontWeight: 700, flexShrink: 0 }}>View →</div>
+        </Link>
 
         {/* AI Predicted — coming soon */}
         <div style={{ background: T.surface, border: `1.5px dashed ${T.border}`, borderRadius: 20, padding: 16, display: "flex", alignItems: "center", gap: 12, opacity: 0.6 }}>

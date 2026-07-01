@@ -177,6 +177,7 @@ export default async function CAMonthlyTamilPage() {
           {[
             { href: "/current-affairs", icon: "📰", bg: T.greenBg, title: "இன்றைய நடப்பு நிகழ்வுகள்", sub: "தினமும் புதுப்பிக்கப்படும் வினாக்கள்" },
             { href: "/subjects", icon: "📋", bg: "#FEF3C7", title: "குரூப் 4 PYQ பயிற்சி", sub: "முந்தைய ஆண்டு வினாத்தாள்கள்" },
+            { href: "/tnpsc-study-materials/ai-tnpsc-group-4-pyq-analysis-tamil", icon: "📊", bg: T.redBg, title: "AI வினாத்தாள் பகுப்பாய்வு", sub: "எந்த தலைப்புகள் மீண்டும் வரும்?" },
             { href: "/mock", icon: "📝", bg: "#F5F3FF", title: "Full Mock Test", sub: "" },
             { href: "/tnpsc-study-materials/current-affairs/june-2026", icon: "🔤", bg: T.indigoLight, title: "ஆங்கிலத்தில் படிக்க →", sub: "June 2026 in English" },
           ].map((link) => (
