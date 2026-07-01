@@ -203,6 +203,7 @@ export default async function CAMonthlyPage() {
           {[
             { href: "/current-affairs", icon: "📰", bg: T.greenBg, title: "Today's Current Affairs", sub: "Daily updated questions" },
             { href: "/subjects", icon: "📋", bg: "#FEF3C7", title: "Group 4 PYQ Practice", sub: "Previous Year Question Papers" },
+            { href: "/tnpsc-study-materials/ai-tnpsc-group-4-pyq-analysis", icon: "📊", bg: T.redBg, title: "AI PYQ Analysis", sub: "Which topics actually repeat?" },
             { href: "/mock", icon: "📝", bg: "#F5F3FF", title: "Full Mock Test", sub: "200 questions · 3 hours · Free" },
             { href: "/tnpsc-study-materials/current-affairs/june-2026-tamil", icon: "🔤", bg: T.indigoLight, title: "தமிழில் படிக்க", sub: "Read June 2026 in Tamil" },
           ].map((link) => (

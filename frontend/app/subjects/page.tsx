@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import LangToggle from "../../components/LangToggle";
 import { T, shadow } from "../../lib/tokens";
 import { fetchChapterCounts, supabase, type ChapterCount } from "../../lib/supabase";
@@ -287,6 +288,21 @@ export default function SubjectsPage() {
             ))}
           </div>
         </div>
+
+        {/* PYQ Analysis CTA */}
+        <Link
+          href={lang === "ta" ? "/tnpsc-study-materials/ai-tnpsc-group-4-pyq-analysis-tamil" : "/tnpsc-study-materials/ai-tnpsc-group-4-pyq-analysis"}
+          style={{ background: T.surface, border: `1.5px solid ${T.indigoMid}`, borderRadius: 16, padding: "13px 14px", display: "flex", alignItems: "center", gap: 12, textDecoration: "none", marginBottom: 14, boxShadow: shadow.sm }}
+        >
+          <div style={{ width: 44, height: 44, borderRadius: 13, background: T.indigoLight, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>📊</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 800, color: T.text }}>{lang === "ta" ? "எந்த தலைப்புகள் மீண்டும் வரும்?" : "Which topics actually repeat?"}</div>
+            <div style={{ fontSize: 11, color: T.textSec, marginTop: 2 }}>{lang === "ta" ? "9 தாள்கள் பகுப்பாய்வு · 2012–2025" : "9 papers analyzed · 2012–2025"}</div>
+          </div>
+          <div style={{ background: T.indigo, color: "#fff", borderRadius: 10, padding: "8px 12px", fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
+            {lang === "ta" ? "பார்க்க →" : "View →"}
+          </div>
+        </Link>
 
         {/* Mock Test CTA */}
         <div
