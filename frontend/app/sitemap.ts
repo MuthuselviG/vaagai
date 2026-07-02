@@ -4,6 +4,7 @@ import {
   CA_UNIT_ORDER,
   fetchRohitKalaiClass6HistoryTerm1Units,
   fetchRohitKalaiClass6HistoryTerm2Units,
+  fetchNitiAayogUnits,
   fetchVerifiedCreatorSlugs,
 } from "../lib/supabase";
 
@@ -16,6 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const months = await fetchCAAvailableMonths().catch(() => [] as string[]);
   const term1Units = await fetchRohitKalaiClass6HistoryTerm1Units().catch(() => []);
   const term2Units = await fetchRohitKalaiClass6HistoryTerm2Units().catch(() => []);
+  const nitiAayogUnits = await fetchNitiAayogUnits().catch(() => []);
   const creatorSlugs = await fetchVerifiedCreatorSlugs().catch(() => [] as string[]);
 
   const yearPages = PYQ_YEARS.flatMap((year) => [
@@ -54,6 +56,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     ...term2Units.map((u) => ({
       url: `${BASE}${TERM2_UNITS_PATH}/${u.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+  ];
+
+  const NITI_AAYOG_PATH = "/tnpsc-study-materials/er-thangamuthu/niti-aayog";
+  const nitiAayogPages = [
+    { url: `${BASE}${NITI_AAYOG_PATH}`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.7 },
+    ...nitiAayogUnits.map((u) => ({
+      url: `${BASE}${NITI_AAYOG_PATH}/${u.slug}`,
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.6,
@@ -107,6 +120,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/tnpsc-study-materials/rohit-kalai/class-6-history-samacheer-kalvi/term-1`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE}/tnpsc-study-materials/daily-gk-thoughts/june-2026`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     ...rohitKalaiUnitPages,
+    ...nitiAayogPages,
     ...monthPages,
     ...yearPages,
     ...expertPages,

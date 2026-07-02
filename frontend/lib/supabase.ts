@@ -543,11 +543,12 @@ export type ReadingUnit = { topic: string; slug: string; questions: ReadingQA[] 
 
 const ROHIT_KALAI_HISTORY_T1_PACK_ID = "a84ca4fc-efe7-45c8-b84d-47647d15cce8";
 const ROHIT_KALAI_HISTORY_T2_PACK_ID = "7fd3ce12-6147-40cb-8b64-9cef49236935";
+export const NITI_AAYOG_PACK_ID = "7378c007-de39-4362-8f72-6c8787bdf2ec";
 
 // Reading-only Q&A packs (no real MCQ options) — kept out of any generic
 // practice/MCQ surface (homepage carousel, creator profile, pack detail).
 // They're reachable only through the dedicated reading-list pages.
-export const READING_ONLY_PACK_IDS = [ROHIT_KALAI_HISTORY_T1_PACK_ID, ROHIT_KALAI_HISTORY_T2_PACK_ID];
+export const READING_ONLY_PACK_IDS = [ROHIT_KALAI_HISTORY_T1_PACK_ID, ROHIT_KALAI_HISTORY_T2_PACK_ID, NITI_AAYOG_PACK_ID];
 
 // pack_order is unpopulated for this pack; this list captures the original
 // insertion sequence (matches the source textbook order) via ctid so the
@@ -676,7 +677,7 @@ function groupByTopic(rows: (ReadingQA & { topic: string | null })[]): ReadingUn
 
 // Next.js passes dynamic route params percent-encoded, unlike URLSearchParams —
 // decode before comparing against a slug derived straight from `topic` text.
-export function findUnitBySlug(units: ReadingUnit[], rawSlug: string): ReadingUnit | undefined {
+export function findUnitBySlug<U extends { slug: string }>(units: U[], rawSlug: string): U | undefined {
   return units.find((u) => u.slug === decodeURIComponent(rawSlug));
 }
 
@@ -705,4 +706,59 @@ export async function fetchRohitKalaiClass6HistoryTerm2Units(): Promise<ReadingU
     .order("pack_order", { ascending: true });
   if (error) throw error;
   return groupByTopic((data ?? []) as (ReadingQA & { topic: string | null })[]);
+}
+
+// ─── NITI AAYOG (ER. THANGAMUTHU TVK) ────
+
+export type BilingualQA = { id: string; questionEn: string; questionTa: string; explanationEn: string; explanationTa: string };
+export type BilingualUnit = { topic: string; slug: string; questions: BilingualQA[] };
+
+type NitiRow = { id: string; question: string; explanation: string; topic: string | null; lang: string; pack_order: number };
+
+// Each question is stored as two rows sharing consecutive pack_order values
+// (odd = en, even = ta) — pair them up before grouping into units.
+function pairBilingual(rows: NitiRow[]): (BilingualQA & { topic: string | null })[] {
+  const sorted = [...rows].sort((a, b) => a.pack_order - b.pack_order);
+  const pairs: (BilingualQA & { topic: string | null })[] = [];
+  for (let i = 0; i < sorted.length; i += 2) {
+    const a = sorted[i];
+    const b = sorted[i + 1];
+    if (!a || !b) continue;
+    const en = a.lang === "en" ? a : b;
+    const ta = a.lang === "ta" ? a : b;
+    pairs.push({
+      id: en.id,
+      questionEn: en.question,
+      questionTa: ta.question,
+      explanationEn: en.explanation,
+      explanationTa: ta.explanation,
+      topic: en.topic,
+    });
+  }
+  return pairs;
+}
+
+function groupByTopicBilingual(rows: (BilingualQA & { topic: string | null })[]): BilingualUnit[] {
+  const order: string[] = [];
+  const groups = new Map<string, BilingualQA[]>();
+  for (const { topic, ...q } of rows) {
+    if (!topic) continue;
+    if (!groups.has(topic)) {
+      order.push(topic);
+      groups.set(topic, []);
+    }
+    groups.get(topic)!.push(q);
+  }
+  return order.map((topic) => ({ topic, slug: slugify(topic), questions: groups.get(topic)! }));
+}
+
+export async function fetchNitiAayogUnits(): Promise<BilingualUnit[]> {
+  const { data, error } = await supabase
+    .from("questions")
+    .select("id, question, explanation, topic, lang, pack_order")
+    .eq("pack_id", NITI_AAYOG_PACK_ID)
+    .eq("status", "approved")
+    .order("pack_order", { ascending: true });
+  if (error) throw error;
+  return groupByTopicBilingual(pairBilingual((data ?? []) as NitiRow[]));
 }
