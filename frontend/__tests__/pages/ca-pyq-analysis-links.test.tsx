@@ -20,6 +20,8 @@ import MayEnPage from "@/app/tnpsc-study-materials/current-affairs/may-2026/page
 import MayTaPage from "@/app/tnpsc-study-materials/current-affairs/may-2026-tamil/page";
 import JuneEnPage from "@/app/tnpsc-study-materials/current-affairs/june-2026/page";
 import JuneTaPage from "@/app/tnpsc-study-materials/current-affairs/june-2026-tamil/page";
+import JulyEnPage from "@/app/tnpsc-study-materials/current-affairs/july-2026/page";
+import JulyTaPage from "@/app/tnpsc-study-materials/current-affairs/july-2026-tamil/page";
 
 describe("CA monthly pages — Explore More links to the AI PYQ Analysis page", () => {
   it("May 2026 (EN) links to the EN PYQ analysis page", async () => {
@@ -42,6 +44,18 @@ describe("CA monthly pages — Explore More links to the AI PYQ Analysis page", 
 
   it("June 2026 (Tamil) links to the Tamil PYQ analysis page", async () => {
     render(await JuneTaPage());
+    const link = screen.getByText("AI வினாத்தாள் பகுப்பாய்வு").closest("a");
+    expect(link).toHaveAttribute("href", "/tnpsc-study-materials/ai-tnpsc-group-4-pyq-analysis-tamil");
+  });
+
+  it("July 2026 (EN) links to the EN PYQ analysis page", async () => {
+    render(await JulyEnPage());
+    const link = screen.getByText("AI PYQ Analysis").closest("a");
+    expect(link).toHaveAttribute("href", "/tnpsc-study-materials/ai-tnpsc-group-4-pyq-analysis");
+  });
+
+  it("July 2026 (Tamil) links to the Tamil PYQ analysis page", async () => {
+    render(await JulyTaPage());
     const link = screen.getByText("AI வினாத்தாள் பகுப்பாய்வு").closest("a");
     expect(link).toHaveAttribute("href", "/tnpsc-study-materials/ai-tnpsc-group-4-pyq-analysis-tamil");
   });
