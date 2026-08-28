@@ -14,6 +14,12 @@ const nextConfig = {
       destination: "https://mcqpalagu.in/:path*",
       permanent: true,
     },
+    {
+      source: "/:path*",
+      has: [{ type: "host", value: "www.mcqpalagu.in" }],
+      destination: "https://mcqpalagu.in/:path*",
+      permanent: true,
+    },
   ],
 };
 
