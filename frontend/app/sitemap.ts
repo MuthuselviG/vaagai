@@ -106,6 +106,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/tnpsc-study-materials/rohit-kalai/class-6-history-samacheer-kalvi`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE}/tnpsc-study-materials/rohit-kalai/class-6-history-samacheer-kalvi/term-1`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE}/tnpsc-study-materials/daily-gk-thoughts/june-2026`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+    { url: `${BASE}/tnpsc-study-materials/er-thangamuthu/niti-aayog`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     ...rohitKalaiUnitPages,
     ...monthPages,
     ...yearPages,

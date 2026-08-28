@@ -32,6 +32,9 @@ const COPY = {
     historyTitle: "Class 6 History (Samacheer Kalvi)",
     historyDesc: "166 Tamil Q&A by Rohit Kalai — Term 1 ready now, Term 2 coming soon, term by term.",
     historyCta: "Browse book →",
+    nitiTitle: "NITI Aayog — Q&A",
+    nitiDesc: "196 bilingual Q&A by Er. Thangamuthu (TVK) — establishment, leadership, vision & mission, indices & reports.",
+    nitiCta: "Browse unit by unit →",
     gkTitle: "Daily GK Thoughts — June 2026",
     gkDesc: "Tamil GK Q&A by Daily GK Thoughts — important days, facts & more, with practice mode.",
     gkCta: "Read & Practice →",
@@ -52,6 +55,9 @@ const COPY = {
     historyTitle: "6ஆம் வகுப்பு வரலாறு (சமச்சீர் கல்வி)",
     historyDesc: "கலையரசன் ரா வழங்கும் 166 தமிழ் வினா-விடைகள் — Term 1 தயார், Term 2 டெர்ம் வாரியாக விரைவில்.",
     historyCta: "புத்தகத்தைப் பார்க்க →",
+    nitiTitle: "NITI Aayog — வினா-விடை",
+    nitiDesc: "Er. தங்கமுத்து (TVK) வழங்கும் 196 இருமொழி வினா-விடைகள் — தோற்றம், தலைமை, நோக்கம் & பணி, குறியீடுகள் & அறிக்கைகள்.",
+    nitiCta: "அலகு வாரியாகப் பார்க்க →",
     gkTitle: "Daily GK Thoughts — ஜூன் 2026",
     gkDesc: "Daily GK Thoughts வழங்கும் தமிழ் பொது அறிவு வினா-விடைகள் — முக்கிய தினங்கள், தகவல்கள் மற்றும் பயிற்சி முறையுடன்.",
     gkCta: "படிக்க & பயிற்சி →",
@@ -219,6 +225,18 @@ export default async function StudyMaterialsPage() {
           </div>
           <p style={{ fontSize: 13, color: T.textSec, margin: "0 0 8px", lineHeight: 1.45 }}>{c.historyDesc}</p>
           <span style={{ fontSize: 13, fontWeight: 700, color: T.indigo }}>{c.historyCta}</span>
+        </Link>
+
+        <Link href="/tnpsc-study-materials/er-thangamuthu/niti-aayog" style={{
+          display: "block", background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16,
+          padding: "14px 16px", textDecoration: "none", marginBottom: 4, boxShadow: shadow.sm,
+        }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+            <span style={{ fontFamily: "serif", fontSize: 15, fontWeight: 700, color: T.text }}>{c.nitiTitle}</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: T.indigo, background: T.indigoLight, border: `1px solid ${T.indigoMid}`, padding: "3px 10px", borderRadius: 20 }}>196 Q&A</span>
+          </div>
+          <p style={{ fontSize: 13, color: T.textSec, margin: "0 0 8px", lineHeight: 1.45 }}>{c.nitiDesc}</p>
+          <span style={{ fontSize: 13, fontWeight: 700, color: T.indigo }}>{c.nitiCta}</span>
         </Link>
 
         <Link href="/tnpsc-study-materials/daily-gk-thoughts/june-2026" style={{

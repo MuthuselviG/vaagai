@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { T, shadow } from "../../../lib/tokens";
 import { slugify } from "../../../lib/slugify";
@@ -51,6 +52,12 @@ export type PackData = {
   is_free: boolean;
 };
 
+export type StudyGuideData = {
+  href: string;
+  title: string;
+  questionCount: number;
+};
+
 const YtIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
     <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
@@ -69,7 +76,7 @@ const TgIcon = () => (
   </svg>
 );
 
-export default function CreatorProfileClient({ creator, packs }: { creator: CreatorData; packs: PackData[] }) {
+export default function CreatorProfileClient({ creator, packs, studyGuides }: { creator: CreatorData; packs: PackData[]; studyGuides: StudyGuideData[] }) {
   const router = useRouter();
   const accent = ACCENT_MAP[creator.accent_color] ?? creator.accent_color;
   const gradient = ACCENT_GRADIENTS[creator.accent_color] ?? ACCENT_GRADIENTS.navy;
@@ -184,6 +191,27 @@ export default function CreatorProfileClient({ creator, packs }: { creator: Crea
             );
           })
         )}
+
+        {studyGuides.length > 0 && (
+          <>
+            <div style={{ fontSize: 11, fontWeight: 800, color: T.textTer, textTransform: "uppercase", letterSpacing: "0.8px", marginTop: 6 }}>
+              Study Guides ({studyGuides.length})
+            </div>
+            {studyGuides.map((guide) => (
+              <Link key={guide.href} href={guide.href}
+                style={{ background: T.surface, borderRadius: 16, padding: 14, border: `1px solid ${T.border}`, boxShadow: shadow.sm, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, textDecoration: "none" }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: T.text, lineHeight: 1.3 }}>{guide.title}</div>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 4, background: T.indigoLight, color: T.indigo, fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 8, marginTop: 6 }}>
+                    📖 {guide.questionCount} Q&A
+                  </span>
+                </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.textTer} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M9 18l6-6-6-6" /></svg>
+              </Link>
+            ))}
+          </>
+        )}
+
         <div style={{ paddingBottom: 48 }} />
       </div>
     </div>
