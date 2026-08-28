@@ -64,13 +64,16 @@ function OnboardingPageContent() {
       return;
     }
 
-    // 1. Update user row (created at login)
-    const { error: updateError } = await supabase.from("users").update({
+    // 1. Update user row (created at login) — upsert so onboarding still
+    // succeeds even if the row-creation step at login silently failed.
+    const { error: updateError } = await supabase.from("users").upsert({
+      id: user.id,
+      email: user.email ?? null,
       name: name.trim(),
       exam_target: selectedExam,
       taluk: selectedTaluk,
       role: selectedRole,
-    }).eq("id", user.id);
+    });
 
     if (updateError) {
       setLoading(false);

@@ -76,15 +76,43 @@ describe("AuthCallbackPage", () => {
       data: { session: { user: { id: "user-456" } } },
       error: null,
     });
+    const mockUpsert = vi.fn().mockResolvedValue({ data: null, error: null });
     mockFrom.mockReturnValue({
       select: vi.fn().mockReturnThis(),
       eq: vi.fn().mockReturnThis(),
       single: vi.fn().mockResolvedValue({ data: null }),
-      insert: vi.fn().mockResolvedValue({ data: null, error: null }),
+      upsert: mockUpsert,
     });
     render(<AuthCallbackPage />);
     await waitFor(() =>
       expect(mockPush).toHaveBeenCalledWith("/onboarding")
     );
+    expect(mockUpsert).toHaveBeenCalledWith(
+      expect.objectContaining({ id: "user-456" })
+    );
+  });
+
+  it("still redirects to /onboarding (not stuck) when the user-row upsert fails, and logs the failure", async () => {
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    mockGetSession.mockResolvedValue({
+      data: { session: { user: { id: "user-789" } } },
+      error: null,
+    });
+    const upsertError = new Error("row-level security policy violation");
+    mockFrom.mockReturnValue({
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      single: vi.fn().mockResolvedValue({ data: null }),
+      upsert: vi.fn().mockResolvedValue({ data: null, error: upsertError }),
+    });
+    render(<AuthCallbackPage />);
+    await waitFor(() =>
+      expect(mockPush).toHaveBeenCalledWith("/onboarding")
+    );
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Failed to create user row:",
+      upsertError
+    );
+    consoleErrorSpy.mockRestore();
   });
 });

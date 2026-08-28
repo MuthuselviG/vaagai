@@ -29,12 +29,15 @@ function AuthCallbackContent() {
 
       if (!existingUser) {
         const meta = session.user.user_metadata ?? {};
-        await supabase.from("users").insert({
+        const { error: upsertError } = await supabase.from("users").upsert({
           id: session.user.id,
           email: session.user.email ?? null,
           phone: session.user.phone ?? null,
           name: meta.full_name || meta.name || session.user.email?.split("@")[0] || "",
         });
+        if (upsertError) {
+          console.error("Failed to create user row:", upsertError);
+        }
       }
 
       const needsOnboarding = !existingUser || !existingUser.exam_target;
