@@ -9,6 +9,18 @@
 - **Before building any visual/UI/design change, show the user a screenshot or preview of the design and get explicit approval before writing the final code/commit.** The user is not a designer and can't evaluate a design from a text description — render it and show it first.
 - **Always branch from the latest `main`.** Before starting new work, fetch and create the branch off `origin/main` (not off an old feature branch), so PRs apply cleanly without rebase conflicts.
 - **Every new feature must include unit tests covering it**, added in the same change.
+- **Before starting new work, check open PRs** (GitHub PR list). A fix may already exist unmerged and forgotten — that happened with the www→apex redirect (PR #28, opened June 14, sat unmerged until it was independently re-done as PR #43 on Aug 28). Check `## Decisions & Known Issues Log` below too.
+
+## Decisions & Known Issues Log
+
+Running log, most recent first. Every session should read this before doing SEO/infra work, so issues already investigated (fixed or deliberately left open) aren't rediscovered from scratch.
+
+- **2026-08-28 — FIXED: www vs apex domain duplication.** `www.mcqpalagu.in` and `mcqpalagu.in` were both serving live content, no redirect. Confirmed via Search Console Coverage report ("Page with redirect" / "Redirect error" were the top issues) and indexed-page count plateaued at ~24-26 for 2 months. Fixed in `next.config.mjs` (PR #43). A prior identical fix (PR #28) existed but was never merged — closed as superseded. **Lesson: check open PRs before assuming something is unfixed.**
+- **2026-08-28 — FIXED: silent user-row-creation failure on login.** `auth/callback` inserted into `public.users` without checking the error; 31 of 48 recent sign-ins (65%) had no row despite being authenticated. Fixed client-side (`upsert` + error logging in `auth/callback` and `onboarding`), and — the actual permanent fix — added a Postgres trigger (`on_auth_user_created` on `auth.users`, migration `auto_create_public_user_row_on_signup`) that creates the row at the database level regardless of the browser. Backfilled the 31 missing rows.
+- **2026-08-28 — ADDED: August 2026 current affairs pages** (EN + TA + per-unit), matching the July template. DB already had the content; only page files were missing.
+- **2026-08-28 — OPEN, not yet fixed: `/mock/[year]` and `/pyq/[group]/[year]` pages** (18 sitemap URLs) have no per-page `generateMetadata` — they inherit a shared parent title/canonical, so Google can't index them as distinct pages. Same bug class as the www issue. Fix pattern: mirror `/experts/[slug]/page.tsx`'s `generateMetadata`.
+- **2026-08-28 — OPEN, not yet fixed: `/subjects` and `/current-affairs` fetch their real content (chapter counts, today's questions) client-side in `useEffect`.** Not a deliberate performance choice (no commit documents a reason) — just the default pattern the pages were built with. Crawlers see an empty shell on first paint. Fix pattern: server-fetch + pass to client component, like `/experts/page.tsx` does.
+- **Confirmed via GA/Search Console data (Aug 2026):** archaeology/Keeladi-topic current affairs pages are the site's best organic performer (May 2026 page: 79 clicks, 1314 impressions, ~position 6). Total site organic search traffic is still very low (~130 clicks/28 days pre-fix). Worth leaning into topical/newsy content in that vein.
 
 ## What This App Is
 
