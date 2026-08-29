@@ -2,14 +2,18 @@ import { describe, it, expect } from "vitest";
 import nextConfig from "../next.config.mjs";
 
 describe("next.config.mjs redirects", () => {
-  it("redirects www.mcqpalagu.in to the apex domain, preserving the path", async () => {
+  // No www.mcqpalagu.in -> apex redirect here: Vercel's Domain settings
+  // already redirect the apex to www at the edge, so adding the opposite
+  // redirect in app code created an infinite loop that took the site
+  // down entirely (zero visitors from 2026-08-28 08:44 UTC onward).
+  // If this needs fixing again, it must be done as a Vercel domain
+  // setting, not a code-level redirect.
+  it("does not redirect www.mcqpalagu.in in code (would loop with Vercel's domain-level apex redirect)", async () => {
     const redirects = await nextConfig.redirects();
     const wwwRedirect = redirects.find((r) =>
       r.has?.some((h) => h.type === "host" && h.value === "www.mcqpalagu.in")
     );
-    expect(wwwRedirect).toBeDefined();
-    expect(wwwRedirect?.destination).toBe("https://mcqpalagu.in/:path*");
-    expect(wwwRedirect?.permanent).toBe(true);
+    expect(wwwRedirect).toBeUndefined();
   });
 
   it("still redirects vaagai.vercel.app to the apex domain", async () => {
