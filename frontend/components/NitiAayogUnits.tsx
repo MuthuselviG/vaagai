@@ -8,7 +8,6 @@ type Props = {
   units: BilingualUnit[];
   lang: "en" | "ta";
   answerLabel: string;
-  qa: (n: number) => string;
   tapHint: string;
 };
 
@@ -44,9 +43,10 @@ function QCard({ q, num, lang, answerLabel }: { q: BilingualQA; num: number; lan
 // Renders every unit's questions up front (hidden via CSS when collapsed) so
 // the full Q&A set stays in the server-rendered HTML for crawlers, while the
 // picker above only toggles which section is visible on screen.
-export default function NitiAayogUnits({ units, lang, answerLabel, qa, tapHint }: Props) {
+export default function NitiAayogUnits({ units, lang, answerLabel, tapHint }: Props) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const isTa = lang === "ta";
+  const qa = (n: number) => (isTa ? `${n} வினா-விடை` : `${n} Q&A`);
 
   return (
     <>

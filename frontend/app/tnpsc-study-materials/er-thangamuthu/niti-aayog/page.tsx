@@ -130,7 +130,7 @@ export default async function NitiAayogUnitsPage() {
           <h2 style={{ fontFamily: "serif", fontSize: isTa ? 19 : 18, fontWeight: 700, color: T.indigoDark, margin: 0 }}>{c.unitsHeading}</h2>
         </div>
 
-        <NitiAayogUnits units={units} lang={lang} answerLabel={c.answerLabel} qa={c.qa} tapHint={c.tapHint} />
+        <NitiAayogUnits units={units} lang={lang} answerLabel={c.answerLabel} tapHint={c.tapHint} />
 
         {/* RELATED LINKS */}
         <div style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: 16, padding: 18, marginTop: 14, marginBottom: 24 }}>
