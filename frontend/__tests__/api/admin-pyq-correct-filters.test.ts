@@ -3,7 +3,7 @@ import { GET } from "@/app/api/admin/pyq-correct/filters/route";
 
 function makeQueryChain(resolvedValue: { data: unknown; error: unknown }) {
   const chain: Record<string, unknown> = {};
-  const methods = ["select", "eq"];
+  const methods = ["select", "eq", "range"];
   for (const m of methods) {
     chain[m] = vi.fn(() => chain);
   }
@@ -58,5 +58,32 @@ describe("GET /api/admin/pyq-correct/filters", () => {
     const res = await GET();
     const json = await res.json();
     expect(json).toEqual({ subjects: [], years: [], groups: [] });
+  });
+
+  it("pages past Supabase's 1000-row cap instead of silently truncating", async () => {
+    // Regression test for the real bug: a single unpaginated select only
+    // ever returned the first 1000 (all year 2025) of ~4000 PYQ rows, so
+    // the year filter showed just "2025". A full first batch must trigger
+    // a second request that picks up the remaining years.
+    const firstBatch = Array.from({ length: 1000 }, () => ({
+      subject: "History",
+      pyq_years: [2025],
+      pyq_groups: ["group4"],
+    }));
+    const secondBatch = [
+      { subject: "Indian Polity", pyq_years: [2012], pyq_groups: ["group4"] },
+    ];
+
+    mockFrom
+      .mockReturnValueOnce(makeQueryChain({ data: firstBatch, error: null }))
+      .mockReturnValueOnce(makeQueryChain({ data: secondBatch, error: null }));
+
+    const res = await GET();
+    expect(res.status).toBe(200);
+    const json = await res.json();
+
+    expect(mockFrom).toHaveBeenCalledTimes(2);
+    expect(json.years).toEqual(expect.arrayContaining([2025, 2012]));
+    expect(json.years.length).toBe(2);
   });
 });
