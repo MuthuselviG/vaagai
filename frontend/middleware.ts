@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { ADMIN_PYQ_SESSION_COOKIE, isValidAdminPyqSessionCookie } from "@/lib/adminPyqSession";
 
 const ADMIN_EMAIL = "muthu.111.44@gmail.com";
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
+  if (pathname.startsWith("/admin/pyq-correct") || pathname.startsWith("/api/admin/pyq-correct")) {
+    return pyqCorrectMiddleware(req, pathname);
+  }
 
   if (!pathname.startsWith("/admin-fun-panrom")) {
     return NextResponse.next();
@@ -46,6 +51,32 @@ export async function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
+async function pyqCorrectMiddleware(req: NextRequest, pathname: string) {
+  // Allow the login page and login API — avoid redirect loop
+  if (
+    pathname === "/admin/pyq-correct/login" ||
+    pathname === "/api/admin/pyq-correct/login"
+  ) {
+    return NextResponse.next();
+  }
+
+  const sessionCookie = req.cookies.get(ADMIN_PYQ_SESSION_COOKIE)?.value;
+  const valid = await isValidAdminPyqSessionCookie(sessionCookie);
+
+  if (!valid) {
+    if (pathname.startsWith("/api/admin/pyq-correct")) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    return NextResponse.redirect(new URL("/admin/pyq-correct/login", req.url));
+  }
+
+  return NextResponse.next();
+}
+
 export const config = {
-  matcher: ["/admin-fun-panrom/:path*"],
+  matcher: [
+    "/admin-fun-panrom/:path*",
+    "/admin/pyq-correct/:path*",
+    "/api/admin/pyq-correct/:path*",
+  ],
 };
