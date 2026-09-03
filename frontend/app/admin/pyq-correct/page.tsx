@@ -10,13 +10,12 @@ type QuestionRow = {
   subject: string;
   topic: string | null;
   pyq_years: number[] | null;
-  pyq_groups: string[] | null;
   lang: "en" | "ta";
   status: string | null;
   report_count: number | null;
 };
 
-type Filters = { subjects: string[]; years: number[]; groups: string[] };
+type Filters = { years: number[] };
 
 const PAGE_SIZE = 20;
 
@@ -68,13 +67,13 @@ const selectStyle: React.CSSProperties = {
   background: APC.surface,
 };
 
+const GRID_COLUMNS = "1fr 140px 130px 70px 120px 28px";
+
 export default function PyqCorrectListPage() {
   const router = useRouter();
-  const [filters, setFilters] = useState<Filters>({ subjects: [], years: [], groups: [] });
+  const [filters, setFilters] = useState<Filters>({ years: [] });
   const [year, setYear] = useState("");
-  const [group, setGroup] = useState("");
-  const [lang, setLang] = useState("");
-  const [subject, setSubject] = useState("");
+  const [paper, setPaper] = useState("");
   const [page, setPage] = useState(1);
   const [questions, setQuestions] = useState<QuestionRow[]>([]);
   const [total, setTotal] = useState(0);
@@ -91,9 +90,7 @@ export default function PyqCorrectListPage() {
     setLoading(true);
     const params = new URLSearchParams();
     if (year) params.set("year", year);
-    if (group) params.set("group", group);
-    if (lang) params.set("lang", lang);
-    if (subject) params.set("subject", subject);
+    if (paper) params.set("paper", paper);
     params.set("page", String(page));
 
     const res = await fetch(`/api/admin/pyq-correct/questions?${params}`);
@@ -101,7 +98,7 @@ export default function PyqCorrectListPage() {
     setQuestions(data.questions ?? []);
     setTotal(data.total ?? 0);
     setLoading(false);
-  }, [year, group, lang, subject, page]);
+  }, [year, paper, page]);
 
   useEffect(() => {
     loadQuestions();
@@ -109,9 +106,7 @@ export default function PyqCorrectListPage() {
 
   function clearFilters() {
     setYear("");
-    setGroup("");
-    setLang("");
-    setSubject("");
+    setPaper("");
     setPage(1);
   }
 
@@ -162,29 +157,11 @@ export default function PyqCorrectListPage() {
           </select>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-          <label style={{ fontSize: 11, fontWeight: 500, color: APC.textSec }}>குரூப்</label>
-          <select value={group} onChange={(e) => { setGroup(e.target.value); setPage(1); }} style={{ ...selectStyle, width: 130 }}>
-            <option value="">அனைத்து குரூப்களும்</option>
-            {filters.groups.map((g) => (
-              <option key={g} value={g}>{g}</option>
-            ))}
-          </select>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-          <label style={{ fontSize: 11, fontWeight: 500, color: APC.textSec }}>மொழி</label>
-          <select value={lang} onChange={(e) => { setLang(e.target.value); setPage(1); }} style={{ ...selectStyle, width: 110 }}>
-            <option value="">ஆங்./த.</option>
-            <option value="en">EN</option>
-            <option value="ta">TA</option>
-          </select>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-          <label style={{ fontSize: 11, fontWeight: 500, color: APC.textSec }}>பாடம்</label>
-          <select value={subject} onChange={(e) => { setSubject(e.target.value); setPage(1); }} style={{ ...selectStyle, width: 220 }}>
-            <option value="">அனைத்து பாடங்களும்</option>
-            {filters.subjects.map((s) => (
-              <option key={s} value={s}>{s}</option>
-            ))}
+          <label style={{ fontSize: 11, fontWeight: 500, color: APC.textSec }}>பிரிவு</label>
+          <select value={paper} onChange={(e) => { setPaper(e.target.value); setPage(1); }} style={{ ...selectStyle, width: 150 }}>
+            <option value="">அனைத்தும்</option>
+            <option value="tamil">தமிழ்</option>
+            <option value="gs">GS</option>
           </select>
         </div>
         <a
@@ -197,8 +174,8 @@ export default function PyqCorrectListPage() {
 
       {/* Table panel */}
       <div style={{ margin: "16px 24px", background: APC.surface, border: `1px solid ${APC.border}`, borderRadius: 6, overflow: "hidden" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 130px 110px 130px 60px 92px 28px", gap: 8, padding: "10px 16px", background: APC.surfaceAlt, borderBottom: `1px solid ${APC.border}` }}>
-          {["வினா", "பாடம்", "ஆண்டு(கள்)", "குரூப்(கள்)", "மொழி", "நிலை", ""].map((h) => (
+        <div style={{ display: "grid", gridTemplateColumns: GRID_COLUMNS, gap: 8, padding: "10px 16px", background: APC.surfaceAlt, borderBottom: `1px solid ${APC.border}` }}>
+          {["வினா", "பாடம்", "ஆண்டு(கள்)", "மொழி", "நிலை", ""].map((h) => (
             <span key={h} style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", color: APC.textTer, textTransform: "uppercase" }}>{h}</span>
           ))}
         </div>
@@ -217,7 +194,7 @@ export default function PyqCorrectListPage() {
             onClick={() => router.push(`/admin/pyq-correct/${q.id}`)}
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 130px 110px 130px 60px 92px 28px",
+              gridTemplateColumns: GRID_COLUMNS,
               gap: 8,
               alignItems: "center",
               padding: "11px 16px",
@@ -231,9 +208,6 @@ export default function PyqCorrectListPage() {
             <span style={{ fontSize: 12, color: "#475467" }}>{q.subject}</span>
             <span style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
               {(q.pyq_years ?? []).length > 0 ? q.pyq_years!.map((y) => <Chip key={y}>{y}</Chip>) : <span style={{ color: APC.textTer, fontSize: 12 }}>—</span>}
-            </span>
-            <span style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-              {(q.pyq_groups ?? []).length > 0 ? q.pyq_groups!.map((g) => <Chip key={g}>{g}</Chip>) : <span style={{ color: APC.textTer, fontSize: 12 }}>—</span>}
             </span>
             <span style={{ fontSize: 11, fontWeight: 600, background: q.lang === "en" ? APC.accentBg : APC.amberBg, color: q.lang === "en" ? APC.accent : APC.amber, padding: "2px 8px", borderRadius: 3, width: "fit-content", fontFamily: "ui-monospace, monospace" }}>
               {q.lang.toUpperCase()}

@@ -4,7 +4,7 @@ import { GET, POST } from "@/app/api/admin/pyq-correct/questions/route";
 
 function makeQueryChain(resolvedValue: { data: unknown; error: unknown; count?: number | null }) {
   const chain: Record<string, unknown> = {};
-  const methods = ["select", "eq", "contains", "order", "range", "insert", "single"];
+  const methods = ["select", "eq", "neq", "contains", "order", "range", "insert", "single"];
   for (const m of methods) {
     chain[m] = vi.fn(() => chain);
   }
@@ -69,15 +69,28 @@ describe("GET /api/admin/pyq-correct/questions", () => {
     expect(json.pageSize).toBe(20);
   });
 
-  it("applies year/group/lang/subject filters without erroring", async () => {
+  it("applies the year filter without erroring", async () => {
     const chain = makeQueryChain({ data: [], error: null, count: 0 });
     mockFrom.mockReturnValue(chain);
-    const res = await GET(makeGetRequest({ year: "2021", group: "group4", lang: "ta", subject: "History", page: "2" }));
+    const res = await GET(makeGetRequest({ year: "2021", page: "2" }));
     expect(res.status).toBe(200);
     expect(chain.contains).toHaveBeenCalledWith("pyq_years", [2021]);
-    expect(chain.contains).toHaveBeenCalledWith("pyq_groups", ["group4"]);
-    expect(chain.eq).toHaveBeenCalledWith("lang", "ta");
-    expect(chain.eq).toHaveBeenCalledWith("subject", "History");
+  });
+
+  it("filters to the Tamil paper (subject = General Tamil)", async () => {
+    const chain = makeQueryChain({ data: [], error: null, count: 0 });
+    mockFrom.mockReturnValue(chain);
+    const res = await GET(makeGetRequest({ paper: "tamil" }));
+    expect(res.status).toBe(200);
+    expect(chain.eq).toHaveBeenCalledWith("subject", "General Tamil");
+  });
+
+  it("filters to the GS paper (subject != General Tamil)", async () => {
+    const chain = makeQueryChain({ data: [], error: null, count: 0 });
+    mockFrom.mockReturnValue(chain);
+    const res = await GET(makeGetRequest({ paper: "gs" }));
+    expect(res.status).toBe(200);
+    expect(chain.neq).toHaveBeenCalledWith("subject", "General Tamil");
   });
 
   it("ignores a non-numeric year param instead of erroring", async () => {

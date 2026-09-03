@@ -13,15 +13,13 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const year = searchParams.get("year");
-    const group = searchParams.get("group");
-    const lang = searchParams.get("lang");
-    const subject = searchParams.get("subject");
+    const paper = searchParams.get("paper"); // "tamil" | "gs"
     const page = Math.max(1, parseInt(searchParams.get("page") ?? "1") || 1);
 
     let query = supabase
       .from("questions")
       .select(
-        "id, question, subject, topic, pyq_years, pyq_groups, lang, status, report_count",
+        "id, question, subject, topic, pyq_years, lang, status, report_count",
         { count: "exact" }
       )
       .eq("source_type", "pyq");
@@ -30,9 +28,8 @@ export async function GET(req: NextRequest) {
       const yearNum = parseInt(year);
       if (!isNaN(yearNum)) query = query.contains("pyq_years", [yearNum]);
     }
-    if (group) query = query.contains("pyq_groups", [group]);
-    if (lang) query = query.eq("lang", lang);
-    if (subject) query = query.eq("subject", subject);
+    if (paper === "tamil") query = query.eq("subject", "General Tamil");
+    if (paper === "gs") query = query.neq("subject", "General Tamil");
 
     const from = (page - 1) * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;

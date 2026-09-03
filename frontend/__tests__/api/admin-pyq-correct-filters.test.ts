@@ -31,14 +31,14 @@ describe("GET /api/admin/pyq-correct/filters", () => {
     expect(res.status).toBe(500);
   });
 
-  it("dedupes and sorts subjects, years (desc) and groups (asc)", async () => {
+  it("dedupes and sorts years descending", async () => {
     mockFrom.mockReturnValue(
       makeQueryChain({
         data: [
-          { subject: "History", pyq_years: [2019, 2012], pyq_groups: ["group4"] },
-          { subject: "Economy", pyq_years: [2021], pyq_groups: ["group2"] },
-          { subject: "History", pyq_years: [2019], pyq_groups: ["group4"] },
-          { subject: "Economy", pyq_years: null, pyq_groups: null },
+          { pyq_years: [2019, 2012] },
+          { pyq_years: [2021] },
+          { pyq_years: [2019] },
+          { pyq_years: null },
         ],
         error: null,
       })
@@ -48,16 +48,14 @@ describe("GET /api/admin/pyq-correct/filters", () => {
     expect(res.status).toBe(200);
     const json = await res.json();
 
-    expect(json.subjects).toEqual(["Economy", "History"]);
     expect(json.years).toEqual([2021, 2019, 2012]);
-    expect(json.groups).toEqual(["group2", "group4"]);
   });
 
-  it("returns empty arrays when there is no data", async () => {
+  it("returns an empty array when there is no data", async () => {
     mockFrom.mockReturnValue(makeQueryChain({ data: [], error: null }));
     const res = await GET();
     const json = await res.json();
-    expect(json).toEqual({ subjects: [], years: [], groups: [] });
+    expect(json).toEqual({ years: [] });
   });
 
   it("pages past Supabase's 1000-row cap instead of silently truncating", async () => {
@@ -65,14 +63,8 @@ describe("GET /api/admin/pyq-correct/filters", () => {
     // ever returned the first 1000 (all year 2025) of ~4000 PYQ rows, so
     // the year filter showed just "2025". A full first batch must trigger
     // a second request that picks up the remaining years.
-    const firstBatch = Array.from({ length: 1000 }, () => ({
-      subject: "History",
-      pyq_years: [2025],
-      pyq_groups: ["group4"],
-    }));
-    const secondBatch = [
-      { subject: "Indian Polity", pyq_years: [2012], pyq_groups: ["group4"] },
-    ];
+    const firstBatch = Array.from({ length: 1000 }, () => ({ pyq_years: [2025] }));
+    const secondBatch = [{ pyq_years: [2012] }];
 
     mockFrom
       .mockReturnValueOnce(makeQueryChain({ data: firstBatch, error: null }))
