@@ -66,7 +66,7 @@ function ChipList({
   onRemove: (item: string | number) => void;
 }) {
   if (items.length === 0) {
-    return <div style={{ fontSize: 12, color: APC.textTer, marginBottom: 8 }}>None yet</div>;
+    return <div style={{ fontSize: 12, color: APC.textTer, marginBottom: 8 }}>இதுவரை இல்லை</div>;
   }
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
@@ -129,10 +129,10 @@ export default function QuestionForm({
   async function handleSave() {
     setError("");
 
-    if (!value.question.trim()) return setError("Question text is required.");
-    if (value.options.some((o) => !o.trim())) return setError("All four options are required.");
-    if (!value.correct_option) return setError("Select the correct option.");
-    if (!value.subject.trim()) return setError("Subject is required.");
+    if (!value.question.trim()) return setError("வினா உரை தேவை.");
+    if (value.options.some((o) => !o.trim())) return setError("நான்கு விடைகளும் தேவை.");
+    if (!value.correct_option) return setError("சரியான விடையைத் தேர்ந்தெடுக்கவும்.");
+    if (!value.subject.trim()) return setError("பாடம் தேவை.");
 
     setSaving(true);
     const payload = {
@@ -160,7 +160,7 @@ export default function QuestionForm({
     setSaving(false);
 
     if (!res.ok) {
-      setError(data.error ?? "Failed to save question.");
+      setError(`வினாவைச் சேமிக்க முடியவில்லை${data.error ? `: ${data.error}` : ""}`);
       return;
     }
 
@@ -168,27 +168,27 @@ export default function QuestionForm({
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: APC.bg, fontFamily: "system-ui, -apple-system, sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: APC.bg, fontFamily: "var(--font-noto-sans-tamil), var(--font-inter), sans-serif" }}>
       {/* Top bar */}
       <div style={{ background: APC.surface, borderBottom: `1px solid ${APC.border}`, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 24px" }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
-          <a onClick={() => router.push("/admin/pyq-correct")} style={{ fontSize: 13, color: APC.accent, cursor: "pointer" }}>← Back to list</a>
+          <a onClick={() => router.push("/admin/pyq-correct")} style={{ fontSize: 13, color: APC.accent, cursor: "pointer" }}>← பட்டியலுக்குத் திரும்பு</a>
           <span style={{ width: 1, height: 14, background: APC.border }} />
-          <span style={{ fontSize: 15, fontWeight: 600, color: APC.text }}>{isEdit ? "Edit question" : "New question"}</span>
+          <span style={{ fontSize: 15, fontWeight: 600, color: APC.text }}>{isEdit ? "வினாவைத் திருத்து" : "புதிய வினா"}</span>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           <button
             onClick={() => router.push("/admin/pyq-correct")}
             style={{ padding: "8px 16px", background: APC.surface, color: "#475467", border: `1px solid ${APC.border}`, borderRadius: 4, fontSize: 13, fontWeight: 600, fontFamily: "inherit", cursor: "pointer" }}
           >
-            Cancel
+            ரத்துசெய்
           </button>
           <button
             onClick={handleSave}
             disabled={saving}
             style={{ padding: "8px 16px", background: APC.accent, color: "#FFFFFF", border: "none", borderRadius: 4, fontSize: 13, fontWeight: 600, fontFamily: "inherit", cursor: saving ? "default" : "pointer", opacity: saving ? 0.6 : 1 }}
           >
-            {saving ? "Saving..." : "Save changes"}
+            {saving ? "சேமிக்கிறது..." : "மாற்றங்களைச் சேமி"}
           </button>
         </div>
       </div>
@@ -204,7 +204,7 @@ export default function QuestionForm({
         {/* Main column */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 14, minWidth: 0 }}>
           <div style={cardStyle}>
-            <label style={labelStyle}>Question text</label>
+            <label style={labelStyle}>வினா உரை</label>
             <textarea
               rows={3}
               value={value.question}
@@ -214,7 +214,7 @@ export default function QuestionForm({
           </div>
 
           <div style={cardStyle}>
-            <label style={labelStyle}>Options — select the correct one</label>
+            <label style={labelStyle}>விடைகள் — சரியானதைத் தேர்ந்தெடுக்கவும்</label>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {value.options.map((opt, i) => (
                 <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -246,7 +246,7 @@ export default function QuestionForm({
           </div>
 
           <div style={cardStyle}>
-            <label style={labelStyle}>Explanation</label>
+            <label style={labelStyle}>விளக்கம்</label>
             <textarea
               rows={4}
               value={value.explanation}
@@ -259,7 +259,7 @@ export default function QuestionForm({
         {/* Sidebar */}
         <div style={{ width: 340, flexShrink: 0, display: "flex", flexDirection: "column", gap: 14 }}>
           <div style={cardStyle}>
-            <label style={labelStyle}>Language</label>
+            <label style={labelStyle}>மொழி</label>
             <div style={{ display: "flex", border: `1px solid ${APC.border}`, borderRadius: 4, overflow: "hidden", width: "fit-content" }}>
               {(["en", "ta"] as const).map((l) => (
                 <span
@@ -282,26 +282,26 @@ export default function QuestionForm({
 
           <div style={{ ...cardStyle, display: "flex", flexDirection: "column", gap: 14 }}>
             <div>
-              <label style={labelStyle}>Subject</label>
+              <label style={labelStyle}>பாடம்</label>
               <input type="text" value={value.subject} onChange={(e) => set("subject", e.target.value)} style={inputStyle} />
             </div>
             <div>
-              <label style={labelStyle}>Topic</label>
+              <label style={labelStyle}>தலைப்பு</label>
               <input type="text" value={value.topic} onChange={(e) => set("topic", e.target.value)} style={inputStyle} />
             </div>
             {isEdit && (
               <div>
-                <label style={labelStyle}>Status</label>
+                <label style={labelStyle}>நிலை</label>
                 <select value={value.status} onChange={(e) => set("status", e.target.value)} style={{ ...inputStyle, background: APC.surface }}>
-                  <option value="draft">Draft</option>
-                  <option value="approved">Approved</option>
+                  <option value="draft">வரைவு</option>
+                  <option value="approved">அங்கீகரிக்கப்பட்டது</option>
                 </select>
               </div>
             )}
           </div>
 
           <div style={cardStyle}>
-            <label style={labelStyle}>Year(s) — appeared in</label>
+            <label style={labelStyle}>ஆண்டு(கள்) — தேர்வில் வந்தது</label>
             <ChipList items={value.pyq_years} onRemove={(y) => set("pyq_years", value.pyq_years.filter((x) => x !== y))} />
             <div style={{ display: "flex", gap: 6 }}>
               <input
@@ -309,17 +309,17 @@ export default function QuestionForm({
                 value={yearInput}
                 onChange={(e) => setYearInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addYear())}
-                placeholder="e.g. 2021"
+                placeholder="எ.கா. 2021"
                 style={{ ...inputStyle, fontSize: 12 }}
               />
               <button onClick={addYear} style={{ padding: "7px 12px", fontSize: 12, border: `1px solid ${APC.border}`, background: APC.surfaceAlt, borderRadius: 4, cursor: "pointer", color: APC.textSec, whiteSpace: "nowrap" }}>
-                Add
+                சேர்
               </button>
             </div>
           </div>
 
           <div style={cardStyle}>
-            <label style={labelStyle}>Group(s) — appeared in</label>
+            <label style={labelStyle}>குரூப்(கள்) — தேர்வில் வந்தது</label>
             <ChipList items={value.pyq_groups} onRemove={(g) => set("pyq_groups", value.pyq_groups.filter((x) => x !== g))} />
             <div style={{ display: "flex", gap: 6 }}>
               <input
@@ -327,11 +327,11 @@ export default function QuestionForm({
                 value={groupInput}
                 onChange={(e) => setGroupInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addGroup())}
-                placeholder="e.g. group4"
+                placeholder="எ.கா. group4"
                 style={{ ...inputStyle, fontSize: 12 }}
               />
               <button onClick={addGroup} style={{ padding: "7px 12px", fontSize: 12, border: `1px solid ${APC.border}`, background: APC.surfaceAlt, borderRadius: 4, cursor: "pointer", color: APC.textSec, whiteSpace: "nowrap" }}>
-                Add
+                சேர்
               </button>
             </div>
           </div>

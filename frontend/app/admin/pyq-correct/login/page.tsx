@@ -25,7 +25,7 @@ export default function PyqCorrectLoginPage() {
     setLoading(false);
 
     if (!res.ok) {
-      setError(data.error ?? "Invalid password");
+      setError(data.error === "Password is required" ? "கடவுச்சொல் தேவை" : "தவறான கடவுச்சொல்");
       return;
     }
 
@@ -41,7 +41,7 @@ export default function PyqCorrectLoginPage() {
         alignItems: "center",
         justifyContent: "center",
         padding: 24,
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: "var(--font-noto-sans-tamil), var(--font-inter), sans-serif",
       }}
     >
       <div
@@ -65,18 +65,18 @@ export default function PyqCorrectLoginPage() {
             marginBottom: 10,
           }}
         >
-          Admin
+          நிர்வாகம்
         </div>
         <h1 style={{ fontSize: 19, fontWeight: 600, color: APC.text, margin: "0 0 6px 0" }}>
-          PYQ Correction Tool
+          முன்னாள் வினாத்தாள் திருத்தும் கருவி
         </h1>
         <p style={{ fontSize: 13, color: APC.textSec, margin: "0 0 24px 0", lineHeight: 1.5 }}>
-          Enter the admin password to continue.
+          தொடர நிர்வாக கடவுச்சொல்லை உள்ளிடவும்.
         </p>
 
         <div style={{ marginBottom: 20 }}>
           <label style={{ display: "block", fontSize: 12, fontWeight: 500, color: "#344054", marginBottom: 6 }}>
-            Password
+            கடவுச்சொல்
           </label>
           <input
             type="password"
@@ -119,11 +119,11 @@ export default function PyqCorrectLoginPage() {
             opacity: loading || !password ? 0.6 : 1,
           }}
         >
-          {loading ? "Signing in..." : "Sign in"}
+          {loading ? "உள்நுழைகிறது..." : "உள்நுழை"}
         </button>
 
         <p style={{ fontSize: 11, color: APC.textTer, margin: "18px 0 0 0", textAlign: "center" }}>
-          Internal tool — not linked from the public site.
+          அக பயன்பாட்டு கருவி — பொது தளத்தில் இணைக்கப்படவில்லை.
         </p>
       </div>
     </div>

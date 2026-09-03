@@ -40,17 +40,17 @@ export default function EditPyqQuestionPage() {
 
   if (notFound) {
     return (
-      <div style={{ minHeight: "100vh", background: APC.bg, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12, fontFamily: "system-ui, sans-serif" }}>
-        <span style={{ fontSize: 14, color: APC.textSec }}>Question not found.</span>
-        <a onClick={() => router.push("/admin/pyq-correct")} style={{ fontSize: 13, color: APC.accent, cursor: "pointer" }}>← Back to list</a>
+      <div style={{ minHeight: "100vh", background: APC.bg, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12, fontFamily: "var(--font-noto-sans-tamil), var(--font-inter), sans-serif" }}>
+        <span style={{ fontSize: 14, color: APC.textSec }}>வினா கிடைக்கவில்லை.</span>
+        <a onClick={() => router.push("/admin/pyq-correct")} style={{ fontSize: 13, color: APC.accent, cursor: "pointer" }}>← பட்டியலுக்குத் திரும்பு</a>
       </div>
     );
   }
 
   if (!value) {
     return (
-      <div style={{ minHeight: "100vh", background: APC.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "system-ui, sans-serif" }}>
-        <span style={{ fontSize: 14, color: APC.textSec }}>Loading…</span>
+      <div style={{ minHeight: "100vh", background: APC.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-noto-sans-tamil), var(--font-inter), sans-serif" }}>
+        <span style={{ fontSize: 14, color: APC.textSec }}>ஏற்றுகிறது…</span>
       </div>
     );
   }
