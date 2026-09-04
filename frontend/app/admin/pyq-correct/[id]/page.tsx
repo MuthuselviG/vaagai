@@ -11,6 +11,7 @@ export default function EditPyqQuestionPage() {
   const id = params.id as string;
 
   const [value, setValue] = useState<QuestionFormValue | null>(null);
+  const [hasOriginalVersion, setHasOriginalVersion] = useState(false);
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
@@ -34,6 +35,7 @@ export default function EditPyqQuestionPage() {
           pyq_groups: q.pyq_groups ?? [],
           status: q.status ?? "approved",
         });
+        setHasOriginalVersion(q.original_version != null);
       })
       .catch(() => setNotFound(true));
   }, [id]);
@@ -55,5 +57,5 @@ export default function EditPyqQuestionPage() {
     );
   }
 
-  return <QuestionForm questionId={id} initialValue={value} />;
+  return <QuestionForm questionId={id} initialValue={value} hasOriginalVersion={hasOriginalVersion} />;
 }

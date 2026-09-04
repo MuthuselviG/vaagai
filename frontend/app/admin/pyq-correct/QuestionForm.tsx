@@ -86,9 +86,11 @@ function ChipList({
 export default function QuestionForm({
   questionId,
   initialValue,
+  hasOriginalVersion,
 }: {
   questionId?: string;
   initialValue?: QuestionFormValue;
+  hasOriginalVersion?: boolean;
 }) {
   const router = useRouter();
   const isEdit = Boolean(questionId);
@@ -96,6 +98,7 @@ export default function QuestionForm({
   const [yearInput, setYearInput] = useState("");
   const [groupInput, setGroupInput] = useState("");
   const [saving, setSaving] = useState(false);
+  const [restoring, setRestoring] = useState(false);
   const [error, setError] = useState("");
 
   function set<K extends keyof QuestionFormValue>(key: K, val: QuestionFormValue[K]) {
@@ -167,6 +170,38 @@ export default function QuestionForm({
     router.push("/admin/pyq-correct");
   }
 
+  async function handleRestoreOriginal() {
+    if (!questionId) return;
+    if (!window.confirm("மூல வினாவை மீட்டமைக்கவா? தற்போதைய திருத்தங்கள் இழக்கப்படும்.")) return;
+
+    setError("");
+    setRestoring(true);
+    const res = await fetch(`/api/admin/pyq-correct/questions/${questionId}/restore`, {
+      method: "POST",
+    });
+    const data = await res.json();
+    setRestoring(false);
+
+    if (!res.ok) {
+      setError(`மீட்டமைக்க முடியவில்லை${data.error ? `: ${data.error}` : ""}`);
+      return;
+    }
+
+    const q = data.question;
+    setValue({
+      question: q.question ?? "",
+      options: Array.isArray(q.options) ? q.options : ["", "", "", ""],
+      correct_option: q.correct_option ?? "",
+      explanation: q.explanation ?? "",
+      subject: q.subject ?? "",
+      topic: q.topic ?? "",
+      lang: q.lang === "ta" ? "ta" : "en",
+      pyq_years: q.pyq_years ?? [],
+      pyq_groups: q.pyq_groups ?? [],
+      status: q.status ?? "approved",
+    });
+  }
+
   return (
     <div style={{ minHeight: "100vh", background: APC.bg, fontFamily: "var(--font-noto-sans-tamil), var(--font-inter), sans-serif" }}>
       {/* Top bar */}
@@ -177,6 +212,15 @@ export default function QuestionForm({
           <span style={{ fontSize: 15, fontWeight: 600, color: APC.text }}>{isEdit ? "வினாவைத் திருத்து" : "புதிய வினா"}</span>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
+          {isEdit && hasOriginalVersion && (
+            <button
+              onClick={handleRestoreOriginal}
+              disabled={restoring}
+              style={{ padding: "8px 16px", background: APC.amberBg, color: APC.amber, border: `1px solid ${APC.amber}`, borderRadius: 4, fontSize: 13, fontWeight: 600, fontFamily: "inherit", cursor: restoring ? "default" : "pointer", opacity: restoring ? 0.6 : 1 }}
+            >
+              {restoring ? "மீட்டமைக்கிறது..." : "மூல வினாவை மீட்டமை"}
+            </button>
+          )}
           <button
             onClick={() => router.push("/admin/pyq-correct")}
             style={{ padding: "8px 16px", background: APC.surface, color: "#475467", border: `1px solid ${APC.border}`, borderRadius: 4, fontSize: 13, fontWeight: 600, fontFamily: "inherit", cursor: "pointer" }}
