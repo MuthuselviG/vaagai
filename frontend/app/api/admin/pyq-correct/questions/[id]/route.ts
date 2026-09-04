@@ -1,25 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { SNAPSHOT_FIELDS } from "@/lib/pyqSnapshotFields";
 
 // Service key — never exposed to frontend
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
-
-// Fields snapshotted into original_version on a question's first edit.
-export const SNAPSHOT_FIELDS = [
-  "question",
-  "options",
-  "correct_option",
-  "explanation",
-  "subject",
-  "topic",
-  "lang",
-  "pyq_years",
-  "pyq_groups",
-  "status",
-] as const;
 
 export async function GET(
   _req: NextRequest,

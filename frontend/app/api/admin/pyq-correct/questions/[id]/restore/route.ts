@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { SNAPSHOT_FIELDS } from "../route";
+import { SNAPSHOT_FIELDS } from "@/lib/pyqSnapshotFields";
 
 // Service key — never exposed to frontend
 const supabase = createClient(
