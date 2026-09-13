@@ -99,7 +99,7 @@ function PyqCorrectListPageInner() {
   ];
 
   return (
-    <div style={{ minHeight: "100vh", background: T.bg, fontFamily: "var(--font-noto-sans-tamil), var(--font-inter), sans-serif", display: "flex", flexDirection: "column" }}>
+    <div style={{ height: "100dvh", overflow: "hidden", background: T.bg, fontFamily: "var(--font-noto-sans-tamil), var(--font-inter), sans-serif", display: "flex", flexDirection: "column" }}>
       {/* Top bar */}
       <div style={{ flexShrink: 0, background: T.surface, borderBottom: `1px solid ${T.border}`, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 16px 14px" }}>
         <div>

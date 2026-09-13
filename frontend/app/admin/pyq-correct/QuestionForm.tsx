@@ -231,7 +231,7 @@ export default function QuestionForm({
   const optionLetterColor = (isCorrect: boolean) => (isCorrect ? T.green : T.indigo);
 
   return (
-    <div style={{ minHeight: "100vh", background: T.bg, fontFamily: "var(--font-noto-sans-tamil), var(--font-inter), sans-serif", display: "flex", flexDirection: "column" }}>
+    <div style={{ height: "100dvh", overflow: "hidden", background: T.bg, fontFamily: "var(--font-noto-sans-tamil), var(--font-inter), sans-serif", display: "flex", flexDirection: "column" }}>
       {/* Top bar */}
       <div style={{ flexShrink: 0, background: T.surface, borderBottom: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 12, padding: "14px 16px" }}>
         <a onClick={() => router.push(listHref)} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 38, height: 38, borderRadius: 11, background: T.bg, border: `1px solid ${T.border}`, flexShrink: 0, cursor: "pointer" }}>
