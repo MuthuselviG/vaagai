@@ -34,6 +34,7 @@ create table if not exists public.questions (
   is_school boolean not null default false,
   source text not null,
   status text not null default 'draft' check (status in ('draft', 'approved', 'rejected')),
+  original_version jsonb,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
