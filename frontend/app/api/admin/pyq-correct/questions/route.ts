@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     let query = supabase
       .from("questions")
       .select(
-        "id, question, subject, topic, pyq_years, lang, status, report_count",
+        "id, question, correct_option, subject, topic, pyq_years, lang, status, report_count",
         { count: "exact" }
       )
       .eq("source_type", "pyq");

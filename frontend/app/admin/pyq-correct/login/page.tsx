@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { APC } from "@/lib/adminPyqTokens";
+import { T, shadow } from "@/lib/tokens";
 
 export default function PyqCorrectLoginPage() {
   const router = useRouter();
@@ -36,7 +36,7 @@ export default function PyqCorrectLoginPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: APC.bg,
+        background: T.bg,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -48,34 +48,34 @@ export default function PyqCorrectLoginPage() {
         style={{
           width: "100%",
           maxWidth: 340,
-          background: APC.surface,
-          border: `1px solid ${APC.border}`,
-          borderRadius: 6,
-          padding: "36px 32px",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
+          background: T.surface,
+          border: `1px solid ${T.border}`,
+          borderRadius: 20,
+          padding: "32px 28px",
+          boxShadow: shadow.md,
         }}
       >
         <div
           style={{
             fontSize: 11,
-            fontWeight: 600,
+            fontWeight: 800,
             letterSpacing: "0.08em",
-            color: APC.textTer,
+            color: T.textTer,
             textTransform: "uppercase",
             marginBottom: 10,
           }}
         >
           நிர்வாகம்
         </div>
-        <h1 style={{ fontSize: 19, fontWeight: 600, color: APC.text, margin: "0 0 6px 0" }}>
+        <h1 style={{ fontSize: 19, fontWeight: 800, color: T.text, margin: "0 0 6px 0" }}>
           முன்னாள் வினாத்தாள் திருத்தும் கருவி
         </h1>
-        <p style={{ fontSize: 13, color: APC.textSec, margin: "0 0 24px 0", lineHeight: 1.5 }}>
+        <p style={{ fontSize: 13, color: T.textSec, margin: "0 0 22px 0", lineHeight: 1.5 }}>
           தொடர நிர்வாக கடவுச்சொல்லை உள்ளிடவும்.
         </p>
 
-        <div style={{ marginBottom: 20 }}>
-          <label style={{ display: "block", fontSize: 12, fontWeight: 500, color: "#344054", marginBottom: 6 }}>
+        <div style={{ marginBottom: 18 }}>
+          <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: T.text, marginBottom: 6 }}>
             கடவுச்சொல்
           </label>
           <input
@@ -87,11 +87,12 @@ export default function PyqCorrectLoginPage() {
             autoFocus
             style={{
               width: "100%",
-              padding: "10px 12px",
-              fontSize: 14,
-              border: `1px solid ${APC.border}`,
-              borderRadius: 4,
-              color: APC.text,
+              height: 46,
+              padding: "0 14px",
+              fontSize: 15,
+              border: `1.5px solid ${T.indigoMid}`,
+              borderRadius: 12,
+              color: T.text,
               fontFamily: "inherit",
               boxSizing: "border-box",
             }}
@@ -99,7 +100,7 @@ export default function PyqCorrectLoginPage() {
         </div>
 
         {error && (
-          <div style={{ fontSize: 12, color: APC.red, marginBottom: 12 }}>{error}</div>
+          <div style={{ fontSize: 12, color: T.red, marginBottom: 12, fontWeight: 600 }}>{error}</div>
         )}
 
         <button
@@ -107,22 +108,23 @@ export default function PyqCorrectLoginPage() {
           disabled={loading || !password}
           style={{
             width: "100%",
-            padding: 10,
-            background: APC.accent,
+            height: 48,
+            background: T.indigo,
             color: "#FFFFFF",
             border: "none",
-            borderRadius: 4,
-            fontSize: 14,
-            fontWeight: 600,
+            borderRadius: 14,
+            fontSize: 15,
+            fontWeight: 800,
             fontFamily: "inherit",
             cursor: loading || !password ? "default" : "pointer",
             opacity: loading || !password ? 0.6 : 1,
+            boxShadow: shadow.indigo,
           }}
         >
           {loading ? "உள்நுழைகிறது..." : "உள்நுழை"}
         </button>
 
-        <p style={{ fontSize: 11, color: APC.textTer, margin: "18px 0 0 0", textAlign: "center" }}>
+        <p style={{ fontSize: 11, color: T.textTer, margin: "16px 0 0 0", textAlign: "center" }}>
           அக பயன்பாட்டு கருவி — பொது தளத்தில் இணைக்கப்படவில்லை.
         </p>
       </div>
