@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { ADMIN_PYQ_SESSION_COOKIE, isValidAdminPyqSessionCookie } from "@/lib/adminPyqSession";
 
-const ADMIN_EMAIL = "muthu.111.44@gmail.com";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -44,7 +44,7 @@ export async function middleware(req: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user || user.email !== ADMIN_EMAIL) {
+  if (!ADMIN_EMAIL || !user || user.email !== ADMIN_EMAIL) {
     return NextResponse.redirect(new URL("/subjects", req.url));
   }
 

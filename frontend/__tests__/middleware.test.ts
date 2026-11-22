@@ -27,7 +27,7 @@ describe("Admin middleware", () => {
     vi.clearAllMocks();
     // Default: valid admin session
     mockGetUser.mockResolvedValue({
-      data: { user: { email: "muthu.111.44@gmail.com" } },
+      data: { user: { email: process.env.ADMIN_EMAIL } },
     });
   });
 
@@ -62,6 +62,23 @@ describe("Admin middleware", () => {
     const res = await middleware(req);
     expect(res.status).toBe(307);
     expect(res.headers.get("location")).toContain("/admin-fun-panrom/login");
+  });
+
+  it("redirects to /subjects when ADMIN_EMAIL is not configured", async () => {
+    const original = process.env.ADMIN_EMAIL;
+    delete process.env.ADMIN_EMAIL;
+    vi.resetModules();
+    const { middleware: freshMiddleware } = await import("@/middleware");
+    mockGetUser.mockResolvedValue({ data: { user: { email: undefined } } });
+    const req = makeRequest("/admin-fun-panrom", {
+      admin_session: "1",
+      "sb-access-token": "some_token",
+    });
+    const res = await freshMiddleware(req);
+    process.env.ADMIN_EMAIL = original;
+    vi.resetModules();
+    expect(res.status).toBe(307);
+    expect(res.headers.get("location")).toContain("/subjects");
   });
 
   it("redirects non-admin email to /subjects", async () => {

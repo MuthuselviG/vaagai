@@ -30,7 +30,7 @@ Running log, most recent first. Every session should read this before doing SEO/
 
 **Content volume:** 6,400+ Samacheer Kalvi questions (Class 6–10) + 1,800+ PYQ (2012–2025) + ~30 auto-generated current affairs questions/day + expert-created packs.
 
-**Admin email:** muthu.111.44@gmail.com (gates the `/admin-fun-panrom` dashboard)
+**Admin access:** `/admin-fun-panrom` dashboard, gated by `ADMIN_EMAIL` + `ADMIN_PASSWORD` env vars
 
 ---
 
@@ -139,6 +139,8 @@ GEMINI_API_KEY                     # question generation in creator dashboard
 GEMINI_API_KEY_CRON                # used by GitHub Actions cron
 NEXT_PUBLIC_ENABLE_CREATOR_UPLOAD  # boolean flag for creator upload UI
 CRON_SECRET                        # bearer token for cron endpoint
+ADMIN_EMAIL                        # admin login email (server-only)
+ADMIN_PASSWORD                     # admin login password (server-only)
 ```
 
 ---
