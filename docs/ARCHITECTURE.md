@@ -13,7 +13,7 @@ graph TB
     subgraph Users["👥 Users"]
         Student(["🎓 Student\n(Mobile Browser)"])
         Creator(["✍️ Creator / Expert"])
-        Admin(["🔑 Admin\nmuthu.111.44@gmail.com"])
+        Admin(["🔑 Admin"])
     end
 
     subgraph ExternalNews["📰 News Source"]

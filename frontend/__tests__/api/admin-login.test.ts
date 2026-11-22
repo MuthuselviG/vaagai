@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 import { POST, DELETE } from "@/app/api/admin/login/route";
 
 // These match what vitest.setup.ts injects before modules load
-const ADMIN_EMAIL = "muthu.111.44@gmail.com";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL!;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD!;
 
 function makeLoginRequest(body: unknown) {

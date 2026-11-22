@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const ADMIN_EMAIL = "muthu.111.44@gmail.com";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD!;
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 export async function POST(req: NextRequest) {
   try {
@@ -9,6 +9,12 @@ export async function POST(req: NextRequest) {
 
     if (!email || !password) {
       return NextResponse.json({ error: "Missing credentials" }, { status: 400 });
+    }
+
+    // Fail closed if admin credentials are not configured
+    if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+      console.error("[admin/login] ADMIN_EMAIL or ADMIN_PASSWORD not configured");
+      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
     if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
