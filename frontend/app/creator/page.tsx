@@ -182,7 +182,12 @@ export default function CreatorPage() {
             formData.append("text_lang", pasteLang);
             formData.append("text_format", pasteFormat);
           }
-          const res = await fetch("/api/creator/extract", { method: "POST", body: formData });
+          const { data: { session } } = await supabase.auth.getSession();
+          const res = await fetch("/api/creator/extract", {
+            method: "POST",
+            body: formData,
+            headers: session ? { Authorization: `Bearer ${session.access_token}` } : {},
+          });
           const data = await res.json();
           if (!res.ok) throw new Error(data.error ?? "Extraction failed");
           setExtractedQuestions(data.questions ?? []);
