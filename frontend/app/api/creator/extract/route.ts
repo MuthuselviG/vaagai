@@ -195,11 +195,19 @@ function buildImagePrompt(mode: ImageMode, lang: ContentLang, subject: string): 
 
 export async function POST(req: NextRequest) {
   try {
-    console.log("ENV CHECK:", {
-      supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
-      hasServiceKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
-      hasGeminiKey: !!process.env.GEMINI_API_KEY,
-    });
+    // 1. Authenticate: require a valid Supabase access token
+    const authHeader = req.headers.get("authorization") ?? "";
+    const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : "";
+    if (!token) {
+      console.log("[creator/extract] 401: missing token");
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const { data: authData, error: authError } = await supabase.auth.getUser(token);
+    const user = authData?.user;
+    if (authError || !user) {
+      console.log("[creator/extract] 401: invalid token");
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     const formData = await req.formData();
     const packId = formData.get("pack_id") as string;
@@ -211,6 +219,30 @@ export async function POST(req: NextRequest) {
     if (!packId || !creatorId) {
       return NextResponse.json({ error: "Missing pack_id or creator_id" }, { status: 400 });
     }
+
+    // 2. Authorize: creator must belong to this user, pack must belong to this creator
+    const { data: creatorRow } = await supabase
+      .from("creators")
+      .select("id")
+      .eq("id", creatorId)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (!creatorRow) {
+      console.log("[creator/extract] 403: creator not owned by user", { userId: user.id, creatorId });
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    const { data: packRow } = await supabase
+      .from("packs")
+      .select("id")
+      .eq("id", packId)
+      .eq("creator_id", creatorId)
+      .maybeSingle();
+    if (!packRow) {
+      console.log("[creator/extract] 403: pack not owned by creator", { creatorId, packId });
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+    console.log("[creator/extract] authorized", { userId: user.id, creatorId, packId });
 
     const pastedText = formData.get("text") as string | null;
     const imageFile = formData.get("image") as File | null;
